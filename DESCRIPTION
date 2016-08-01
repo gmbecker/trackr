@@ -1,0 +1,60 @@
+Package: recordr
+Type: Package
+Title: Semantic Annotation and Discoverability System for R Plots
+Version: 0.4.0
+Date: 2015-07-01
+Authors@R: c(
+    person("Sara", "Moore", role = c("aut", "cre"),
+        email = "moore.sara@gene.com"),
+    person("Gabriel", "Becker", role = "aut",
+        email = "becker.gabe@gene.com"))
+Copyright: Genentech Inc
+Maintainer: Gabriel Becker <becker.gabriel@gene.com>
+Description: Extracts relevant features from ggplot2 and/or lattice
+    objects and manages both objects and features via a data store
+    (Apache Solr).
+License: LICENSE file
+Depends:
+    methods,
+    CodeDepends
+Imports:
+    digest,
+    ggplot2,
+    lattice,
+    rdocdb,
+    gridGraphics,
+    methods,
+    CodeDepends,
+    RJSONIO,
+    fastdigest,
+    rsolr
+Suggests:
+    proto,
+    png,
+    httr,
+    knitr,
+    MASS,
+    MEMSS,
+    mlmRev,
+    dplyr,
+    rmarkdown,
+    knitr
+VignetteBuilder: knitr
+Collate:
+    'Classes.R'
+    'Generics.R'
+    'PlotWrapper.R'
+    'ObjFeatureSet.R'
+    'VTJSONBackend-methods.R'
+    'ViztrackrDB-main-API.R'
+    'accessor-methods.R'
+    'autotrack.R'
+    'backend-impls.R'
+    'convenience_constructors.R'
+    'dataStore-methods.R'
+    'ggplotversions.R'
+    'history.R'
+    'parseCode.R'
+    'prep_for_db.R'
+    'zzz.R'
+RoxygenNote: 5.0.1

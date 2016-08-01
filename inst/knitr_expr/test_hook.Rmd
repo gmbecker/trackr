@@ -1,0 +1,68 @@
+---
+title: "Save plots using recordr and knitr"
+author: "Sara Moore"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Using recordr with knitr}
+  %\VignetteEngine{knitr::rmarkdown}
+  \usepackage[utf8]{inputenc}
+---
+
+This is an attempt to set up a chunk hook for adding plots to the recordr data store "invisibly."
+
+Currently, this hook function works for the last ggplot object plotted.
+
+```{r customhook, echo=FALSE}
+hook_recordr <- function(before, options, envir, ...) {
+  if (!before) {
+
+    plot <- NULL
+    if(!is.null(ggplot2::last_plot())) {
+        # ggplot2
+        plot <- ggplot2::last_plot()
+    } else if(!is.null(lattice::trellis.last.object())) {
+        plot <- lattice::trellis.last.object()
+    }
+    
+    pfs <- makeFeatureSet(plot)
+    # once the issue with multiple lines of input unlisting correctly is solved, the below code can be uncommented.
+  #  objCode(pfs) <- sys.frame(-3)$code
+    if(!is.null(plot) & !is.null(defaultVTDB())) {
+        record(pfs, db = defaultVTDB(), verbose=TRUE)
+        # ggplot2:::set_last_plot(NULL)
+    }
+  }
+}
+```
+
+```{r createsolrconn}
+library(recordr)
+vtdb = jsonVTDB(tempfile(), img_dir = tempdir())
+defaultVTDB(vtdb)
+```
+
+```{r setopts, echo=FALSE, cache=FALSE}
+library(knitr)
+knit_hooks$set(viztrack = hook_recordr)
+    # purl = hook_purl)
+opts_chunk$set(
+    out.width='\\textwidth',
+    fig.height=8, fig.width=12.8, dpi=300,
+    # tidy.opts=list(width.cutoff=200),
+    # global.device = TRUE,
+    fig.align='center', message=FALSE, cache=2,
+    viztrack=FALSE
+    )
+```
+
+```{r testrecordr1, viztrack=TRUE}
+library(ggplot2)
+qplot(speed, dist, data = cars)
+```
+
+```{r testrecordr2, viztrack=TRUE}
+p = qplot(speed, dist, data = cars)
+p + geom_smooth()
+p + geom_jitter()
+```

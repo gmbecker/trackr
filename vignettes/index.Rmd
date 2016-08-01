@@ -1,0 +1,285 @@
+---
+title: "An introduction to recordr"
+author: "Sara Moore, Gabriel Becker"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{An introduction to recordr}
+  %\VignetteEngine{knitr::rmarkdown}
+  \usepackage[utf8]{inputenc}
+---
+
+```{r, echo = FALSE, message = FALSE}
+knitr::opts_chunk$set(
+  error = TRUE,
+  tidy = FALSE,
+  fig.width = 4, 
+  fig.height = 4,
+  dpi = 150,
+  message = FALSE
+)
+```
+
+# Dependency installation check
+
+To run all examples and vignettes, the following packages should be installed:
+
+* From CRAN: `ggplot2`, `lattice`, `proto`, `digest`, `png`, `httr`, `MASS`, `MEMSS`, `mlmRev`, `devtools`
+* From Bioconductor: `BiocGenerics` 
+* From Github: `gmbecker/CodeDepends`, `lawremi/rsolr`, `lawremi/restfulr`, `lawremi/rdocdb`
+
+
+# Create some example plots
+
+Here we create a number of plots - ggplot2, lattice, and base - which we will
+use throughout the demonstration.
+
+```{r}
+
+library(recordr)
+if(trackingHistory())
+	trackHistory() #turn it off as tracking in dyn docs is a WIP
+library(rdocdb) #need it for ndoc, etc calls
+
+library(ggplot2)
+library(lattice)
+
+## examples from 
+##      http://www.cookbook-r.com/Graphs
+##      https://learnr.files.wordpress.com/2009/08/latbook.pdf
+##      http://docs.ggplot2.org/current/index.html
+##      http://lmdvr.r-forge.r-project.org/figures/figures.html
+
+## modified version of Figure 1.1 in
+## http://lmdvr.r-forge.r-project.org/figures/figures.html
+data(Chem97, package = "mlmRev")
+pl <- histogram(~gcsescore | factor(score), 
+    data = Chem97, main="Figure 1.1", sub="example subtitle")
+
+## and a modified version of its ggplot2 counterpart, from
+## https://learnr.files.wordpress.com/2009/08/latbook.pdf
+pg <- ggplot(Chem97, aes(gcsescore)) + 
+    geom_histogram(binwidth = 0.5) + 
+    facet_wrap(~score) +
+    ggtitle(expression(atop("Figure 1.1", atop("example subtitle")))) +
+    theme_bw()
+
+## modified version of a graphic available here:
+## http://docs.ggplot2.org/current/scale_hue.html
+set.seed(620)
+dsamp <- diamonds[sample(nrow(diamonds), 1000), ]
+d <- ggplot(dsamp, aes(carat, price, colour = clarity)) + 
+    geom_point() + theme_bw()
+
+## modified version of a graphic available here:
+## http://docs.ggplot2.org/current/stat_density2d.html
+data(geyser, package = "MASS")
+m <- ggplot(geyser, aes(x = duration, y = waiting)) +
+    geom_point() + geom_density2d() + 
+    xlim(0.5, 6) + ylim(40, 110) + 
+    xlab("Eruption time in mins") + ylab("Waiting time for this eruption") +
+    coord_trans(y="log10") + theme_bw()
+
+## modified version of Figure 2.1 in
+## http://lmdvr.r-forge.r-project.org/figures/figures.html
+data(Oats, package = "MEMSS")
+tp1.oats <- xyplot(yield ~ nitro | Variety + Block, data = Oats, 
+    type = 'o',
+    xlab = "Nitrogen concentration (cwt/acre)",
+    ylab = "Yield (bushels/acre)",
+    main = "Figure 2.1")
+
+## and a modified version of its ggplot2 counterpart, from
+## https://learnr.files.wordpress.com/2009/08/latbook.pdf
+pg.oats <- ggplot(Oats, aes(nitro, yield)) + 
+    geom_line() + geom_point(shape = 'o') +
+    facet_grid(Block ~ Variety) +
+    xlab("Nitrogen concentration (cwt/acre)") + 
+    ylab("Yield (bushels/acre)") + 
+    ggtitle("Figure 2.1") + theme_bw()
+
+## Figure 1.2 in
+## http://lmdvr.r-forge.r-project.org/figures/figures.html
+pl2 <- densityplot(~ gcsescore | factor(score), data = Chem97, 
+    plot.points = FALSE, ref = TRUE, main = "Figure 1.2")
+
+## and a modified version of its ggplot2 counterpart, from
+## https://learnr.files.wordpress.com/2009/08/latbook.pdf
+pg2 <- ggplot(Chem97, aes(gcsescore)) + 
+    stat_density(geom = "path", position = "identity") + 
+    facet_wrap(~score) + 
+    ggtitle("Figure 1.2") + theme_bw()
+
+## a modified version of a graphic available here:
+## http://docs.ggplot2.org/current/coord_trans.html
+df.abc <- data.frame(a = abs(rnorm(26)), letters)
+pg3 <- ggplot(df.abc, aes(a, letters)) + 
+    geom_point() + coord_trans(x = "sqrt") +
+    annotate("text", x = 1.25, y = 5, label = "Some text") + 
+    theme_bw()
+
+## and a lattice version to match
+pl3 <- xyplot(letters ~ a, data = df.abc,
+   panel = function(x, y,...) {
+           panel.xyplot(x, y,...)
+           panel.text(1.25, 5, labels = "Some text")
+           })
+
+## Figure 1.3 in
+## http://lmdvr.r-forge.r-project.org/figures/figures.html
+pl4 <- densityplot(~ gcsescore, data = Chem97, groups = score,
+    plot.points = FALSE, ref = TRUE,
+    auto.key = list(columns = 3),
+    main = "Figure 1.3")
+
+## and a modified version of its ggplot2 counterpart, from
+## https://learnr.files.wordpress.com/2009/08/latbook.pdf
+pg4 <- ggplot(Chem97, aes(gcsescore)) + 
+    stat_density(geom = "path", position = "identity", 
+        aes(colour = factor(score))) + 
+    ggtitle("Figure 1.3") + theme_bw() +
+    theme(legend.position = 'top')
+
+## a custom example, with both lattice and ggplot2 versions
+x = sample(1:5, 1000, replace=TRUE)
+y = rnorm(1000, x, sd = 1/sqrt(x))
+lp = densityplot(~y, groups = x,
+    auto.key=list(space="right", title="x", points=TRUE))
+gp = ggplot(data.frame(x = x, y = y), 
+    aes(x = y, colour = as.factor(x))) + 
+    stat_density(geom = "path", position = "identity") +
+    geom_point(aes(y = 0), 
+        position = position_jitter(height = 0.01), shape = 21) +
+    theme_bw()
+
+## and a couple of base graphics plots
+## note that these must be assigned to a variable using recordPlot()
+plot(1:10, 1:10)
+pb1 <- recordPlot()
+
+par(mfrow = c(2, 3))
+par(cex = 0.6)
+par(mar = c(3, 3, 0, 0), oma = c(1, 1, 1, 1))
+for (i in 1:6) {
+    plot(1, 1, type = "n")
+    mtext(letters[i], side = 3, line = -1, adj = 0.1, cex = 0.6)
+}
+pb2 <- recordPlot()
+```
+
+# Explore the functionality of recordr
+
+We will first create =ObjFeatureSets= for each of the plots. This involves
+generating the metadata and storing everything together in a form that =recordr=
+will be able to use.
+
+```{r}
+my.plots <- list(pl, pg, d, m, tp1.oats, pg.oats, pl2, pg2, pg3, pl3,
+    pl4, pg4, lp, gp, pb1, pb2)
+my.pfs <- lapply(my.plots, makeFeatureSet, wait = 1)
+```
+
+We can look at what is recorded in the feature sets.
+
+```{r}
+my.pfs
+# invisible(lapply(my.pfs, summary))
+
+summary(my.pfs[[1]])
+summary(my.pfs[[2]])
+```
+
+
+These featuresets contain everything required to redraw the plot, in addition to
+the metadata we collect, so we can replot them by simply calling plot, like so.
+```{r}
+plot(my.pfs[[1]])
+plot(my.pfs[[2]])
+
+```
+
+We can add and edit additional tags, which are added to the metadata
+we store about a plot or object.
+
+```{r}
+temp <- my.pfs[[1]]
+tags(temp) <- c("hello", "world", "goodbye")
+temp <- editTags(temp, "goodbye", option="remove")
+temp <- editTags(temp, "goodbye", option="add")
+temp <- editTags(temp, c("hello", "goodbye"), option="remove")
+tags(temp)
+```
+
+We will now =record= the plots. We need a ViztrackrDB to store them in. We will
+use a simple, JSON based one which writes to a temporary file, though in practice
+you will of course want your database to be permanent.
+
+```{r}
+vtdb = jsonVTDB(tempfile(), img_dir = tempdir())
+invisible(lapply(my.pfs, record, db = vtdb))
+
+regDateTime(my.pfs[[9]]) <- Sys.time() - as.difftime(30, unit = "days")
+## note that this does not change the unique ID
+## (unique ID determined by hash of plot object at creation time of original PlotFeatureSet)
+## and so the document is overwritten in the data store.
+record(my.pfs[[9]], db = vtdb, verbose=TRUE)
+
+my.pfs[[1]] <- editTags(my.pfs[[1]], c("hello", "world", "goodbye"), option="add")
+## same as above (document is overwritten)
+record(my.pfs[[1]], db = vtdb, verbose=TRUE)
+```
+
+```{r}
+res <- vtSearch("density", db = vtdb)
+ndoc(res)
+res[1,"image.path"]
+loadEnrichedPlot(file.path(vt_img_dir(vtdb), res[1,"image.path"]))
+
+res <- rmEntry(uniqueID(my.pfs[[1]]),db = vtdb)
+ndoc(res)
+rmEntry(my.pfs[[1]], db = vtdb, verbose=TRUE)
+res <- vtSearch(uniqueID(my.pfs[[1]]), db = vtdb, fields="id")
+ndoc(res)
+record(my.pfs[[1]], db = vtdb, verbose=TRUE)
+```
+
+
+
+
+Note that the following examples assume that a solr instance is installed as a part of a blacklight instance (at `~/Downloads/recordr_blacklightapp`), is properly configured and is running/awaiting input with a core named `figdb.`
+
+```{r, eval=FALSE}
+library(rsolr)
+
+blcklght.img.dir <- "~/Downloads/recordr_blacklightapp/app/assets/images"
+solr.uri <- "http://localhost:8983/solr/figdb"
+## non-standard requestHandler not strictly required, 
+## but will maintain consistency with search results received via UI
+sl <- SolrList(solr.uri, requestHandler="search")
+vtdb = ViztrackrDB(ViztrackrOptions(img_dir = blklght.img.dir), backend = sl)
+invisible(lapply(my.pfs, record, sl, db = vtdb))
+
+regDateTime(my.pfs[[9]]) <- Sys.time() - as.difftime(30, unit = "days")
+## note that this does not change the unique ID
+## (unique ID determined by hash of plot object at creation time of original PlotFeatureSet)
+## and so the document is overwritten in the data store.
+record(my.pfs[[9]], db = vtdb, verbose=TRUE)
+
+my.pfs[[1]] <- editTags(my.pfs[[1]], c("hello", "world", "goodbye"), option="add")
+## same as above (document is overwritten)
+record(my.pfs[[1]], db = vtdb, verbose=TRUE)
+```
+
+```{r, eval=FALSE}
+res <- searchVTDB("density", vtdb)
+ndoc(res)
+res[1,"image.path"]
+loadEnrichedPlot(file.path(blcklght.img.dir, res[1,"image.path"]))
+
+res <- rmEntry(uniqueID(my.pfs[[1]]),db = vtdb)
+ndoc(res)
+rmEntry(my.pfs[[1]], db = vtdb, verbose=TRUE)
+res <- vtSearch(uniqueID(my.pfs[[1]]), db = vtdb, fields="id")
+ndoc(res)
+record(my.pfs[[1]], db = vtdb, verbose=TRUE)
+```
