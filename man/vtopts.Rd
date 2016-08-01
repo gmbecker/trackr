@@ -6,7 +6,7 @@
 \title{viztrackr options environment
 An environment where the default vtdb and history tracker are stored.
 Users should not modify the contents of this environment directly.}
-\format{An object of class \code{environment} of length 4.}
+\format{An object of class \code{environment} of length 3.}
 \usage{
 vtopts
 }

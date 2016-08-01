@@ -1,6 +1,4 @@
 options(error=recover)
-library(switchr)
-switchTo("viztrackrtest")
 library(recordr)
 library(ggplot2)
 

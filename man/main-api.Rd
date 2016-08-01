@@ -6,8 +6,8 @@
 \alias{vtSearch}
 \title{Primary high-level API functions for Viztrackr Databases}
 \usage{
-record(object, db, code = vtopts$history, force = FALSE, verbose = FALSE,
-  symorpos = NULL)
+record(object, db, code = histropts$history, force = FALSE,
+  verbose = FALSE, symorpos = NULL)
 
 rmEntry(object, db, verbose = FALSE)
 

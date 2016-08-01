@@ -9,8 +9,9 @@
 vtopts = new.env()
 vtopts$vtdb = NULL
 vtopts$autotracking = FALSE
-vtopts$history = NULL
 vtopts$tracker = NULL
+
+##' @importFrom histry histropts trackingHistory
 
 ##' @title default VTDB
 ##' @param vtdb ViztrackrDB. The ViztrackrDB to which objects will be recorded
@@ -56,46 +57,13 @@ autotrackPlots = function(vtdb = vtopts$vtdb) {
 
     if(is.null(vtdb))
         stop("No ViztrackrDB specified or currently active")
-    if(!is(vtopts$history, "VirtHistoryTracker"))
+    if(!trackingHistory())
         stop("cannot autotrack plots without automatic history tracking")
 
-    qexpr = quote(addTaskCallback(function(expr, value, success, printed, tracker) { record(value, db = vtopts$vtdb, symorpos = length(viztrackr:::vtopts$history$exprs)); FALSE}))
+    qexpr = quote(addTaskCallback(function(expr, value, success, printed, tracker) { record(value, db = vtopts$vtdb, symorpos = length(histry:::histropts$history$exprs)); FALSE}))
     trace(lattice:::print.trellis, qexpr,
           where = asNamespace("lattice"))
     trace(ggplot2:::print.ggplot, qexpr, 
           where = asNamespace("ggplot2"))
     invisible(NULL)
-}
-
-##' is history tracking on
-##' @export
-trackingHistory = function() {
-    is(vtopts$history, "VirtHistoryTracker") && vtopts$history$tracking
-}
-
-##' @title Automatically track history within an R session
-##' @param tracker VirtHistoryTracker subclass or NULL. For NULL, if
-##' a default tracker is set, toggle tracking with default tracker, otherwise
-##' set a default tracker. For a VirtHistoryTracker (subclass) set as
-##' the default tracker and turn it on.
-##' @export
-trackHistory = function( tracker = NULL) {
-    if(!missing(tracker) && is(tracker, "VirtHistoryTracker")) {
-        vtopts$history = tracker
-        if(!trackingHistory())
-            tracker$toggleTracking()
-        message("Tracking session history. To turn off tracking call trackHistory().")
-    } else if (is.null(tracker) && is.null(vtopts$history)) {
-        vtopts$history = history_tracker("auto_history")
-    } else {
-
-        if(trackingHistory()) {
-            message("Suspending automatic history tracking. To turn it back on call trackHistory() again.")
-        } else {
-            message("Reinstating history tracking with existing default tracker.")
-        }
-        vtopts$history$toggleTracking()
-    }
-    invisible(NULL)
-
 }

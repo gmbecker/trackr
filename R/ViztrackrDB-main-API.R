@@ -14,7 +14,7 @@
 #' @rdname main-api
 #' @export
 
-record = function(object, db, code = vtopts$history, force = FALSE,
+record = function(object, db, code = histropts$history, force = FALSE,
                    verbose = FALSE, symorpos = NULL) {
 
     if(!is.null(code)) {
@@ -71,29 +71,6 @@ rmEntry = function(object, db, verbose = FALSE) {
     }
     invisible(db)
 }
-
-## setMethod("rmPlot", c("ANY", "ViztrackrDB"),
-##           function(object, db, verbose = FALSE) {
-
-##               pfs = makeFeatureSet(object)
-##               id = uniqueID(pfs)
-##               rmPlot(id, db)
-##           })
-
-## setMethod("rmPlot", c("character", "ViztrackrDB"),
-##           function(object, db, verbose = FALSE) {
-
-##               ## we go through the c("missing", "character", "missing") method
-##               ## to preserve the funnelling through a single method
-##               res = tryCatch(remove_plot(id = object, db = db, verbose = verbose),
-##                   warning = function(w) w)
-##               if(is(res, "warning"))
-##                   warning(res)
-##               else
-##                   db = vt_write(db = res)
-##               invisible(db)
-##           })
-
 
 
 ## vtSearch is a direct call-down, but we still want to conceptually
