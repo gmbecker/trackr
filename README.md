@@ -1,5 +1,7 @@
 # viztrackr
 
+Documentation forthcoming.
+
 # Installation of supporting applications
 General procedure that was followed to install:
 
