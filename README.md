@@ -1,6 +1,6 @@
 # viztrackr
 
-Documentation forthcoming.
+See vignettes/index.Rmd for a list of dependencies and basic usage. More detailed documentation forthcoming.
 
 # Installation of supporting applications
 General procedure that was followed to install:
