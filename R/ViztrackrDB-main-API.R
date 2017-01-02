@@ -14,7 +14,7 @@
 #' @rdname main-api
 #' @export
 
-record = function(object, db, code = histropts$history, force = FALSE,
+record = function(object, db = defaultVTDB(), code = histropts$history, force = FALSE,
                    verbose = FALSE, symorpos = NULL) {
 
     if(!is.null(code)) {
@@ -26,14 +26,14 @@ record = function(object, db, code = histropts$history, force = FALSE,
         if(is.code(code))
             code = deparse(code, control = NULL)
         else if (is(code, "list"))
-            code = vapply(code, function(x) paste(deparse(x, control=NULL), collapse=" "), character(1))
+            code = vapply(code, function(x) paste(deparse(x, control=NULL), collapse="\n"), character(1))
 
         if(!is.null(code) && length(code) > 0) {
             codescr = readScript(txt = code)
             codeinfo = getInputs(codescr)
             codethread = getDependsThread(symorpos, codeinfo)
             ## do I Want to go back to code here, or keep as codeinfo?
-            code = code[codethread] ##unlist(lapply(codethread, function(x) codeinfo[[x]]@code))
+            code = code[codethread] 
         } else {
             code = NULL
         }

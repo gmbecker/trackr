@@ -18,7 +18,7 @@ db =new("ViztrackrDB", backend = sl,
 
 
 carplot = qplot(wt, mpg, data = mtcars,
-                main = "Super Amazing Plot!!!")
+                main = "Super Amazing Plot!!! dry run 2")
 carplot
 record(carplot, db)
 
@@ -34,7 +34,9 @@ record(carplot, db)
 
 
 
-res = vtSearch("af56a166", fields = c("id", "text"),db= db)
+
+res = vtSearch("af56a166", fields = c("id", "text"),
+               db= db)
 code = getCode(res)
 eval(parse(text=code))
 gg1

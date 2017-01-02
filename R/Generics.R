@@ -215,7 +215,7 @@ setGeneric(name = "objCode<-",
 )
 
 #' @name codeInfo<-
-#' @title Mutator method for "code.info" slot of PlotFeatureSet (or one of its subclasses).
+#' @title Mutator method for "codeinfo" slot of PlotFeatureSet (or one of its subclasses).
 #' @param object An object of (super)class PlotFeatureSet. For accession, also plot objects of class ggplot or trellis.
 #' @param value A CodeDepends::ScriptInfo object.
 #' @return A modified object of (super)class PlotFeatureSet.
@@ -229,7 +229,7 @@ setGeneric(name = "codeInfo<-",
 )
 
 #' @name dataLabels<-
-#' @title Mutator method for PlotFeatureSet "var.labels" slot.
+#' @title Mutator method for PlotFeatureSet "varlabels" slot.
 #' @param object An object of (super)class PlotFeatureSet. For accession, also plot objects of class ggplot or trellis.
 #' @param value A named list of variable labels of the form list(x = "X axis label", y = "Y axis label", ...).
 #' @return A modified object of (super)class PlotFeatureSet.
@@ -431,7 +431,7 @@ setGeneric(name = "objCode",
 )
 
 #' @name codeInfo
-#' @title Accessor method for the Script (slot "code.info") of the plot object.
+#' @title Accessor method for the Script (slot "codeinfo") of the plot object.
 #' @return A CodeDepends::ScriptInfo object
 #' @rdname codeInfo-methods
 #' @export
@@ -455,7 +455,7 @@ setGeneric(name = "fullData",
 )
 
 #' @name dataLabels
-#' @title Accessor method for variable labels (slot "var.labels") of the plot object.
+#' @title Accessor method for variable labels (slot "varlabels") of the plot object.
 #' @return A named list of variable labels of the form list(x = "X axis label", y = "Y axis label", ...).
 #' @rdname dataLabels-methods
 #' @export
@@ -476,7 +476,7 @@ setGeneric(name = "dataNames",
 )
 
 #' @name dataTypes
-#' @title Accessor method for the variable types (slot "var.types") of the plot object.
+#' @title Accessor method for the variable types (slot "vartypes") of the plot object.
 #' @param object An object of class PlotFeatureSet, GGplotFeatureSet, TrellisFeatureSet, ggplot, or trellis.
 #' @return A named list of variable types of the form list(x = "numeric", y = "factor", ...).
 #' @rdname dataTypes-methods
@@ -488,7 +488,7 @@ setGeneric(name = "dataTypes",
 )
 
 #' @name annotationText
-#' @title Accessor method for the annotation text (slot "annotation.text") of the plot object.
+#' @title Accessor method for the annotation text (slot "annotationtext") of the plot object.
 #' @param object An object of class  PlotFeatureSet, GGplotFeatureSet, TrellisFeatureSet, ggplot, or trellis.
 #' @return A character vector of text annotations appearing on the plot.
 #' @rdname annotationText-methods
@@ -557,7 +557,7 @@ setGeneric(name = "position",
 )
 
 #' @name coordSystem
-#' @title Accessor method for the coordinate system (slot "coord.sys") of the plot object. 
+#' @title Accessor method for the coordinate system (slot "coordsys") of the plot object. 
 #' @param object An object of class  PlotFeatureSet, GGplotFeatureSet, TrellisFeatureSet, ggplot, or trellis.
 #' @return A character vector describing the coordinate system employed in the plot.
 #' @rdname coordSystem-methods
@@ -569,7 +569,7 @@ setGeneric(name = "coordSystem",
 )
 
 #' @name hasLegend
-#' @title Accessor method for the legend indicator (slot "has.legend") of the plot object. 
+#' @title Accessor method for the legend indicator (slot "haslegend") of the plot object. 
 #' @param object An object of class PlotFeatureSet, GGplotFeatureSet, TrellisFeatureSet, ggplot, or trellis.
 #' @return A boolean indicating whether or not a legend is displayed in the plot.
 #' @rdname hasLegend-methods
@@ -581,7 +581,7 @@ setGeneric(name = "hasLegend",
 )
 
 #' @name nObs
-#' @title Accessor method for the number of observations (slot "num.obs") of the plot object. 
+#' @title Accessor method for the number of observations (slot "nobs") of the plot object. 
 #' @param object An object of class PlotFeatureSet, GGplotFeatureSet, TrellisFeatureSet, ggplot, or trellis.
 #' @return An integer representing the number of observations in the plotted data.
 #' @rdname nObs-methods

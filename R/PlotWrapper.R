@@ -236,8 +236,26 @@ setMethod(f = "saveBasicPlot",
             not_implemented(paste0("saving plot object as type ", type, "."))
         )
         return(success)
-    }
-)
+})
+
+## No-op for non-plot feature sets. This shouldn't be necessary but
+## it is for now because of the way prep_for_vtdb is factored.
+## TODO: make this unnecessary and then remove it
+
+setMethod(f="saveBasicPlot",
+          signature = "ObjFeatureSet",
+          definition = function(object, filename, type = c("png", "jpeg", "jpg", "tiff", "tif", "bmp"), width = 7, height = 7, dpi = 300) {
+    TRUE
+})
+
+
+setMethod(f="saveEnrichedPlot",
+          signature = "ObjFeatureSet",
+            definition = function(object, filename, type = "png", ...) {
+    TRUE
+})
+
+
 
 # # @describeIn saveBasicPlot Save the plot object owned by an object of class/superclass PlotFeatureSet as an image.
 # setMethod(f = "saveBasicPlot",
@@ -1080,8 +1098,8 @@ setMethod(f = "dataTypes",
     ## names(var.type.list) = names(vars)
         # a hack to get the highest-level class for each variable
         # (for example, this grabs "factor" for objects of class "ordered" and "factor")
-        all.var.types <- sapply(object$data, function(x) class(x)[length(class(x))])
-        var.types <- all.var.types[which(names(all.var.types)%in%unlist(dataNames(object)))]
+        all.vartypes <- sapply(object$data, function(x) class(x)[length(class(x))])
+        vartypes <- all.vartypes[which(names(all.vartypes)%in%unlist(dataNames(object)))]
 
 
     
@@ -1089,15 +1107,15 @@ setMethod(f = "dataTypes",
     
     
         # need to fix the names to be the dims - maybe with a merge?
-        # names(var.types) <- names(unlist(dataNames(object)))[
-        #     match(names(var.types), unname(unlist(dataNames(object))))]
+        # names(vartypes) <- names(unlist(dataNames(object)))[
+        #     match(names(vartypes), unname(unlist(dataNames(object))))]
 
         var.type.list <- dataNames(object)
         # keep same structure as var.names
-        for (i in seq(var.types)) {
+        for (i in seq(vartypes)) {
             var.type.list <- rapply(var.type.list, gsub, 
-                pattern = paste0("^",names(var.types)[i],"$"), 
-                replacement = var.types[i], how = "list")
+                pattern = paste0("^",names(vartypes)[i],"$"), 
+                replacement = vartypes[i], how = "list")
         }
 
         # is this still needed?
@@ -1105,12 +1123,12 @@ setMethod(f = "dataTypes",
         # multi.type <- names(which(sapply(dataNames(object), length)>1))
         # if (length(multi.type)>0) {
         #     multi.type.idx <- sapply(multi.type, 
-        #             function(x) grep(paste0("^",x), names(var.types)),
+        #             function(x) grep(paste0("^",x), names(vartypes)),
         #         simplify = FALSE)
-        #     var.types <- c(var.types[-unlist(multi.type.idx)],
-        #         sapply(multi.type.idx, function(i) list(unname(var.types[i]))))
+        #     vartypes <- c(vartypes[-unlist(multi.type.idx)],
+        #         sapply(multi.type.idx, function(i) list(unname(vartypes[i]))))
         # }
-        # return(as.list(var.types))
+        # return(as.list(vartypes))
 
         return(var.type.list)
     }
@@ -1506,11 +1524,11 @@ setMethod(f = "hasLegend",
         # suppressMessages(built.object <- ggplot2::ggplot_build(object))
         # scale.legends <- sapply(built.object$plot$scales$scales, function(x) x$guide)
         # # other valid options include FALSE and "none"... are there others?
-        # scale.has.legend <- (scale.legends=="legend"|scale.legends=="colourbar"|scale.legends=="colorbar")
+        # scale.haslegend <- (scale.legends=="legend"|scale.legends=="colourbar"|scale.legends=="colorbar")
 
         # scales.with.legend <- unlist(
         #     lapply(built.object$plot$scales$scales, 
-        #         function(x) x$aesthetics)[scale.has.legend])
+        #         function(x) x$aesthetics)[scale.haslegend])
 
         # pos <- object$theme$legend.position
         # # check modified from plot-render.r in ggplot2
@@ -1536,17 +1554,17 @@ setMethod(f = "hasLegend",
         #         }
         #     }
         # }
-        # has.legend <- (any(scale.has.legend) & (pos!="none") & (!all.guides.removed))
+        # haslegend <- (any(scale.haslegend) & (pos!="none") & (!all.guides.removed))
 
         # soooooo much easier than the above...
         # except that it opens a plot window. https://github.com/hadley/ggplot2/issues/809
         # this should fix that...
         pdf(file = NULL)
         suppressMessages(grid.object <- ggplot2::ggplotGrob(object))
-        has.legend <- "guide-box"%in%grid.object$layout$name
+        haslegend <- "guide-box"%in%grid.object$layout$name
         invisible(dev.off())
 
-        return(has.legend)
+        return(haslegend)
     }
 )
 
@@ -1579,13 +1597,13 @@ setMethod(f = "coordSystem",
 setMethod(f = "coordSystem",
     signature = "ggplot",
     definition = function(object) {
-        p.coord.sys <- class(object$coordinates)[1]
-        if (p.coord.sys %in% c("fixed", "equal", "flip", "trans")) {
-            p.coord.sys <- "cartesian"
-        } else if (p.coord.sys=="map") {
-            p.coord.sys <- paste(p.coord.sys, object$coordinates$projection, sep=": ")
+        p.coordsys <- class(object$coordinates)[1]
+        if (p.coordsys %in% c("fixed", "equal", "flip", "trans")) {
+            p.coordsys <- "cartesian"
+        } else if (p.coordsys=="map") {
+            p.coordsys <- paste(p.coordsys, object$coordinates$projection, sep=": ")
         }
-        p.coord.sys
+        p.coordsys
 
         ## need to implement
         # if (!is.null(object$coordinates$trans)) {

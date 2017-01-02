@@ -13,43 +13,50 @@ setMethod("prep_for_vtdb", c("ObjFeatureSet", "ViztrackrDB"),
 
 ## everything that isn't a ViztrackrDB. probably isn't safe long term, want
 ## more specific virtual class here?
+
 setMethod("prep_for_vtdb", c("ObjFeatureSet", "ANY"),
           function(object, target, opts, verbose = FALSE) {
 
-              id = uniqueID(object)
-              if(verbose) {
-                  message("Adding ", graphSys(object), " object with ID ", id, "...")
-              }
-
-              ## UTC required for Solr dates
-              object@regdate <- .POSIXct(object@regdate, tz="UTC")
+    id = uniqueID(object)
+    if(verbose) {
+        message("Adding ", graphSys(object), " object with ID ", id, "...")
+    }
+    
+    ## UTC required for Solr dates
+    object@regdate <- .POSIXct(object@regdate, tz="UTC")
     doc <- c(id = id, flatten5(as(object, "list")))
-
-              img.save.dir = vt_img_dir(opts)
-              img.ext = vt_img_ext(opts)
-              
-              
-              if(!is.null(img.save.dir)) {
-                  invisible(saveBasicPlot(object, 
-                                          file.path(img.save.dir, paste0(id, "_thumb.", img.ext)),
-                                          width = 5, height = 5, dpi = 50))
-                  invisible(saveBasicPlot(object, 
-                                          file.path(img.save.dir, paste0(id, "_feed.", img.ext)),
-                                          width = 5, height = 5, dpi = 100))
+    
+    img.save.dir = vt_img_dir(opts)
+    img.ext = vt_img_ext(opts)
+    
+    
+    if(!is.null(img.save.dir)) {
+        if(!dir.exists(img.save.dir))
+            dir.create(img.save.dir, recursive=TRUE)
+        
+        thumbpath= file.path(img.save.dir, paste0(id, "_thumb.", img.ext))
+        invisible(saveBasicPlot(object, 
+                                thumbpath,
+                                width = 5, height = 5, dpi = 50))
+        feedpath = file.path(img.save.dir, paste0(id, "_feed.", img.ext))
+        invisible(saveBasicPlot(object, 
+                                feedpath,
+                                width = 5, height = 5, dpi = 100))
                                         # main image with R object embedded as metadata
-                  saveEnrichedPlot(object, 
-                                   file.path(img.save.dir, paste(id, img.ext, sep=".")))
-
-                  doc$preview.path = paste0(id, "_thumb.", img.ext)
-                  doc$image.path = paste(id, img.ext, sep=".")
-              }
-              
-              if (verbose) {
-                  cat("ID ", id, "\n")
-              }
-
-              doc
-          })
+        mainpath = file.path(img.save.dir, paste0(id, ".", img.ext))
+        saveEnrichedPlot(object, mainpath)
+        
+        
+        doc$preview.path = thumbpath
+        doc$image.path = mainpath
+    }
+    
+    if (verbose) {
+        cat("ID ", id, "\n")
+    }
+    
+    doc
+})
 
 ## setMethod("prep_for_vtdb", c("PlotFeatureSet", "ViztrackrDB"),
 ##           function(object, target, opts, verbose = FALSE) {

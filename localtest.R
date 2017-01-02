@@ -49,8 +49,31 @@ db = jsonVTDB(fil, img_dir = file.path(dir, "vt_json_imgs"))
 #db= addPlot(pg3, db, verbose = TRUE)
 db= record(pg, db, verbose = TRUE)
 
-res  = vtSearch("Figure 1.2", db = db, ret_type = "doclist")
+res  = vtSearch("Figure 2.5", db = db, ret_type = "doclist")
 
 x = rnorm(100)
 y = rnorm(100, x, sd = 1/(abs(x) + .25))
 df = data.frame(x =x, y = y, z = sample(c("hi", "lo"), 100, replace=TRUE), stringsAsFactors=TRUE)
+
+
+
+
+
+
+set.seed(345)
+Sector <- rep(c("S01","S02","S03","S04","S05","S06","S07"),times=7)
+Year <- as.numeric(rep(c("1950","1960","1970","1980","1990","2000","2010"),each=7))
+Value <- runif(49, 10, 100)
+data <- data.frame(Sector,Year,Value)
+
+ggplot(data, aes(x=Year, y=Value, fill=Sector)) + 
+    geom_area()
+
+data$Sector=factor(data$Sector , levels=levels(data$Sector)[c(1,4,3,2,7,6,5)])
+pl = ggplot(data, aes(x=Year, y=Value, fill=Sector)) + 
+    geom_area()
+
+p <- ggplot(mtcars, aes(factor(cyl), mpg))
+p <- p + geom_violin(aes(fill = cyl))
+
+record(p, db = db, verbose=TRUE)

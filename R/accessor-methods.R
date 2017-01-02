@@ -14,10 +14,10 @@ setReplaceMethod(f = "titles",
 
 #' @rdname objCode-methods
 setReplaceMethod(f = "objCode", 
-    signature = "PlotFeatureSet",
+    signature = "ObjFeatureSet",
     definition = function(object, value) {
-        object@code <- parseCode(value)
-        object@code.info <- CodeDepends::getInputs(object@code)
+        object@code <- as.character(parseCode(value))
+        object@codeinfo <- CodeDepends::getInputs(parseCode(object@code))
         # should do validity checking here
         # if (validObject(object)) {
             return(object)
@@ -29,7 +29,7 @@ setReplaceMethod(f = "objCode",
 setReplaceMethod(f = "codeInfo", 
     signature = "ObjFeatureSet",
     definition = function(object, value) {
-        object@code.info <- value
+        object@codeinfo <- value
         # should do validity checking here
         # if (validObject(object)) {
             return(object)
@@ -41,7 +41,7 @@ setReplaceMethod(f = "codeInfo",
 setReplaceMethod(f = "dataLabels", 
     signature = "PlotFeatureSet",
     definition = function(object, value) {
-        object@var.labels <- value
+        object@varlabels <- value
         # should do validity checking here
         # if (validObject(object)) {
             return(object)
@@ -198,7 +198,7 @@ setMethod(f = "objCode",
 setMethod(f = "codeInfo",
     signature = "ObjFeatureSet",
     definition = function(object) {
-        object@code.info
+        object@codeinfo
     }
 )
 
@@ -214,7 +214,7 @@ setMethod(f = "fullData",
 setMethod(f = "annotationText",
     signature = "PlotFeatureSet",
     definition = function(object) {
-        object@annotation.text
+        object@annotationtext
     }
 )
 
@@ -222,7 +222,7 @@ setMethod(f = "annotationText",
 setMethod(f = "dataLabels",
     signature = "PlotFeatureSet",
     definition = function(object) {
-        object@var.labels
+        object@varlabels
     }
 )
 
@@ -230,7 +230,7 @@ setMethod(f = "dataLabels",
 setMethod(f = "dataTypes",
     signature = "PlotFeatureSet",
     definition = function(object) {
-        object@var.types
+        object@vartypes
     }
 )
 
@@ -278,7 +278,7 @@ setMethod(f = "position",
 setMethod(f = "coordSystem",
     signature = "PlotFeatureSet",
     definition = function(object) {
-        object@coord.sys
+        object@coordsys
     }
 )
 
@@ -286,7 +286,7 @@ setMethod(f = "coordSystem",
 setMethod(f = "hasLegend",
     signature = "PlotFeatureSet",
     definition = function(object) {
-        object@has.legend
+        object@haslegend
     }
 )
 
@@ -294,7 +294,7 @@ setMethod(f = "hasLegend",
 setMethod(f = "nObs",
     signature = "PlotFeatureSet",
     definition = function(object) {
-        object@num.obs
+        object@nobs
     }
 )
 
@@ -425,3 +425,57 @@ setMethod(f = "uniqueID",
 #' @export
 setMethod("ndoc", "ViztrackrDB",
           function(x, ...) ndoc(vt_backend(x)))
+
+
+
+## function factory for accessors that *only* work on ObjFeatureSet objects
+## and have no corresponding setters.
+
+## XXX these should all probably be generic + method but it only
+## needs to work for 1 class, so why?
+
+
+makeToyAccessor = function(slname) {
+    function(x) {
+        if(!is(x, "ObjFeatureSet"))
+            stop("direct accessor called on non-ObjFeatureSet. This should never happen please contact the maintainer")
+        slot(x, slname)
+    }
+}
+
+
+
+fsuser = makeToyAccessor("user")
+
+
+fsregdatetime = makeToyAccessor("regdate")
+
+fsrstudioproject = makeToyAccessor("rstudioproject")
+
+fsanalysisfile = makeToyAccessor("analysisfile")
+
+
+setGeneric("imagepath", function(x, db) standardGeneric("imagepath"))
+setMethod("imagepath", c("ObjFeatureSet", "ANY") , function(x, db) NA_character_)
+setMethod("imagepath", c("PlotFeatureSet", "ViztrackrDB"), function(x, db) {
+    if(!file.exists(vt_img_dir(db)))
+        dir.create(vt_img_dir(db), recursive=TRUE)
+    file.path(vt_img_dir(db), paste(uniqueID(x), vt_img_ext(db), sep="."))
+})
+
+
+
+setGeneric("previewpath", function(x, db) standardGeneric("previewpath"))
+setMethod("previewpath", c("ObjFeatureSet", "ANY"),  function(x, db) NA_character_)
+setMethod("previewpath", c("PlotFeatureSet", "ViztrackrDB"), function(x, db) {
+    if(!file.exists(vt_img_dir(db)))
+        dir.create(vt_img_dir(db), recursive=TRUE)
+    file.path(vt_img_dir(db), paste0(uniqueID(x), "_thumb.", vt_img_ext(db)))
+})
+
+
+
+setGeneric("varnames", function(x) standardGeneric("varnames"))
+setMethod("varnames", "ObjFeatureSet", function(x) NA_character_)
+setMethod("varnames", "DFFeatureSet", function(x) x@varnames)
+

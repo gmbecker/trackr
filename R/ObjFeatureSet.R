@@ -21,7 +21,7 @@ collapse_to_str <- function(l, with.names=FALSE) {
 
 # from start.dir, go up the specified number of directories (>=0)
 # and report back the directory's name and path
-# as a data.frame row
+# as a data.frame rowb
 dir_path_pair <- function(dirs.up, start.dir = getwd()) {
     new.path <- normalizePath(paste(
         start.dir,
@@ -49,15 +49,160 @@ scrape_descr <- function(start_dir = getwd(), fields = c("Package", "Title", "De
 
 }
 
+
+##because S3, grumble mumble
+getBaseS3Class = function(x) tail(class(x), 1)
+getTopS3Class = function(x) head(class(x), 1)
+
+
+ObjFeatureSet = function(  object,
+                         code = as.character(parseCode(object)),
+                         codeinfo = CodeDepends::getInputs(parseCode(code)),
+                         klass = getTopS3Class(object),
+                         uniqueid = gen_hash_id(object),
+                         ## XXX IDifficult to ensure tags(object) and
+                         ## generateTags(object) always included without
+                         ## overriding/duplicating when I Call this to
+                         ## resucitate a  feature set out of a db record
+                         ## Hopefully the unique call below does it.
+                         tags = character(),
+                         user = unname(Sys.info()["user"]),
+                         regdate = Sys.time(),
+                         analysispkg = scrape_descr(),
+                         analysisfile = .analysisFileOrNA(),
+                         rstudioproject = .rstudioProjOrNA(),
+                         fsetklass = "ObjFeatureSet" ,
+                         isplot= FALSE,
+                         ...) {
+    
+    tags <- unique(c(tags, tags(object), generateTags(object)))
+    new("ObjFeatureSet",
+        object = object,
+        code = code,
+        codeinfo = codeinfo,
+        uniqueid = uniqueid,
+        tags = tags,
+        user = user,
+        regdate = regdate,
+        analysispkg = analysispkg,
+        klass = class(object),
+        analysisfile = analysisfile,
+        rstudioproject = rstudioproject,
+        fsetklass = fsetklass,
+        isplot = isplot,
+        ...)
+}
+
+PlotFeatureSet = function(object, fsetklass = "PlotFeatureSet",
+                          package = NA_character_,
+                          ...) {
+    innerobj = ObjFeatureSet(object = object, fsetklass = fsetklass,
+                             isplot = TRUE,
+                             ...)
+    new("PlotFeatureSet", innerobj,
+        grouping = groupInfo(object),
+        ## .Object@varlabels$group$panel = panelInfo(object)
+        ## .Object@panel$var.levels = collapse_to_str(.Object@panel$var.levels)
+        ## .Object@varlabels$group$panel$var.levels = collapse_to_str(.Object@panel$var.levels)
+        vartypes = dataTypes(object),
+        ## .Object@vartypes$panel = paste(.Object@vartypes$panel, collapse = ", ")
+        titles = titles(object),
+        data = fullData(object),
+        annotationtext = annotationText(object),
+        nobs = nObs(object),
+        varlabels = dataLabels(object),
+        coordsys = coordSystem(object),
+        haslegend = hasLegend(object),
+        package = package)
+}
+
+GGplotFeatureSet = function(object, fsetklass = "GGplotFeatureSet",...) {
+
+    ## beef up the ggplot object with some theme info
+    ## (this assumes the user hasn't changed the default theme 
+    ## between plot creation and plot registration...)
+    if(length(object$theme)==0) {
+        object$theme <- ggplot2::theme_get()
+    }
+
+    innerobj = PlotFeatureSet(object = object,
+                              fsetklass = fsetklass,
+                              package = "ggplot2",
+                              ...)
+    new("GGplotFeatureSet", innerobj,
+        
+        # geom = list(type = paste(names(geomObject(object)), collapse=", "),
+        geom = geomObject(object),
+            # list(type = names(geomObject(object)),
+            # params = collapse_to_str(geomObject(object), with.names = TRUE))
+
+        # stat = list(type = paste(names(statTransform(object)), collapse=", "),
+        stat = statTransform(object),
+            # list(type = names(statTransform(object)),
+            # params = collapse_to_str(statTransform(object), with.names = TRUE))
+
+        # position = list(type = paste(names(position(object)), collapse=", "),
+        # position = list(type = names(position(object)),
+        #     params = collapse_to_str(position(object), with.names = TRUE))
+        position = position(object),
+
+        num.layers = nLayers(object)
+        )
+}
+
+TrellisFeatureSet = function(object, fsetklass = "TrellisFeatureSet", ...) {
+
+    innerobj = PlotFeatureSet(object = object,
+                              fsetklass = fsetklass,
+                              package = "lattice",
+                              ...)
+    ## no new semantics, just needed package and fsetklass labeling
+    new("TrellisFeatureSet", innerobj)
+}
+
+
+GraphicsFeatureSet = function(object, fsetklass = "GraphicsFeatureSet", ...) {
+
+    innerobj = PlotFeatureSet(object = object,
+                              fsetklass = fsetklass,
+                              package = "graphics",
+                              ...)
+    ## no new semantics, just needed package and fsetklass labeling
+    new("GraphicsFeatureSet", innerobj)
+}
+
+
+DFFeatureSet = function(object, fsetklass = "DFFeatureSet",
+                        vars = names(object),
+                        varclasses = sapply(object, getTopS3Class),
+                        varsummaries = structure(lapply(object, summary), names = names(object)),
+                        nobs = nrow(object),
+                        ...) {
+    innerobj = ObjFeatureSet(object = object, fsetklass = fsetklass, ...)
+    new("DFFeatureSet", innerobj,
+        vars = vars,
+        varclasses = varclasses,
+        varsummaries = varsummaries,
+        nobs = nobs
+        )
+     
+}
+
+        
+        
+
+
+        
+
+
+
+
 #' @describeIn makeFeatureSet Construct a ObjFeatureSet from an object of class ggplot.
 setMethod(f = "makeFeatureSet", 
     signature = signature(object = "ggplot"),
     definition = function(object, ...) {
-        new("GGplotFeatureSet", package = "ggplot",
-            object = object, 
-            ## user = unname(Sys.info()["user"]),
-            ## package = "ggplot2", regdate = Sys.time(),
-            ## analysispkg = scrape_descr(),
+        GGplotFeatureSet( object = object,
+            fsetklass = "GGplotFeatureSet",
             ...)
     }
 )
@@ -66,12 +211,9 @@ setMethod(f = "makeFeatureSet",
 setMethod(f = "makeFeatureSet", 
     signature = signature(object = "trellis"),
     definition = function(object, ...) {
-        new("TrellisFeatureSet", package = "trellis",
-            object = object, 
-            ## user = unname(Sys.info()["user"]),
-            ## package = "lattice", regdate = Sys.time(),
-            ## analysispkg = scrape_descr(),
-            ...)
+    TrellisFeatureSet( fsetklass = "TrellisFeatureSet",
+        object = object, 
+        ...)
     }
 )
 
@@ -82,11 +224,9 @@ setMethod(f = "makeFeatureSet",
 setMethod(f = "makeFeatureSet", 
     signature = signature(object = "gTree"),
     definition = function(object, ...) {
-        new("GraphicsFeatureSet",
-            object = object, 
-            ## user = unname(Sys.info()["user"]),
-            ## package = "base", regdate = Sys.time(),
-            ## analysispkg = scrape_descr(),
+        GraphicsFeatureSet(
+            object = object,
+            fsetklass = "GraphicsFeatureSet",
             ...)
     }
 )
@@ -151,27 +291,23 @@ setMethod(f = "makeFeatureSet",
     signature = signature(object = "ANY"),
     definition = function(object, ...) {
     cls = class(object)
-    ssum = str(obj)
+    ssum = capture.output(str(obj, max.level=1))
+    ObjFeatureSet(
+        object = object,
+        fsetklass = "ObjFeatureSet",
+        ...)
     
     }
 )
 
-##because S3, grumble mumble
-getBaseS3Class = function(x) tail(class(x), 1)
-getTopS3Class = function(x) head(class(x), 1)
+setOldClass(c("tbl_df", "tbl", "data.frame"))
 
 setMethod(f = "makeFeatureSet",
     signature = signature(object = "data.frame"),
-    function(object) {
-    cls = class(object)
-    ##because S3, grumble mumble
-    basecls = getBaseS3Class(object)
-    vars = names(object)
-    varclasses = sapply(vars, getTopS3Class)
-    varsums = lapply(object, summary)
-    dots = list(...)
-    new("DFFeatureSet", object = object, vars = vars, varclasses = varclasses,
-        varsummaries = varsums, nobs = nrow(object),
+    function(object, ...) {
+    DFFeatureSet(
+        object = object,
+        fsetklass = "DFFeatureSet",
         
         ...)
     })
@@ -191,24 +327,28 @@ generateDefTags = function(object) {
 setMethod(f = "generateTags", "ANY", generateDefTags)
 
 
-setMethod(f = "initialize", 
-    signature = "ObjFeatureSet", 
-    definition = function(.Object, object, ..., tags = NULL, code = NULL) {
+## setMethod(f = "initialize", 
+##     signature = "ObjFeatureSet", 
+##     definition = function(.Object, object, ..., tags = NULL, code = NULL, fsetklass = "") {
 
-    if(is.null(code))
-        code = object #we can get code from some objs...
-    .Object@code <- parseCode(code)
-    .Object@code.info <- CodeDepends::getInputs(.Object@code)
-
-    .Object@uniqueid = gen_hash_id(object)
-    .Object@tags <- c(tags, tags(object), generateTags(object))
-    .Object@object = object
-    .Object@user = unname(Sys.info()["user"])
-    .Object@regdate = Sys.time()
-    .Object@analysispkg = scrape_descr()
-    .Object@klass = getTopS3Class(object)
-    .Object #callNextMethod(.Object, object = object, ...) 
-})
+##     if(is.null(code))
+##         code = object #we can get code from some objs...
+##     .Object@code <- paste(parseCode(code), collapse="\n")
+##     .Object@codeinfo <- CodeDepends::getInputs(parseCode(.Object@code))
+    
+##     .Object@uniqueid = gen_hash_id(object)
+##     .Object@tags <- c(tags, tags(object), generateTags(object))
+##     .Object@object = object
+##     .Object@user = unname(Sys.info()["user"])
+##     .Object@regdate = Sys.time()
+##     .Object@analysispkg = scrape_descr()
+##     .Object@klass = getTopS3Class(object)
+##     .Object@analysisfile = .analysisFileOrNA()
+##     .Object@rstudioproject = .rstudioProjOrNA()
+##     .Object@fsetklass = fsetklass
+##     .Object
+##                                         #callNextMethod(.Object, object = object, ...) 
+## })
 
 
 
@@ -221,32 +361,32 @@ setMethod(f = "initialize",
 # @param tags A character vector of tags to add to the new object.
 # @return A ObjFeatureSet object.
 # @param wait A numeric value indicating how long to wait (in seconds) before returning from a Solr add.  No wait by default.  Set this to >0 for adding plots to Solr database via *apply.
-setMethod(f = "initialize", 
-    signature = "PlotFeatureSet", 
-    definition = function(.Object, object, ..., tags = NULL, wait = 0, code = NULL) {
+## setMethod(f = "initialize", 
+##     signature = "PlotFeatureSet", 
+##     definition = function(.Object, object, ..., tags = NULL, wait = 0, code = NULL) {
 
-    .Object@grouping <- groupInfo(object)
-    ## .Object@var.labels$group$panel <- panelInfo(object)
-    ## .Object@panel$var.levels <- collapse_to_str(.Object@panel$var.levels)
-    ## .Object@var.labels$group$panel$var.levels <- collapse_to_str(.Object@panel$var.levels)
-    .Object@var.types <- dataTypes(object)
-    ## .Object@var.types$panel <- paste(.Object@var.types$panel, collapse = ", ")
-    .Object@titles <- titles(object)
-    .Object@data <- fullData(object)
-    .Object@annotation.text <- annotationText(object)
-    .Object@num.obs <- nObs(object)
-    .Object@var.labels <- dataLabels(object)
-    .Object@coord.sys <- coordSystem(object)
-    .Object@has.legend <- hasLegend(object)
-    .Object@isplot <- TRUE
+##     .Object@grouping <- groupInfo(object)
+##     ## .Object@varlabels$group$panel <- panelInfo(object)
+##     ## .Object@panel$var.levels <- collapse_to_str(.Object@panel$var.levels)
+##     ## .Object@varlabels$group$panel$var.levels <- collapse_to_str(.Object@panel$var.levels)
+##     .Object@vartypes <- dataTypes(object)
+##     ## .Object@vartypes$panel <- paste(.Object@vartypes$panel, collapse = ", ")
+##     .Object@titles <- titles(object)
+##     .Object@data <- fullData(object)
+##     .Object@annotationtext <- annotationText(object)
+##     .Object@nobs <- nObs(object)
+##     .Object@varlabels <- dataLabels(object)
+##     .Object@coordsys <- coordSystem(object)
+##     .Object@haslegend <- hasLegend(object)
+##     .Object@isplot <- TRUE
       
-    if (wait>0) {
-        message("Pausing...")
-        Sys.sleep(wait)
-    }
+##     if (wait>0) {
+##         message("Pausing...")
+##         Sys.sleep(wait)
+##     }
     
-    callNextMethod(.Object, object = object, code = code, tags = tags, ...) #calls ObjFeatureSet
-})
+##     callNextMethod(.Object, object = object, code = code, tags = tags, ...) #calls ObjFeatureSet
+## })
 
 # @title Initialize a GGplotFeatureSet
 # @name GGplotFeatureSet
@@ -255,39 +395,39 @@ setMethod(f = "initialize",
 # @param object A plot object of class ggplot.
 # @param ... Other named arguments which are sent on to the ObjFeatureSet constructor.
 # @return A GGplotFeatureSet object.
-setMethod(f = "initialize", 
-    signature = "GGplotFeatureSet", 
-    definition = function(.Object, object, ...) {
+## setMethod(f = "initialize", 
+##     signature = "GGplotFeatureSet", 
+##     definition = function(.Object, object, ...) {
 
-        # beef up the ggplot object with some theme info
-        # (this assumes the user hasn't changed the default theme 
-        # between plot creation and plot registration...)
-        if(length(object$theme)==0) {
-            object$theme <- ggplot2::theme_get()
-        }
+##         # beef up the ggplot object with some theme info
+##         # (this assumes the user hasn't changed the default theme 
+##         # between plot creation and plot registration...)
+##         if(length(object$theme)==0) {
+##             object$theme <- ggplot2::theme_get()
+##         }
 
-        # .Object@geom <- list(type = paste(names(geomObject(object)), collapse=", "),
-        .Object@geom <- geomObject(object)
-            # list(type = names(geomObject(object)),
-            # params = collapse_to_str(geomObject(object), with.names = TRUE))
+##         # .Object@geom <- list(type = paste(names(geomObject(object)), collapse=", "),
+##         .Object@geom <- geomObject(object)
+##             # list(type = names(geomObject(object)),
+##             # params = collapse_to_str(geomObject(object), with.names = TRUE))
 
-        # .Object@stat <- list(type = paste(names(statTransform(object)), collapse=", "),
-        .Object@stat <- statTransform(object)
-            # list(type = names(statTransform(object)),
-            # params = collapse_to_str(statTransform(object), with.names = TRUE))
+##         # .Object@stat <- list(type = paste(names(statTransform(object)), collapse=", "),
+##         .Object@stat <- statTransform(object)
+##             # list(type = names(statTransform(object)),
+##             # params = collapse_to_str(statTransform(object), with.names = TRUE))
 
-        # .Object@position <- list(type = paste(names(position(object)), collapse=", "),
-        # .Object@position <- list(type = names(position(object)),
-        #     params = collapse_to_str(position(object), with.names = TRUE))
-        .Object@position <- position(object)
+##         # .Object@position <- list(type = paste(names(position(object)), collapse=", "),
+##         # .Object@position <- list(type = names(position(object)),
+##         #     params = collapse_to_str(position(object), with.names = TRUE))
+##         .Object@position <- position(object)
 
-        .Object@num.layers <- nLayers(object)
-    .Object@package <- "ggplot"
+##         .Object@num.layers <- nLayers(object)
+##     .Object@package <- "ggplot"
 
 
-        callNextMethod(.Object, object = object, ...) # calls PlotFeatureSet
-    }
-)
+##         callNextMethod(.Object, object = object, ...) # calls PlotFeatureSet
+##     }
+## )
 
 # @title Initialize a TrellisFeatureSet
 # @name TrellisFeatureSet
@@ -296,27 +436,27 @@ setMethod(f = "initialize",
 # @param object A plot object of class trellis.
 # @param ... Other named arguments which are sent on to the ObjFeatureSet constructor.
 # @return A TrellisFeatureSet object.
-setMethod(f = "initialize", 
-    signature = "TrellisFeatureSet", 
-    definition = function(.Object, object, ...) {
+## setMethod(f = "initialize", 
+##     signature = "TrellisFeatureSet", 
+##     definition = function(.Object, object, ...) {
 
-        # do extra stuff for a trellis object
-    .Object@package <-  "lattice"
+##         # do extra stuff for a trellis object
+##     .Object@package <-  "lattice"
+ 
+##         callNextMethod(.Object, object = object, ...) # calls PlotFeatureSet
+##     }
+## )
 
-        callNextMethod(.Object, object = object, ...) # calls PlotFeatureSet
-    }
-)
+## setMethod(f = "initialize", 
+##     signature = "GraphicsFeatureSet", 
+##     definition = function(.Object, object = object, ...) {
 
-setMethod(f = "initialize", 
-    signature = "GraphicsFeatureSet", 
-    definition = function(.Object, object = object, ...) {
+##         # do extra stuff for a base graphics (recorded) object
+##     .Object@package <- "graphics"
 
-        # do extra stuff for a base graphics (recorded) object
-    .Object@package <- "graphics"
-
-    callNextMethod(.Object, object = object, ...) # calls PlotFeatureSet
-    }
-)
+##     callNextMethod(.Object, object = object, ...) # calls PlotFeatureSet
+##     }
+## )
 
 ## http://stackoverflow.com/questions/16247583/inheritance-in-r
 # ObjFeatureSet <- function(object = NULL, ...) {
@@ -368,7 +508,7 @@ as.list.ObjFeatureSet <- function(x, ...) {
     out$regtime = format(x@regdate, "%H:%M:%S")
     out$regdatetime = format(x@regdate, "%Y-%m-%dT%H:%M:%SZ")
     out$code = unlist(lapply(objCode(x)@.Data, function(i) paste(deparse(i), collapse="")))
-    out$code.info <- lapply(codeInfo(x), as.list)
+    out$codeinfo <- lapply(codeInfo(x), as.list)
 
     ## out <- list(
     ##     user = x@user,
@@ -379,18 +519,18 @@ as.list.ObjFeatureSet <- function(x, ...) {
     ##     # format so solr can read it
     ##     regdatetime = format(x@regdate, "%Y-%m-%dT%H:%M:%SZ"),
     ##     titles = x@titles,
-    ##     var.labels = x@var.labels,
+    ##     varlabels = x@varlabels,
     ##     grouping = x@grouping,
-    ##     num.obs = x@num.obs,
-    ##     has.legend = x@has.legend,
-    ##     coord.sys = x@coord.sys,
-    ##     var.types = x@var.types,
-    ##     annotation.text = x@annotation.text,
+    ##     nobs = x@nobs,
+    ##     haslegend = x@haslegend,
+    ##     coordsys = x@coordsys,
+    ##     vartypes = x@vartypes,
+    ##     annotationtext = x@annotationtext,
     ##     analysispkg = x@analysispkg,
     ##     tags = x@tags,
     ##     # code = x@code
     ##     code = unlist(lapply(plotCode(x)@.Data, function(i) paste(deparse(i), collapse=""))),
-    ##     code.info = lapply(codeInfo(x), as.list)
+    ##     codeinfo = lapply(codeInfo(x), as.list)
     ##     isplot = x@isplot
     ##     objclass = x@klass
     ## )
@@ -405,12 +545,12 @@ as.list.ObjFeatureSet <- function(x, ...) {
     ## }
     ## lst <-
     ## lst$object <- NULL
-    ## lst$code.info = lapply(codeInfo(x), as.list)
+    ## lst$codeinfo = lapply(codeInfo(x), as.list)
     ## out = flatten5(lst)
      # http://stackoverflow.com/a/18539199
-     keys <- unique(unlist(lapply(out$code.info, names)))
-     out$code.info <- setNames(do.call(mapply, c(FUN=c, lapply(out$code.info, `[`, keys))), keys)
-     out$code.info <- sapply(out$code.info, unique)
+     keys <- unique(unlist(lapply(out$codeinfo, names)))
+     out$codeinfo <- setNames(do.call(mapply, c(FUN=c, lapply(out$codeinfo, `[`, keys))), keys)
+     out$codeinfo <- sapply(out$codeinfo, unique)
     return(out)
 }
 
@@ -439,13 +579,15 @@ setAs(from = "ScriptNodeInfo",
 )
 
 .elstocollapse = c("user", "package", "regdatetime",
-                   "titles", "var.labels", "grouping",
-                   "num.objs", "has.legend",
-                   "coord.sys", "var.types",
-                   "annotation.text", "analysispkg",
-                   "tags", "code", "code.info",
+                   "titles", "varlabels", "grouping",
+                   "num.objs", "haslegend",
+                   "coordsys", "vartypes",
+                   "annotationtext", "analysispkg",
+                   "tags", "code", "codeinfo",
                    "isplot", "klass", "geom", "stat",
-                   "position", "num.layers")
+                   "position", "num.layers",
+                   "varsummaries"
+                   )
 #' @title Collapse particular fields of a ObjFeatureSet to delimited character vectors.
 #' @param pfs An object of (super)class ObjFeatureSet.
 #' @return A list.
@@ -453,9 +595,9 @@ pfs_list_collapse <- function(pfs) {
     l <- as(pfs, "list")
     l <- l[names(l) %in% .elstocollapse]
     l$titles <- paste(l$titles, collapse="; ")
-    l$var.labels$x <- paste(l$var.labels$x, collapse="; ")
-    l$var.labels$y <- paste(l$var.labels$y, collapse="; ")
-    l$var.labels$group$panel <- paste(l$var.labels$group$panel, collapse="; ")
+    l$varlabels$x <- paste(l$varlabels$x, collapse="; ")
+    l$varlabels$y <- paste(l$varlabels$y, collapse="; ")
+    l$varlabels$group$panel <- paste(l$varlabels$group$panel, collapse="; ")
     l$grouping$panel$vars <- paste(l$grouping$panel$vars, collapse="; ")
     l$grouping$panel$levels <- paste(l$grouping$panel$levels, collapse="; ")
     l$code <- paste(l$code, collapse="; ")
@@ -477,13 +619,13 @@ pfs_list_collapse <- function(pfs) {
     }
     # these will need to be generalized!
     # theoretically any var.type could have length>1
-    if((!is.null(l$var.types$group$panel)) & (length(l$var.types$group$panel)>1)) {
-        l$var.types$group$panel <- paste(l$var.types$group$panel, collapse = ", ")
+    if((!is.null(l$vartypes$group$panel)) & (length(l$vartypes$group$panel)>1)) {
+        l$vartypes$group$panel <- paste(l$vartypes$group$panel, collapse = ", ")
     }
-    if(length(l$code.info)>0) {
-        code.info.fields <- names(l$code.info[[1]])
-        l$code.info <- sapply(code.info.fields, function(i)
-            paste(lapply(l$code.info, 
+    if(length(l$codeinfo)>0) {
+        codeinfo.fields <- names(l$codeinfo[[1]])
+        l$codeinfo <- sapply(codeinfo.fields, function(i)
+            paste(lapply(l$codeinfo, 
                 function(x) paste(x[[i]], collapse = ", ")),
             collapse = "; "), simplify = FALSE)
     }

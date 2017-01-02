@@ -10,15 +10,21 @@ setClassUnion("characterOrNULL", c("character", "NULL"))
 
 .ObjFeatureSet <- setClass("ObjFeatureSet",
                            slots = c(klass = "character",
+                                     fsetklass = "character",
                                      object = "ANY",
                                      user = "character",
                                      regdate = "POSIXct",
                                      uniqueid = "character",
                                      analysispkg = "list",
-                                     code = "Script",
-                                     code.info = "ScriptInfo",
+                                     code = "character",
+                                     codeinfo = "ScriptInfo",
                                      isplot = "logical",
-                                     tags = "character"))
+                                     tags = "character",
+                                     ## currently only supported within RStudio
+                                     analysisfile = "character",
+                                     ## should be NA_character if not in RStudio
+                                     rstudioproject = "character"
+                                     ))
 
 
 
@@ -26,7 +32,8 @@ setClassUnion("characterOrNULL", c("character", "NULL"))
                           slots = c(vars = "character",
                                     varclasses = "character",
                                     varsummaries = "list",
-                                    nobs = "integer"),
+                                    varsummarydputs = "ANY",
+                                    nobs = "numeric"),
                           contains = "ObjFeatureSet")
 
 
@@ -34,25 +41,28 @@ setClassUnion("characterOrNULL", c("character", "NULL"))
 #' @title An S4 class called PlotFeatureSet
 #' @slot data A list of data.frames containing the variables and observations used in the plot.
 #' @slot titles Title and subtitle of the plot object; a named list of the form list(main = "My title", sub = "My subtitle").
-#' @slot var.labels Variable labels of the plot object; a named list of the form list(x = "X axis label", y = "Y axis label", groups = list(...)). Note that non-empty labels are character vectors and may contain more than one entry.
+#' @slot varlabels Variable labels of the plot object; a named list of the form list(x = "X axis label", y = "Y axis label", groups = list(...)). Note that non-empty labels are character vectors and may contain more than one entry.
 #' @slot annotation.text Annotation text of the plot object.
-#' @slot var.types Variable types of the plot object; a named list of the form list(x = "numeric", y = "factor", ...).
+#' @slot vartypes Variable types of the plot object; a named list of the form list(x = "numeric", y = "factor", ...).
 #' @slot grouping Grouping information on the plot object; a named list.
-#' @slot coord.sys A character vector describing the coordinate system employed in the plot.
-#' @slot num.obs An integer representing the number of observations in the plotted data.
-#' @slot has.legend A boolean indicating whether or not a legend is displayed in the plot.
+#' @slot coordsys A character vector describing the coordinate system employed in the plot.
+#' @slot nobs An integer representing the number of observations in the plotted data.
+#' @slot haslegend A boolean indicating whether or not a legend is displayed in the plot.
 #' @slot tags A character vector of user-defined tags.
 #' @slot code R code to reproduce the plot, as a CodeDepends::Script object. May be empty.
-#' @slot code.info Information about the R code to reproduce the plot, as a CodeDepends::ScriptInfo object. May be empty.
+#' @slot codeinfo Information about the R code to reproduce the plot, as a CodeDepends::ScriptInfo object. May be empty.
 #' @rdname PlotFeatureSet-class
 #' @exportClass PlotFeatureSet
 .PlotFeatureSet <- setClass("PlotFeatureSet",
     slots = c(titles = "characterOrNULL", data = "list",
-        var.labels = "list",
-        annotation.text = "characterOrNULL", var.types = "list", 
-        grouping = "list", coord.sys = "characterOrNULL", 
-        num.obs = "numeric", has.legend = "logical",
-         package = "character"
+        varlabels = "list",
+        annotationtext = "characterOrNULL",
+        vartypes = "list", 
+        grouping = "list",
+        coordsys = "characterOrNULL", 
+        nobs = "numeric",
+        haslegend = "logical",
+        package = "character"
         ),
     contains = "ObjFeatureSet",
     # eventually put something in here
@@ -198,3 +208,17 @@ VTJSONBackend = function(file = normalizePath("./viztrackr_db_data.json"), data 
     vtjsonbackend(docs = as(data, "DocList"), file = file)
 }
 
+
+#' @name RStudioExtras
+#' @title RStudioExtras class
+#'
+#' @description A class to contain information about the current session when
+#' working inside the RStudio IDE. 
+#' @docType methods
+#' @exportClass RStudioExtras
+setClass("RStudioExtras",
+         representation(file = "character",
+                        project = "character"),
+         prototype = list(file = NA_character_,
+                          project = NA_character_)
+         )

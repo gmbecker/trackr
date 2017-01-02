@@ -19,9 +19,11 @@ vtopts$tracker = NULL
 ##' @export
 
 defaultVTDB = function(vtdb) {
-    if(missing(vtdb))
+    if(missing(vtdb)) {
+        if(is.null(vtopts$vtdb))
+            vtopts$vtdb = jsonVTDB()
         vtopts$vtdb
-    else {
+    } else {
         vtopts$vtdb = vtdb
         vtdb
     }

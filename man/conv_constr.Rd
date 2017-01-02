@@ -5,7 +5,8 @@
 \alias{solrVTDB}
 \title{Convenience constructors for specific VT backends}
 \usage{
-jsonVTDB(file, opts = ViztrackrOptions(...), ...)
+jsonVTDB(file = "~/.recordr/objdb.json", opts = ViztrackrOptions(img_dir =
+  img_dir, ...), img_dir = file.path(basedir(file), "images"), ...)
 
 solrVTDB(core, requestHandler = "search", opts = ViztrackrOptions(...), ...)
 }
@@ -13,6 +14,10 @@ solrVTDB(core, requestHandler = "search", opts = ViztrackrOptions(...), ...)
 \item{file}{character. The json file to use}
 
 \item{opts}{ViztrackrOptions. The options for the DB}
+
+\item{img_dir}{character. The directory plot images should be
+saved into. Passed to default construction of \code{opts}. Defaults to
+\code{<directory of file>/images}. ignored if \code{opts} is specified explicitly.}
 
 \item{core}{character. The URI for the solr core to use}
 
