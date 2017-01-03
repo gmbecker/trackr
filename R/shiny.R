@@ -7,26 +7,26 @@
 ##   <img alt="" src="http://placehold.it/128x128/" class="shadow"></a>
 
 
-setGeneric("thumbnailHTML", function(rec, imgurlfun, vtdb = defaultVTDB()) standardGeneric("thumbnailHTML"),
+setGeneric("thumbnailHTML", function(rec, imgurlfun, tdb = defaultTDB()) standardGeneric("thumbnailHTML"),
            signature = "rec")
 
 ## coerce list to FeatureSet then call generic again to get the right dispatch
 setMethod("thumbnailHTML", "list",
-          function(rec, imgurlfun, vtdb) {
+          function(rec, imgurlfun, tdb) {
     rec = listRecToFeatureSet(rec)
     thumbnailHTML(rec, imgurlfun)
 
 
 })
 
-setMethod("thumbnailHTML", "ObjFeatureSet", function(rec, imgurlfun, vtdb) {
+setMethod("thumbnailHTML", "ObjFeatureSet", function(rec, imgurlfun, tdb) {
     htmltools::tags$a(href=paste0("#", uniqueID(rec)),
                                   class = "group-cbox1 inline",
                       div(paste(rec@klass, "object")))
 })
 
 setMethod("thumbnailHTML", "DFFeatureSet", function(rec, imgurlfun,
-                                                    vtdb = defaultVTDB()) {
+                                                    tdb = defaultTDB()) {
     tags = htmltools::tags
     tags$a(href=paste0("#", uniqueID(rec)),
                       class = "group-cbox1 inline",
@@ -43,8 +43,8 @@ setMethod("thumbnailHTML", "DFFeatureSet", function(rec, imgurlfun,
 })
 
 setMethod("thumbnailHTML", "PlotFeatureSet",
-          function(rec, imgurlfun, vtdb = defaultVTDB()) {
-    pfimg = previewpath(rec, vtdb)
+          function(rec, imgurlfun, tdb = defaultTDB()) {
+    pfimg = previewpath(rec, tdb)
     file.copy(pfimg, file.path("./images", basename(pfimg)))
     
     htmltools::tags$a(href = paste0("#", uniqueID(rec)),
@@ -69,20 +69,20 @@ genericMetadata = function(rec) {
     )
 }
 
-setGeneric("detailHTML", function(rec, imgurlfun, vtdb = defaultVTDB()) standardGeneric("detailHTML"),
+setGeneric("detailHTML", function(rec, imgurlfun, tdb = defaultTDB()) standardGeneric("detailHTML"),
            signature = "rec")
 
 setMethod("detailHTML", "list",
-          function(rec, imgurlfun, vtdb) {
+          function(rec, imgurlfun, tdb) {
     rec = listRecToFeatureSet(rec)
-    detailHTML(rec, imgurlfun = imgurlfun, vtdb = vtdb)
+    detailHTML(rec, imgurlfun = imgurlfun, tdb = tdb)
 
 })
 
 setMethod("detailHTML", "PlotFeatureSet",
-          function(rec, imgurlfun, vtdb = defaultVTDB()) {
+          function(rec, imgurlfun, tdb = defaultTDB()) {
 
-    imgfil = imagepath(rec, vtdb)
+    imgfil = imagepath(rec, tdb)
     file.copy(imgfil, file.path("./images", basename(imgfil)))
     div(style="display:none",
         div(id = uniqueID(rec),
@@ -103,7 +103,7 @@ setMethod("detailHTML", "PlotFeatureSet",
 })
 
 setMethod("detailHTML", "DFFeatureSet",
-          function(rec, imgurlfun, vtdb = defaultVDTB()) {
+          function(rec, imgurlfun, tdb = defaultVDTB()) {
     htags = htmltools::tags
     addAppendChildren(htmltools::htags$table,
                       c(list(htags$th(htags$td("Variable"), htags$td("summary"))),
@@ -130,26 +130,26 @@ $(".inline").colorbox({inline:true, width:"736px"});
 '  
 
 
-.multiToHTML2 =  function(reclist, imgurlfun, vtdb = defaultVTDB()) {
+.multiToHTML2 =  function(reclist, imgurlfun, tdb = defaultTDB()) {
     
     if(is.null(reclist) || length(reclist) < 1)
-        div(class = "recordr_results")
+        div(class = "trackr_results")
     else {
-        retdiv = div(class="recordr_results", 
+        retdiv = div(class="trackr_results", 
                      tagAppendChildren(htmltools::tags$section(class="image-wrap cf clear",
                                                                id="image-wrap"),
                                        list = lapply(reclist,
                                                thumbnailHTML, 
                                                imgurlfun = imgurlfun,
-                                               vtdb = vtdb)))
+                                               tdb = tdb)))
         tagAppendChildren(retdiv, list = c(lapply(reclist,
                                                   function(rec, iuf, db) {
                                       div(style="display:none",
                                           detailHTML(rec, imgurlfun = iuf,
-                                                     vtdb = db
+                                                     tdb = db
                                                      )
                                           )
-                                  }, iuf = imgurlfun, db = vtdb),
+                                  }, iuf = imgurlfun, db = tdb),
                                   list(htmltools::tags$script(HTML(codestr)))))
     }
 }
@@ -207,35 +207,35 @@ $(".inline").colorbox({inline:true, width:"736px"});
 
 ## .multiToHTML = function(reclist, imgurlfun) {
 ##   if(is.null(reclist) || length(reclist) < 1)
-##     div(class = "recordr_results")
+##     div(class = "trackr_results")
 ##   else
-##     tagAppendChildren(div(class = "recordr_results"), list = lapply(reclist, .innerToHTML, imgurlfun = imgurlfun))
+##     tagAppendChildren(div(class = "trackr_results"), list = lapply(reclist, .innerToHTML, imgurlfun = imgurlfun))
 ## }
 
 
 ##' RStudio addin/Shiny app for artifact discovery
 ##'
 ##' This function initiates a shiny server which  allows users
-##' to search a recordr database and view the results. It can
+##' to search a trackr database and view the results. It can
 ##' be used as a stand-alone Shiny application or from within the
 ##' RStudio IDE as an addin
 ##'
-##' @param vtdb The database to search. Defaults to the current default database
-##' @import minUI
+##' @param tdb The database to search. Defaults to the current default database
+##' @import miniUI
 ##' @import shiny
 ##' @import htmltools
 ##' @export
-recordrAddin = function(vtdb = defaultVTDB()) {
+trackrAddin = function(tdb = defaultTDB()) {
   if(!require(miniUI) || !require("shiny") || !require(htmltools)) 
     stop("The miniUI, htmltools, and shiny packages are required to run the addin/shiny app")
   
   ui <- miniPage(
                htmltools::tags$style(type = "text/css",
               HTML(paste(readLines(system.file("shinyweb/css/style.css", package =
-              "recordr")), collapse = "\n"))),
+              "trackr")), collapse = "\n"))),
               htmltools::tags$script(type="text/javascript",
                                      HTML(paste(readLines(system.file("shinyweb/js/index.js",
-                                           package = "recordr")), collapse = "\n"))),
+                                           package = "trackr")), collapse = "\n"))),
     gadgetTitleBar("Discover plots"),
     miniContentPanel(
       textInput("search_pattern", value="mtcars", label = "search pattern"),
@@ -260,10 +260,10 @@ recordrAddin = function(vtdb = defaultVTDB()) {
       }
       print(normalizePath(".getw"))
         
-      found = reactive({vtSearch(pattern = input$search_pattern, db = vtdb)})
+      found = reactive({findRecords(pattern = input$search_pattern, db = tdb)})
       output$results = renderUI({.multiToHTML2(found(),
                                                imgurlfun = session$fileUrl,
-                                               vtdb = vtdb)})
+                                               tdb = tdb)})
       output$count = renderText(sprintf("Found %s plots matching your search", ndoc(found())))
       
       ## When the Done button is clicked, return a value

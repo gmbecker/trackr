@@ -352,41 +352,41 @@ setMethod(f = "tags",
 })
 
 
-## accessor methods for ViztrackrDB and ViztrackrOptions
+## accessor methods for TrackrDB and TrackrOptions
 
-setGeneric("vt_backend", function(db) standardGeneric("vt_backend"))
-setGeneric("vt_backend<-", function(db, value) standardGeneric("vt_backend<-"))
+setGeneric("trackr_backend", function(db) standardGeneric("trackr_backend"))
+setGeneric("trackr_backend<-", function(db, value) standardGeneric("trackr_backend<-"))
 #' @title options extraction
 #' @rdname img_opts
 #' @param db Object to extract information from
 #' @docType methods
 #' @export
-setGeneric("vt_options", function(db) standardGeneric("vt_options"))
+setGeneric("trackr_options", function(db) standardGeneric("trackr_options"))
 #' @rdname img_opts
-#' @aliases vt_img_dir
+#' @aliases img_dir
 #' @export
-setGeneric("vt_img_dir", function(db) standardGeneric("vt_img_dir"))
+setGeneric("img_dir", function(db) standardGeneric("img_dir"))
 #' @rdname img_opts
-#' @aliases vt_img_ext
+#' @aliases img_ext
 #' @export
-setGeneric("vt_img_ext", function(db) standardGeneric("vt_img_ext"))
+setGeneric("img_ext", function(db) standardGeneric("img_ext"))
 
 
-setMethod("vt_backend", "ViztrackrDB", function(db) db@backend)
-setMethod("vt_backend<-", "ViztrackrDB",
+setMethod("trackr_backend", "TrackrDB", function(db) db@backend)
+setMethod("trackr_backend<-", "TrackrDB",
           function(db, value) {
               db@backend = value
               db
           })
 
-setMethod("vt_options", "ViztrackrDB", function(db) db@opts)
+setMethod("trackr_options", "TrackrDB", function(db) db@opts)
 
-setMethod("vt_img_dir", "ViztrackrDB", function(db) vt_img_dir(vt_options(db)))
-setMethod("vt_img_dir", "ViztrackrOptions", function(db) db@img_dir)
+setMethod("img_dir", "TrackrDB", function(db) img_dir(trackr_options(db)))
+setMethod("img_dir", "TrackrOptions", function(db) db@img_dir)
 
 
-setMethod("vt_img_ext", "ViztrackrDB", function(db) vt_img_ext(vt_options(db)))
-setMethod("vt_img_ext", "ViztrackrOptions", function(db) db@img_ext)
+setMethod("img_ext", "TrackrDB", function(db) img_ext(trackr_options(db)))
+setMethod("img_ext", "TrackrOptions", function(db) db@img_ext)
 
 #' @rdname uniqueID-methods
 setMethod(f = "uniqueID",
@@ -416,15 +416,15 @@ setMethod(f = "uniqueID",
     uniqueID(tmp)
     })
 
-#' @title Number of docs in a vtdb
+#' @title Number of docs in a TrackrDB
 #' Query the backend for the number of docs it contains
-#' @param x ViztrackrDB.
+#' @param x TrackrDB.
 #' @param ... not used.
-#' @aliases ndoc-method,ViztrackrDB
+#' @aliases ndoc-method,TrackrDB
 #' @docType methods
 #' @export
-setMethod("ndoc", "ViztrackrDB",
-          function(x, ...) ndoc(vt_backend(x)))
+setMethod("ndoc", "TrackrDB",
+          function(x, ...) ndoc(trackr_backend(x)))
 
 
 
@@ -457,20 +457,20 @@ fsanalysisfile = makeToyAccessor("analysisfile")
 
 setGeneric("imagepath", function(x, db) standardGeneric("imagepath"))
 setMethod("imagepath", c("ObjFeatureSet", "ANY") , function(x, db) NA_character_)
-setMethod("imagepath", c("PlotFeatureSet", "ViztrackrDB"), function(x, db) {
-    if(!file.exists(vt_img_dir(db)))
-        dir.create(vt_img_dir(db), recursive=TRUE)
-    file.path(vt_img_dir(db), paste(uniqueID(x), vt_img_ext(db), sep="."))
+setMethod("imagepath", c("PlotFeatureSet", "TrackrDB"), function(x, db) {
+    if(!file.exists(img_dir(db)))
+        dir.create(img_dir(db), recursive=TRUE)
+    file.path(img_dir(db), paste(uniqueID(x), img_ext(db), sep="."))
 })
 
 
 
 setGeneric("previewpath", function(x, db) standardGeneric("previewpath"))
 setMethod("previewpath", c("ObjFeatureSet", "ANY"),  function(x, db) NA_character_)
-setMethod("previewpath", c("PlotFeatureSet", "ViztrackrDB"), function(x, db) {
-    if(!file.exists(vt_img_dir(db)))
-        dir.create(vt_img_dir(db), recursive=TRUE)
-    file.path(vt_img_dir(db), paste0(uniqueID(x), "_thumb.", vt_img_ext(db)))
+setMethod("previewpath", c("PlotFeatureSet", "TrackrDB"), function(x, db) {
+    if(!file.exists(img_dir(db)))
+        dir.create(img_dir(db), recursive=TRUE)
+    file.path(img_dir(db), paste0(uniqueID(x), "_thumb.", img_ext(db)))
 })
 
 

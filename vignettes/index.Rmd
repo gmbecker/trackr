@@ -1,10 +1,10 @@
 ---
-title: "An introduction to recordr"
+title: "An introduction to trackr"
 author: "Sara Moore, Gabriel Becker"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{An introduction to recordr}
+  %\VignetteIndexEntry{An introduction to trackr}
   %\VignetteEngine{knitr::rmarkdown}
   \usepackage[utf8]{inputenc}
 ---
@@ -26,7 +26,7 @@ To run all examples and vignettes, the following packages should be installed:
 
 * From CRAN: `ggplot2`, `lattice`, `proto`, `digest`, `png`, `httr`, `MASS`, `MEMSS`, `mlmRev`, `devtools`
 * From Bioconductor: `BiocGenerics` 
-* From Github: `gmbecker/CodeDepends`, `lawremi/rsolr`, `lawremi/restfulr`, `lawremi/rdocdb`
+* From Github: `duncantl/CodeDepends`, `lawremi/rsolr`, `lawremi/restfulr`, `lawremi/rdocdb`
 
 
 # Create some example plots
@@ -36,9 +36,7 @@ use throughout the demonstration.
 
 ```{r}
 
-library(recordr)
-if(trackingHistory())
-	trackHistory() #turn it off as tracking in dyn docs is a WIP
+library(trackr)
 library(rdocdb) #need it for ndoc, etc calls
 
 library(ggplot2)
@@ -167,10 +165,10 @@ for (i in 1:6) {
 pb2 <- recordPlot()
 ```
 
-# Explore the functionality of recordr
+# Explore the functionality of trackr
 
 We will first create =ObjFeatureSets= for each of the plots. This involves
-generating the metadata and storing everything together in a form that =recordr=
+generating the metadata and storing everything together in a form that =trackr=
 will be able to use.
 
 ```{r}
@@ -210,76 +208,78 @@ temp <- editTags(temp, c("hello", "goodbye"), option="remove")
 tags(temp)
 ```
 
-We will now =record= the plots. We need a ViztrackrDB to store them in. We will
-use a simple, JSON based one which writes to a temporary file, though in practice
-you will of course want your database to be permanent.
+We will now =record= the plots. We need a TrackrDB to store them in. We will
+use a simple, JSON based one which writes to a temporary file. Normally if we
+wanted a JSON-based backend we could simply use the default, but because this is
+a vignette run on the CRAN build systems we need to ensure no permanent
+files are created.
 
 ```{r}
-vtdb = jsonVTDB(tempfile(), img_dir = tempdir())
-invisible(lapply(my.pfs, record, db = vtdb))
+tdb = jsonTDB(tempfile(), img_dir = tempdir())
+invisible(lapply(my.pfs, record, db = tdb))
 
 regDateTime(my.pfs[[9]]) <- Sys.time() - as.difftime(30, unit = "days")
 ## note that this does not change the unique ID
 ## (unique ID determined by hash of plot object at creation time of original PlotFeatureSet)
 ## and so the document is overwritten in the data store.
-record(my.pfs[[9]], db = vtdb, verbose=TRUE)
+record(my.pfs[[9]], db = tdb, verbose=TRUE)
 
 my.pfs[[1]] <- editTags(my.pfs[[1]], c("hello", "world", "goodbye"), option="add")
 ## same as above (document is overwritten)
-record(my.pfs[[1]], db = vtdb, verbose=TRUE)
+record(my.pfs[[1]], db = tdb, verbose=TRUE)
 ```
 
 ```{r}
-res <- vtSearch("density", db = vtdb)
+res <- findRecords("density", db = tdb)
 ndoc(res)
 res[1,"image.path"]
-loadEnrichedPlot(file.path(vt_img_dir(vtdb), res[1,"image.path"]))
+loadEnrichedPlot(file.path(vt_img_dir(tdb), res[1,"image.path"]))
 
-res <- rmEntry(uniqueID(my.pfs[[1]]),db = vtdb)
+res <- rmRecord(uniqueID(my.pfs[[1]]),db = tdb)
 ndoc(res)
-rmEntry(my.pfs[[1]], db = vtdb, verbose=TRUE)
-res <- vtSearch(uniqueID(my.pfs[[1]]), db = vtdb, fields="id")
+rmRecord(my.pfs[[1]], db = tdb, verbose=TRUE)
+res <- findRecords(uniqueID(my.pfs[[1]]), db = tdb, fields="id")
 ndoc(res)
-record(my.pfs[[1]], db = vtdb, verbose=TRUE)
+record(my.pfs[[1]], db = tdb, verbose=TRUE)
 ```
 
 
 
 
-Note that the following examples assume that a solr instance is installed as a part of a blacklight instance (at `~/Downloads/recordr_blacklightapp`), is properly configured and is running/awaiting input with a core named `figdb.`
+Note that the following examples assume that a solr instance is installed as a part of a blacklight instance (at `~/Downloads/trackr_blacklightapp`), is properly configured and is running/awaiting input with a core named `figdb.`
 
 ```{r, eval=FALSE}
 library(rsolr)
 
-blcklght.img.dir <- "~/Downloads/recordr_blacklightapp/app/assets/images"
+blcklght.img.dir <- "~/Downloads/trackr_blacklightapp/app/assets/images"
 solr.uri <- "http://localhost:8983/solr/figdb"
 ## non-standard requestHandler not strictly required, 
 ## but will maintain consistency with search results received via UI
 sl <- SolrList(solr.uri, requestHandler="search")
-vtdb = ViztrackrDB(ViztrackrOptions(img_dir = blklght.img.dir), backend = sl)
-invisible(lapply(my.pfs, record, sl, db = vtdb))
+tdb = TrackrDB(TrackrOptions(img_dir = blklght.img.dir), backend = sl)
+invisible(lapply(my.pfs, record, sl, db = tdb))
 
 regDateTime(my.pfs[[9]]) <- Sys.time() - as.difftime(30, unit = "days")
 ## note that this does not change the unique ID
 ## (unique ID determined by hash of plot object at creation time of original PlotFeatureSet)
 ## and so the document is overwritten in the data store.
-record(my.pfs[[9]], db = vtdb, verbose=TRUE)
+record(my.pfs[[9]], db = tdb, verbose=TRUE)
 
 my.pfs[[1]] <- editTags(my.pfs[[1]], c("hello", "world", "goodbye"), option="add")
 ## same as above (document is overwritten)
-record(my.pfs[[1]], db = vtdb, verbose=TRUE)
+record(my.pfs[[1]], db = tdb, verbose=TRUE)
 ```
 
 ```{r, eval=FALSE}
-res <- searchVTDB("density", vtdb)
+res <- findRecords("density", tdb)
 ndoc(res)
 res[1,"image.path"]
 loadEnrichedPlot(file.path(blcklght.img.dir, res[1,"image.path"]))
 
-res <- rmEntry(uniqueID(my.pfs[[1]]),db = vtdb)
+res <- rmRecord(uniqueID(my.pfs[[1]]),db = tdb)
 ndoc(res)
-rmEntry(my.pfs[[1]], db = vtdb, verbose=TRUE)
-res <- vtSearch(uniqueID(my.pfs[[1]]), db = vtdb, fields="id")
+rmRecord(my.pfs[[1]], db = tdb, verbose=TRUE)
+res <- findRecords(uniqueID(my.pfs[[1]]), db = tdb, fields="id")
 ndoc(res)
-record(my.pfs[[1]], db = vtdb, verbose=TRUE)
+record(my.pfs[[1]], db = tdb, verbose=TRUE)
 ```

@@ -239,7 +239,7 @@ setMethod(f = "saveBasicPlot",
 })
 
 ## No-op for non-plot feature sets. This shouldn't be necessary but
-## it is for now because of the way prep_for_vtdb is factored.
+## it is for now because of the way prep_for_backend is factored.
 ## TODO: make this unnecessary and then remove it
 
 setMethod(f="saveBasicPlot",

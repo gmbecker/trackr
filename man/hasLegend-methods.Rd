@@ -7,7 +7,7 @@
 \alias{hasLegend,gTree-method}
 \alias{hasLegend,ggplot-method}
 \alias{hasLegend,trellis-method}
-\title{Accessor method for the legend indicator (slot "has.legend") of the plot object.}
+\title{Accessor method for the legend indicator (slot "haslegend") of the plot object.}
 \usage{
 hasLegend(object)
 

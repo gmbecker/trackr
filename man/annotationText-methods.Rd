@@ -7,7 +7,7 @@
 \alias{annotationText,gTree-method}
 \alias{annotationText,ggplot-method}
 \alias{annotationText,trellis-method}
-\title{Accessor method for the annotation text (slot "annotation.text") of the plot object.}
+\title{Accessor method for the annotation text (slot "annotationtext") of the plot object.}
 \usage{
 annotationText(object)
 

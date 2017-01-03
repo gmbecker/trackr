@@ -4,12 +4,12 @@
 \alias{autotrackPlots}
 \title{Automatically record plots
 Toggle automatic recording of plots to the
-current default ViztrackrDB.}
+current default TrackrDB.}
 \usage{
-autotrackPlots(vtdb = vtopts$vtdb)
+autotrackPlots(trackrdb = trackropts$trackrdb)
 }
 \arguments{
-\item{vtdb}{ViztrackrDB. The ViztrackrDB to record
+\item{trackrdb}{TrackrDB. The TrackrDB to record
 plots to automatically. If specified, will become
 the default.}
 }

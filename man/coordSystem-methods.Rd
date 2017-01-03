@@ -7,7 +7,7 @@
 \alias{coordSystem,gTree-method}
 \alias{coordSystem,ggplot-method}
 \alias{coordSystem,trellis-method}
-\title{Accessor method for the coordinate system (slot "coord.sys") of the plot object.}
+\title{Accessor method for the coordinate system (slot "coordsys") of the plot object.}
 \usage{
 coordSystem(object)
 

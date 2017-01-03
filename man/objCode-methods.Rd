@@ -5,14 +5,14 @@
 \alias{objCode}
 \alias{objCode,ObjFeatureSet-method}
 \alias{objCode<-}
-\alias{objCode<-,PlotFeatureSet-method}
+\alias{objCode<-,ObjFeatureSet-method}
 \title{Mutator method for "code" slot of PlotFeatureSet (or one of its subclasses).}
 \usage{
 objCode(object) <- value
 
 objCode(object)
 
-\S4method{objCode}{PlotFeatureSet}(object) <- value
+\S4method{objCode}{ObjFeatureSet}(object) <- value
 
 \S4method{objCode}{ObjFeatureSet}(object)
 }

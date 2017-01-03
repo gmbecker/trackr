@@ -7,7 +7,7 @@
 \alias{nObs,gTree-method}
 \alias{nObs,ggplot-method}
 \alias{nObs,trellis-method}
-\title{Accessor method for the number of observations (slot "num.obs") of the plot object.}
+\title{Accessor method for the number of observations (slot "nobs") of the plot object.}
 \usage{
 nObs(object)
 

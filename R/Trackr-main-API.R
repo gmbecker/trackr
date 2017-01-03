@@ -1,11 +1,11 @@
 
 #' @name record
 #' @details These functions allow end-users to interact with
-#' viztrackr databases. Each function does what its name suggests.
-#' @title Primary high-level API functions for Viztrackr Databases
+#' trackr databases. Each function does what its name suggests.
+#' @title Primary high-level API functions for Trackr Databases
 #' @param object ANY. A PlotFeatureSet (or plot object coercible to one) to be
 #' added. Or (for rmPlot) the unique ID of an object in the database to remove.
-#' @param db ViztrackrDB. The database
+#' @param db TrackrDB. The database
 #' @param code ANY. Code/evaluation history to be associated with \code{object}
 #' @param force logical. Overwrite any existing entry matching \code{object}.
 #' (default: FALSE)
@@ -14,7 +14,7 @@
 #' @rdname main-api
 #' @export
 
-record = function(object, db = defaultVTDB(), code = histropts$history, force = FALSE,
+record = function(object, db = defaultTDB(), code = histry::histropts$history, force = FALSE,
                    verbose = FALSE, symorpos = NULL) {
 
     if(!is.null(code)) {
@@ -37,16 +37,18 @@ record = function(object, db = defaultVTDB(), code = histropts$history, force = 
         } else {
             code = NULL
         }
+    } else {
+        code = ""
     }
         
     pfs = makeFeatureSet(object, code = code)
-    exst = vt_lookup(pfs, target = db, exist = TRUE) # generic
+    exst = trackr_lookup(pfs, target = db, exist = TRUE) # generic
     if(force || !exst) {
         id = uniqueID(pfs)
-        doc = prep_for_vtdb(pfs, target = db, verbose = verbose) #generic
-        db = insert_plot( object = doc, id = id, target = db, #generic
+        doc = prep_for_backend(pfs, target = db, verbose = verbose) #generic
+        db = insert_record( object = doc, id = id, target = db, #generic
                          verbose = verbose)
-        db = vt_write(target = db) #generic
+        db = trackr_write(target = db) #generic
     }
     invisible(db)
 }
@@ -54,26 +56,26 @@ record = function(object, db = defaultVTDB(), code = histropts$history, force = 
 
 #' @rdname main-api
 #' @export
-rmEntry = function(object, db, verbose = FALSE) {
+rmRecord = function(object, db = defaultTDB(), verbose = FALSE) {
     if(!is(object, "character")) {
         object = makeFeatureSet(object)
         id = uniqueID(object)
     } else {
         id = object
     }
-    exst = vt_lookup(id, target = db, exist = TRUE)
+    exst = trackr_lookup(id, target = db, exist = TRUE)
 
     if(!exst)
         warning("Entry specified for removal does not appear to exist in the database. Skipping.")
     else {
-        db = remove_plot(id, target = db, verbose = verbose)
-        db = vt_write(target = db, verbose = verbose)
+        db = remove_record(id, target = db, verbose = verbose)
+        db = trackr_write(target = db, verbose = verbose)
     }
     invisible(db)
 }
 
 
-## vtSearch is a direct call-down, but we still want to conceptually
+## findRecords is a direct call-down, but we still want to conceptually
 ## separate the user-facing and developer-facing interfaces.
 
 #' @rdname main-api
@@ -85,20 +87,13 @@ rmEntry = function(object, db, verbose = FALSE) {
 #' matching documents represnted as R lists, and "backend" - a backend specific
 #' representation of the set of matching documents 
 #' @export
-vtSearch = function(pattern, fields = NULL, db,  ret_type = c("doclist", "id", "backend"),
+findRecords = function(pattern, db = defaultTDB(), fields = NULL,  ret_type = c("doclist", "id", "backend"),
                     verbose = FALSE) {
     ret_type = match.arg(ret_type)
-    vt_grep(pattern = pattern, fields = fields, target = db,
+    trackr_search(pattern = pattern, fields = fields, target = db,
             ret_type = ret_type, verbose = verbose)
 }
 
 
 
 
-
-## setMethod("findPlot", c("character", "ANY", "ViztrackrDB"),
-##           function(pattern, fields, db,  ret_type = c("id", "list", "backend"),
-##                    verbose = FALSE) {
-##     vt_grep(pattern = pattern, fields = fields, db = db,
-##             ret_type = ret_type, verbose = verbose)
-## })

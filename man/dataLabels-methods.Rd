@@ -9,7 +9,7 @@
 \alias{dataLabels,trellis-method}
 \alias{dataLabels<-}
 \alias{dataLabels<-,PlotFeatureSet-method}
-\title{Mutator method for PlotFeatureSet "var.labels" slot.}
+\title{Mutator method for PlotFeatureSet "varlabels" slot.}
 \usage{
 dataLabels(object) <- value
 

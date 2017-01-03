@@ -1,22 +1,25 @@
-Package: recordr
+Package: trackr
 Type: Package
-Title: Semantic Annotation and Discoverability System for R Plots
-Version: 0.5.0
+Title: Semantic Annotation and Discoverability System for R-based artifacts
+Version: 0.6.0
 Date: 2015-07-01
 Authors@R: c(
     person("Sara", "Moore", role = c("aut", "cre"),
         email = "moore.sara@gene.com"),
     person("Gabriel", "Becker", role = "aut",
-        email = "becker.gabe@gene.com"))
-Copyright: Genentech Inc
+        email = "becker.gabriel@gene.com"))
+Copyright: Genentech, Inc.
 Maintainer: Gabriel Becker <becker.gabriel@gene.com>
-Description: Extracts relevant features from ggplot2 and/or lattice
-    objects and manages both objects and features via a data store
-    (Apache Solr).
-License: LICENSE file
+Description: Automatically annotates R-based artifacts
+	     with relevant descriptive and provenance-related
+    	     and provides a backend-agnostic storage and
+	     discoverability system for organizing, retrieving, and
+	     interrogating such artifacts.
+License: Artistic-2.0
 Depends:
     methods,
-    CodeDepends
+    CodeDepends,
+    histry
 Imports:
     digest,
     ggplot2,
@@ -45,19 +48,17 @@ Collate:
     'Generics.R'
     'PlotWrapper.R'
     'ObjFeatureSet.R'
-    'VTJSONBackend-methods.R'
-    'ViztrackrDB-main-API.R'
+    'Trackr-main-API.R'
     'accessor-methods.R'
     'autotrack.R'
     'backend-impls.R'
     'coercerender.R'
     'convenience_constructors.R'
-    'dataStore-methods.R'
     'ggplotversions.R'
     'knitr.R'
     'makeRStudioExtras.R'
     'parseCode.R'
-    'prep_for_db.R'
+    'prep_for_backend.R'
     'shiny.R'
     'zzz.R'
 RoxygenNote: 5.0.1

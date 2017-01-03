@@ -6,7 +6,7 @@
 \alias{codeInfo,ObjFeatureSet-method}
 \alias{codeInfo<-}
 \alias{codeInfo<-,ObjFeatureSet-method}
-\title{Mutator method for "code.info" slot of PlotFeatureSet (or one of its subclasses).}
+\title{Mutator method for "codeinfo" slot of PlotFeatureSet (or one of its subclasses).}
 \usage{
 codeInfo(object) <- value
 

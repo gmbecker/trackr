@@ -1,68 +1,68 @@
 ## storage for mutable things that live in the namespace
-## most notably, the default ViztrackrDB and default
+## most notably, the default TrackrDB and default
 ## history trackr
-##' @title viztrackr options environment
-##' An environment where the default vtdb and history tracker are stored.
+##' @title trackr options environment
+##' An environment where the default trackrdb and history tracker are stored.
 ##' Users should not modify the contents of this environment directly.
 ##'
 ##' @export
-vtopts = new.env()
-vtopts$vtdb = NULL
-vtopts$autotracking = FALSE
-vtopts$tracker = NULL
+trackropts = new.env()
+trackropts$trackrdb = NULL
+trackropts$autotracking = FALSE
+trackropts$tracker = NULL
 
 ##' @importFrom histry histropts trackingHistory
 
-##' @title default VTDB
-##' @param vtdb ViztrackrDB. The ViztrackrDB to which objects will be recorded
+##' @title default TRACKRDB
+##' @param trackrdb TrackrDB. The TrackrDB to which objects will be recorded
 ##' by default. If missing, the current default is returned.
 ##' @export
 
-defaultVTDB = function(vtdb) {
-    if(missing(vtdb)) {
-        if(is.null(vtopts$vtdb))
-            vtopts$vtdb = jsonVTDB()
-        vtopts$vtdb
+defaultTDB = function(trackrdb) {
+    if(missing(trackrdb)) {
+        if(is.null(trackropts$trackrdb))
+            trackropts$trackrdb = jsonTDB()
+        trackropts$trackrdb
     } else {
-        vtopts$vtdb = vtdb
-        vtdb
+        trackropts$trackrdb = trackrdb
+        trackrdb
     }
 }
 
 
-## vtdb=NULL turns off tracking, like Rprof
+## trackrdb=NULL turns off tracking, like Rprof
 ##' @title Automatically record plots
 ##' Toggle automatic recording of plots to the
-##' current default ViztrackrDB.
-##' @param vtdb ViztrackrDB. The ViztrackrDB to record
+##' current default TrackrDB.
+##' @param trackrdb TrackrDB. The TrackrDB to record
 ##' plots to automatically. If specified, will become
 ##' the default.
 ##' @return NULL, invisibly.
 ##' @export
-autotrackPlots = function(vtdb = vtopts$vtdb) {
-    wastracking = vtopts$autotracking
+autotrackPlots = function(trackrdb = trackropts$trackrdb) {
+    wastracking = trackropts$autotracking
     if(wastracking) {
         message("Turning off plot autotracking.")
-        vtopts$autotracking = FALSE
+        trackropts$autotracking = FALSE
         try(untrace(print.trellis, where = asNamespace("lattice")))
         try(untrace(print.ggplot, where = asNamespace("ggplot2")))
     }
     ## if it was called as autotrackPlots() we're done
-    if(wastracking && missing(vtdb)) {
+    if(wastracking && missing(trackrdb)) {
         return(invisible(TRUE))
     } 
-    if (!is.null(vtdb)) {
+    if (!is.null(trackrdb)) {
         message("Enabling plot autotracking.")
-        vtopts$vtdb = vtdb
-        vtopts$autotracking = TRUE
+        trackropts$trackrdb = trackrdb
+        trackropts$autotracking = TRUE
     }
 
-    if(is.null(vtdb))
-        stop("No ViztrackrDB specified or currently active")
+    if(is.null(trackrdb))
+        stop("No TrackrDB specified or currently active")
     if(!trackingHistory())
         stop("cannot autotrack plots without automatic history tracking")
 
-    qexpr = quote(addTaskCallback(function(expr, value, success, printed, tracker) { record(value, db = vtopts$vtdb, symorpos = length(histry:::histropts$history$exprs)); FALSE}))
+    qexpr = quote(addTaskCallback(function(expr, value, success, printed, tracker) { record(value, db = trackropts$trackrdb, symorpos = length(histry::histropts$history$exprs)); FALSE}))
     trace(lattice:::print.trellis, qexpr,
           where = asNamespace("lattice"))
     trace(ggplot2:::print.ggplot, qexpr, 

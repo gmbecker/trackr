@@ -7,7 +7,7 @@
 \alias{dataTypes,gTree-method}
 \alias{dataTypes,ggplot-method}
 \alias{dataTypes,trellis-method}
-\title{Accessor method for the variable types (slot "var.types") of the plot object.}
+\title{Accessor method for the variable types (slot "vartypes") of the plot object.}
 \usage{
 dataTypes(object)
 

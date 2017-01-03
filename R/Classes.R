@@ -100,83 +100,74 @@ setClassUnion("characterOrNULL", c("character", "NULL"))
     contains = "PlotFeatureSet")
 
 
-#' @name ViztrackrOptions-class
-#' @title Viztrackr configuration optionso
-#' @exportClass ViztrackrOptions
+#' @name TrackrOptions-class
+#' @title Trackr configuration optionso
+#' @exportClass TrackrOptions
 
-setClass("ViztrackrOptions",
+setClass("TrackrOptions",
          slots = list(insert_delay = "numeric",
              img_dir = "character",
              img_ext = "character",
              backend_opts = "list"))
 
-#' @rdname ViztrackrOptions-class
+#' @rdname TrackrOptions-class
 #' @param insert_delay numeric. delay in seconds between insertions.
 #' @param img_dir character. Directory to save image files in.
 #' @param img_ext character. extension to give image files.
 #' @param backend_opts list. list of options specific to the backend. Currently ignored
-#' by viztrackr machinery.
+#' by trackr machinery.
 #' @export
-ViztrackrOptions = function(insert_delay = 0,
+TrackrOptions = function(insert_delay = 0,
                             img_dir = "./images",
                             img_ext = "png",
                             backend_opts = list(...),
                             ...) {
-    new("ViztrackrOptions",
+    new("TrackrOptions",
         insert_delay = insert_delay,
         img_dir = img_dir,
         img_ext = img_ext,
         backend_opts = backend_opts)
 }
 
-#'@name ViztrackrDB-class
-#' @title Viztrackr database
-#' @exportClass "ViztrackrDB"
-#' @rdname ViztrackrDB-class
+
+## We have the TrackrDB class, and thus a seemingly unnecessary additional
+## level of abstraction because the Backends are sometimes Ref classes
+## and we don't want to have users operating directly on non-idiotmatic
+## objects. We could probably do away with this but I will leave it
+## as is for now.
+
+#'@name TrackrDB-class
+#' @title Trackr database
+#' @exportClass "TrackrDB"
+#' @rdname TrackrDB-class
 
 
-setClass("ViztrackrDB",
-         slots = list(opts = "ViztrackrOptions",
+setClass("TrackrDB",
+         slots = list(opts = "TrackrOptions",
              backend = "ANY")
          )
 
-#' @rdname ViztrackrDB-class
-#' @param opts ViztrackrOptions object.
+#' @rdname TrackrDB-class
+#' @param opts TrackrOptions object.
 #' @param backend ANY. The backend to use.
 #' @param ... ignored.
 #' @export
-ViztrackrDB = function(opts = ViztrackrOptions(...), backend = VTJSONBackend(), ...)
-    new("ViztrackrDB", opts = opts, backend = backend)
+TrackrDB = function(opts = TrackrOptions(...), backend = JSONBackend(), ...)
+    new("TrackrDB", opts = opts, backend = backend)
 
 
-#' @name VTJSONBackend-class
-#' @title JSON backend for viztrackr
+#' @name JSONBackend-class
+#' @title JSON backend for trackr
 #' @slot data list. An in-memory list representation of the data in the db
 #' @slot file character. The file containing the db ( to read from and write to)
 #' @slot last_load POSIXct. The last time \code{data} was updated from disk.
 #' @note This is a reference class, which does NOT have standard copy-on-write
 #' semantics
 #' @docType methods
-#' @exportClass VTJSONBackend
+#' @exportClass JSONBackend
 
-## vtjsonbackend = setRefClass("VTJSONBackend",
-##             fields = list(.data = "list",
-##                           data = function(val) {
-##                 if(missing(val))
-##                     return(.data)
-##                 else
-##                     .self$.data = val
-##             },
-##             .file = "character",
-##             file =  function(val) {
-##                 if(missing(val))
-##                     return(.self$.file)
-##                 else
-##                     .self$.file = val
-##             }),
-##             contains)
 
-vtjsonbackend = setRefClass("VTJSONBackend",
+jsonbackend = setRefClass("JSONBackend",
                             contains = "DocCollectionRef",
                             fields = list(
                                 .file = "character",
@@ -187,14 +178,16 @@ vtjsonbackend = setRefClass("VTJSONBackend",
                                     .self$.file = val
                             }))
 
-#' @name VTJSONBackend
+#' @name JSONBackend
 #' @title JSON backend contstructor
-#' @param file character. The json "database" to use as a viztrackr backend
-#' @return A VTJSONBackend object, for use in creating a ViztrackrDB object.
+#' @param file character. The json "database" to use as a trackr backend
+#' @return A JSONBackend object, for use in creating a TrackrDB object.
+#' @note This function should generally not be called directly by end-users.
+#' See instead \code{\link{jsonTDB}}
 #' @export
 #' @importFrom RJSONIO fromJSON
 
-VTJSONBackend = function(file = normalizePath("./viztrackr_db_data.json"), data = list()) {
+JSONBackend = function(file = normalizePath("./trackr_db_data.json"), data = list()) {
     if(file.exists(file)) {
         data = fromJSON(file)
         ll = Sys.time()
@@ -205,7 +198,7 @@ VTJSONBackend = function(file = normalizePath("./viztrackr_db_data.json"), data 
             dir.create(dirname(file), recursive=TRUE)
         toJSON(data, file = file)
     }
-    vtjsonbackend(docs = as(data, "DocList"), file = file)
+    jsonbackend(docs = as(data, "DocList"), file = file)
 }
 
 

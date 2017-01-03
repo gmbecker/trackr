@@ -604,109 +604,78 @@ setGeneric(name = "tags",
 )
 
 
-## ## Main high-level (user facing) API
-## the user-facing API is now made up entirely of non-generic functions
-## written using the low level backend generics
-
-
-## ## #' @name rmPlot
-## ## #' @rdname main-api
-## ## #' @docType methods
-## ## #' @export
-## ## setGeneric("rmPlot", function(object, db, verbose = FALSE) standardGeneric("rmPlot"))
-
-
-## #' @name vt_grep
-## #' @rdname interface-api
-## #' @param pattern character. A regular expression to match against the text in \code{fields}
-## #' @param fields character or NULL. The fiends in which to match, or NULL to
-## #' include all fields.
-## #' @param ret_type character. Format in which to return the response. Options are:
-## #' "id" - id of matching documents (default), "list" - A list containing the
-## #' matching documents represnted as R lists, and "backend" - a backend specific
-## #' representation of the set of matching documents 
-## #' @export
-## setGeneric("findPlot", function(pattern, fields = NULL,
-##                                 db, ret_type = c("id", "list", "backend"),
-##                                 verbose = TRUE) standardGeneric("findPlot"))
-
-
-
-
-
-
 ## Low-level backend interface API
 
-#' @name vt_lookup
+#' @name trackr_lookup
 #' @title Backend-interface API
 #'
-#' This page describes the API which must be implimented by all Viztrackr backends
+#' This page describes the API which must be implimented by all Trackr backends
 #' Any class with methods for these generic can be used in the \code{backend}
-#' slot of a \code{ViztrackrDB} object.
+#' slot of a \code{TrackrDB} object.
 #'
 #' Methods should be written to be dispatched \code{backend}, and, where appropriate
 #' on code{object}/code{doc} 
 #' 
 #' @param object ANY. The object to lookup, add, remove, etc.
-#' @param target ANY. The backend of the ViztrackrDB instance.
-#' @param opts ViztrackrOptions. The viztrackr-level options. Typically
-#' extracted from \code{target} in a \code{ViztrackrDB} method and passed down.
+#' @param target ANY. The backend of the TrackrDB instance.
+#' @param opts TrackrOptions. The trackr-level options. Typically
+#' extracted from \code{target} in a \code{TrackrDB} method and passed down.
 #' @param exist logical. Return TRUE/FALSE rather than the looked-up object.
 #' (default: FALSE)
 #'
-#' @return for \code{vt_lookup}: If \code{exist} is TRUE, a logical indicating whether \code{object} was
+#' @return for \code{trackr_lookup}: If \code{exist} is TRUE, a logical indicating whether \code{object} was
 #' found in \code{db}. Otherwise, the object stored in the database (or NULL if it
 #' was not found).
 #' @rdname interface-api
 #' @docType methods
 #' @export
-setGeneric("vt_lookup", function(object, target, opts, 
-                                 exist = FALSE) standardGeneric("vt_lookup"))
+setGeneric("trackr_lookup", function(object, target, opts, 
+                                 exist = FALSE) standardGeneric("trackr_lookup"))
 
-#' @name insert_plot
+#' @name insert_record
 #'
 #' @param verbose logical. Should extra informative messages be displayed (
 #' default: FALSE)
 #' @rdname interface-api
-#' @return for \code{insert_plot} and \code{remove_plot}: The \code{ViztrackrDB}
+#' @return for \code{insert_record} and \code{remove_record}: The \code{TrackrDB}
 #' (\code{db} parameter) after the plot has been added or removed.
-#' @details \code{insert_plot} may or may not involve writing to
-#' disk, which can alternatively occur during \code{vt_write}. Writing,
+#' @details \code{insert_record} may or may not involve writing to
+#' disk, which can alternatively occur during \code{trackr_write}. Writing,
 #' if any is desired, must occur within at one and only one of these methods. If
-#' \code{insert_plot} performs the writing, \code{vt_write} should be a no-op.
+#' \code{insert_record} performs the writing, \code{trackr_write} should be a no-op.
 #' @export
-setGeneric("insert_plot", function(object, id, target, opts, verbose = FALSE)
-    standardGeneric("insert_plot"), signature = "target")
+setGeneric("insert_record", function(object, id, target, opts, verbose = FALSE)
+    standardGeneric("insert_record"), signature = "target")
 
-#' @name prep_for_vtdb
+#' @name prep_for_backend
 #' @rdname interface-api
-#' @return For \code{prep_for_vtdb}, \code{object}, representend in the form
-#' that the \code{insert_plot} method for \code{backend} expects.
+#' @return For \code{prep_for_backend}, \code{object}, representend in the form
+#' that the \code{insert_record} method for \code{backend} expects.
 #' @export
-setGeneric("prep_for_vtdb", function(object, target, opts,
+setGeneric("prep_for_backend", function(object, target, opts,
                                      verbose = FALSE)
-    standardGeneric("prep_for_vtdb"))
+    standardGeneric("prep_for_backend"))
 
-#' @name remove_plot
-#' @note \code{remove_plot} should have the same writing behavior
-#' as \code{insert_plot}
+#' @name remove_record
+#' @note \code{remove_record} should have the same writing behavior
+#' as \code{insert_record}
 #' @rdname interface-api
 #' @export
-setGeneric("remove_plot", function(object, target, opts, verbose = FALSE)
-    standardGeneric("remove_plot"))
+setGeneric("remove_record", function(object, target, opts, verbose = FALSE)
+    standardGeneric("remove_record"))
 
 
-#' @name remove_plot
-#' @note \code{remove_plot} should have the same writing behavior
-#' as \code{insert_plot}
+#' @name remove_record
+#' @note \code{remove_record} should have the same writing behavior
+#' as \code{insert_record}
 #' @rdname interface-api
 #' @export
-setGeneric("vt_write", function(target, opts, verbose = FALSE) standardGeneric("vt_write"))
+setGeneric("trackr_write", function(target, opts, verbose = FALSE) standardGeneric("trackr_write"))
 
 
 
 
-#' @name vt_grep
+#' @name trackr_search
 #' @rdname interface-api
 #' @param pattern character. A regular expression to match against the text in \code{fields}
 #' @param fields character or NULL. The fiends in which to match, or NULL to
@@ -717,11 +686,11 @@ setGeneric("vt_write", function(target, opts, verbose = FALSE) standardGeneric("
 #' representation of the set of matching documents (generally the same class
 #' as \code{backend}.
 #' @export
-setGeneric("vt_grep", function(pattern, target, opts, 
+setGeneric("trackr_search", function(pattern, target, opts, 
                                fields = NULL,
                                ret_type = c("doclist", "id", "backend"),
                                verbose = TRUE)
-    standardGeneric("vt_grep"))
+    standardGeneric("trackr_search"))
 
 
 

@@ -1,0 +1,167 @@
+% \VignetteIndexEntry{trackr Extending}
+% \VignetteDepends{}
+% \VignetteBuilder{knitr}
+% \VignetteEngine{knitr::knitr}
+% \VignetteKeywords{reprise}
+% \VignettePackage{trackr}
+\documentclass[10pt]{article}
+
+\usepackage{times}
+\usepackage{hyperref}
+
+
+\usepackage{listings}
+\newcommand{\rpkg}{\texttt}
+\newcommand{\rexpr}{\lstinline}
+\newcommand{\rfun}{\lstinline}
+\newcommand{\rclass}{\lstinline}
+\newcommand{\proglang}{\textbf}
+
+\textwidth=6.5in
+\textheight=8.5in
+\oddsidemargin=-.1in
+\evensidemargin=-.1in
+\headheight=-.3in
+
+\title{Extending trackr with custom backends}
+\author{Gabriel Becker}
+\date{\today}
+
+\begin{document}
+
+\maketitle
+\tableofcontents
+\newpage
+
+The \rpkg{trackr} package supports storing metadata and artifacts in either a JSON file or Solr database. To extend \rpkg{trackr} to support a new storage backend, it is necessary to define a derivative of \rclass{VirtHistoryTracker} and implement methods on six generic functions:
+\begin{enumerate}
+\item \rfun{prep_for_backend}, which prepares a \rclass{PlotFeatureSet} for insertion into the backend data store;
+\item \rfun{insert_record}, which inserts the prepared feature set into the database;
+\item \rfun{remove_record}, which removes a plot from the database;
+\item \rfun{trackr_write}, which writes the the current state of an in-memory backend to disk;\footnote{This function can often be a no-op if \rfun{insert_record} performs a permanent write operation}
+\item \rfun{trackr_lookup}, which looks up a single plot based on its ID or an object representing it; and 
+\item \rfun{trackr_search}, which provides whatever search functionality is supported by the backend.
+\end{enumerate}
+
+These functions are called internally by the user-facing \rfun{addPlot}, \rfun{rmPlot}, and \rfun{findPlot} functions.
+
+For the remainder of this section, we will walk through the creation of a toy-example backend based on \proglang{R} lists. While this would not suffice in practice because it offers no persistence, it will serve as an illustration of how one would implement a backend more generally --- e.g., for MongoDB \cite{mongodb} or your database of choice.
+
+To implement our backend, we first define the S4 class representing an instance of our \rclass{list} backend, \rclass{ListBackend}, which simply inherits from the base \rclass{list} class. We also define a constructor, for convenience.
+
+<<>>=
+library(trackr)
+
+lb = setRefClass("ListBackend", fields = list(dat = "list"))
+ListBackend = function() lb$new()
+@
+
+We then define our methods which will allow \rpkg{trackr} to interact with our backend. For full customization, we could in principle first write a specific \rfun{prep_for_backend} method. When writing custom \rfun{prep_for_backend} methods, they must:
+\begin{itemize}
+\item Generate a unique id for the object, typically by calling \rfun{uniqueID} on the \rclass{ObjectFeatureSet};
+\item use \rfun{trackr_lookup} to confirm no plot with that id already exists in the datastore; 
+\item write any image-files and serialized objects that need to be created in the file system; 
+\item transform the plot, metadata, and file paths into the form your \rfun{insert_record} method will be able to process; and
+\item return the transformed data
+\end{itemize}
+
+In practice, however, \rpkg{trackr} provides an "ANY" method which will generally suffice for most backends. It returns a \rclass{list} with a generated id and a flattened \rclass{list} of the plot's metadata, along with saving out image files based on the options set on your \rclass{TrackrDB}. We will use this method by simply not creating a backend-specific one for our \rclass{ListBackend} class.  With \rfun{prep_for_backend} addressed, we move on to methods for inserting plots into and removing them from our \rclass{list} data store.
+
+All \rfun{instert_record} and \rfun{remove_record} methods must accept five and four arguments, respectively:
+\begin{enumerate}
+\item object - the document to be inserted or deleted within the datastore,
+  or the id of the record to be deleted;
+\item id - the unique id to associate with the added plot, or the id of the plot to remove (\emph{insert_record only};
+\item target - the backend object (of the new class that we have created);
+\item opts - a \rclass{TrackrOptions} object
+\item verbose - a logical indicating whether the backend should emit informational messages (if supported)
+\end{enumerate}
+
+The methods themselves must then update the backend object by performing the desired insertion or removal, assign the updated backend back into the database, and return the database. In our toy list-backend case, we can achieve this like so:
+
+<<>>=
+setMethod("insert_record", c( target = "ListBackend"),
+function(object, id, target, opts, verbose = FALSE) {
+    target$dat[[id]] = object
+    invisible(target)
+})
+
+setMethod("remove_record", c(object = "character", target = "ListBackend"), 
+function(object, target, opts, verbose = FALSE) {
+    ## object is the id
+    target$dat[[object]] = NULL
+    invisible(target)
+})
+@
+
+Note we are only defining a \rfun{remove_record} method for when the object argument is a \rclass{character}, thus our backend only supports removal by id. The \rpkg{trackr} package uses S4 dispatch to funnel all logic through \rclass{character}-based id methods for \rfun{remove_record}, so no other methods are required.
+
+Along with our \rfun{insert_record} and \rfun{remove_record} methods, we must define a \rfun{trackr_write} method which finalizes any changes to the \rpkg{trackr} database our backend uses. The framework requires this in order to allow backends to accumulate changes in memory or immediately write them (within \rfun{insert_record} and \rfun{remove_record}, in which case \rfun{trackr_write} is a simple no-op).
+
+Because our \rclass{list} backend has no persistent storage behind it, our \rfun{trackr_write} method does nothing:
+
+<<>>=
+setMethod("trackr_write", c(target = "ListBackend"), 
+function(target, opts, verbose = FALSE) target)
+@
+
+Next is a \rfun{trackr_lookup} method, which takes the \rexpr{object}, \rexpr{db}, \rexpr{backend} and \rexpr{exist} parameters. The \rexpr{object}, put simply, is the query. The \rexpr{db} and \rexpr{backend} parameters represent and behave as they have throughout this discussion. Finally, the \rexpr{exist} parameter specifies whether the lookedup plot entry from the data-store (\rexpr{FALSE} --- the default) or whether a logical value indicating whether such an entry was found (\rexpr{TRUE}) should be returned.
+
+
+The \rexpr{object} argument can be an R object representing, an \rclass{ObjectFeatureSet} object, or a \rclass{character} id. As with \rfun{remote_record}, however, general methods provided by \rpkg{trackr} funnel all dispatch through character-based methods, so we only need to provide a \rclass{character} id-based lookup method when defining a backend. We implement this like so:
+
+<<>>=
+setMethod("trackr_lookup", c("character", target = "ListBackend"),
+function(object, target, opts, exist = FALSE){
+    found = which(object == names(target$dat))
+    if(exist)
+        return(length(found) > 0)
+    else
+        return(backend[[found]])
+})
+@
+
+Finally, the last method we require to define our backend is \rfun{trackr_search}. This accepts a regular expression (\rexpr{pattern}), the usual \rexpr{db} and \rexpr{backend}, a vector of fields to search (\rexpr{fields}), the form in which to return the results (\rexpr{ret_type} --- id, list, or a backend-specific option), and a \rexpr{verbose} option. Its exact behavior may be backend-specific, but it is intended to find matches to \rexpr{pattern} within the selected fields within the backend's datastore.
+
+In the case of our backend, \rfun{trackr_search} will loop through our list and grep for the supplied pattern. We will write a simplied version which always returns the vector of matching ids:
+
+<<>>=
+
+setMethod("trackr_search", c(pattern = "character", target = "ListBackend"),
+          function(pattern, target, opts, fields = NULL, ret_type = c("id", "list", "backend"),
+                   verbose = TRUE) {
+    if(is.null(fields)) {
+        fields = TRUE ## grab all of them
+    }
+
+    inds = sapply(target$dat, function(y)  any(grepl(pattern, paste(y[fields]))))
+    names(target$dat)[inds]
+    })
+@
+
+With this, our backend is complete and ready for use. 
+
+<<>>=
+
+library(ggplot2)
+plt = qplot(x = 1:10, y = rnorm(10))
+be = ListBackend()
+db = TrackrDB(backend = be)
+defaultTDB(db)
+
+record(plt)
+findRecords("rnorm")
+
+@
+
+In this section, we provided methods for all low-level generics (other than 
+\rfun{prep_for_backend}, which is only required in special cases), for the purposes 
+of illustrating the extension mechanism. In point of fact, however, \rpkg{trackr} 
+provides default methods for \rfun{insert_record}, \rfun{remove_record}, and 
+\rfun{trackr_lookup} which work for any backend whose class has \rfun{[[} and %]]}
+\rfun{[[<-} methods defined which allow indexing by character, and where  %]]}
+assignment of \rexpr{NULL} into an existing entry is equivalent to removal. 
+Thus, only \rfun{trackr_write} and \rfun{trackr_search} methods are actually required 
+in many cases, including the \rclass{list}-backend case we presented here. 
+        
+\end{document}
