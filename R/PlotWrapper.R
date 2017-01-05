@@ -1186,7 +1186,7 @@ setMethod(f = "geomObject",
 setMethod(f = "geomObject",
     signature = "ggplot",
     definition = function(object) {
-        require(proto)
+        require(proto, quietly=TRUE)
 
         # access to geom name thanks to http://stackoverflow.com/questions/13457562/
         # if original geom order does not matter, could sort these before collapsing

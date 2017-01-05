@@ -258,8 +258,6 @@ trackrAddin = function(tdb = defaultTDB()) {
       } else {
           cleanup = FALSE
       }
-      print(normalizePath(".getw"))
-        
       found = reactive({findRecords(pattern = input$search_pattern, db = tdb)})
       output$results = renderUI({.multiToHTML2(found(),
                                                imgurlfun = session$fileUrl,
