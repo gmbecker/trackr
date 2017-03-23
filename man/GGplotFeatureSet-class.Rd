@@ -2,8 +2,8 @@
 % Please edit documentation in R/Classes.R
 \docType{class}
 \name{GGplotFeatureSet-class}
-\alias{.GGplotFeatureSet}
 \alias{GGplotFeatureSet-class}
+\alias{.GGplotFeatureSet}
 \title{An S4 subclass of PlotFeatureSet with additional slots for objects of class ggplot.}
 \section{Slots}{
 

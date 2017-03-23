@@ -1,0 +1,630 @@
+* {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  vertical-align: top;
+  /* outline: 1px dotted salmon; */
+}
+
+article,
+aside,
+details,
+figcaption,
+figure,
+footer,
+header,
+hgroup,
+menu,
+nav,
+section {
+  display: block;
+}
+
+body {
+  font: 100%/1.375 "Lucida Grande", "Lucida Sans Unicode", "Lucida Sans", AvenirNext-Regular, Corbel, "Segoe Ui", "Trebuchet MS", "DejaVu Sans", Verdana, sans-serif;
+  width: auto;
+  padding-bottom: 1em;
+  color: #333;
+  background-color: #fff;
+}
+
+body[style] {
+  margin: 0 !important;
+}
+
+body,
+footer {
+  overflow: auto;
+}
+
+footer ul {
+  list-style: none;
+}
+
+header,
+section h3 {
+  text-transform: uppercase;
+}
+
+header {
+  height: 138px;
+}
+
+header,
+footer {
+  background-color: khaki;
+}
+
+section h3 {
+  font-size: 1.25em;
+}
+
+h1,
+h2,
+h3 {
+  font-family: "Lucida Grande", "Lucida Sans", AvenirNextCondensed-DemiBold, Corbel, "Segoe Ui", "Trebuchet MS", "DejaVu Sans", sans-serif;
+}
+
+h1,
+h2,
+h3,
+p {
+  margin: 0 5%;
+}
+
+h2 {
+  margin-bottom: 1em;
+}
+
+p {
+  padding: .5em 0;
+}
+
+a {
+  color: darkslateblue;
+  text-decoration: none;
+}
+
+header,
+footer {
+  clear: both;
+  text-align: center;
+}
+
+footer {
+  margin: 2rem auto;
+}
+
+header a,
+footer a {
+  float: left;
+  padding: .25em 0;
+}
+
+header a {
+  width: 100%;
+}
+
+footer a {
+  width: 50%;
+  ;
+}
+
+.small {
+  font-size: .75em;
+  line-height: 1.85;
+  display: inline-block;
+}
+
+.note {
+  width: 95%;
+  padding: .5em 2.5%;
+  border-bottom: 1px dashed darkkhaki;
+}
+
+footer .note a {
+  width: auto;
+  float: none;
+}
+
+
+/* images */
+
+img {
+  max-width: 100%;
+}
+
+.shadow {
+  display: block;
+}
+
+.image-wrap {
+  position: relative;
+  /* min-width: 100%; */
+  max-width: 100%;
+  margin: 1em auto 0;
+  background-color: #444;
+  padding-bottom: 1rem;
+  overflow: hidden;
+}
+
+.image-wrap > a {
+  float: left;
+  margin: 1em 0 0 1em;
+  margin: 1rem 0 0 1rem;
+  outline: 1px solid #333;
+}
+
+
+/* layout */
+
+.media {
+  margin-top: 2em;
+}
+
+.media .img {
+  margin-left: 1em;
+}
+
+.hd h3 {
+  margin-top: 1em;
+}
+
+
+/* layout helpers */
+
+.grid-unit {
+  float: left;
+}
+
+.grid-unit--right {
+  float: right;
+}
+
+.cf:before,
+.cf:after {
+  content: " ";
+  display: table;
+}
+
+.cf:after,
+.clear {
+  clear: both;
+}
+
+.inner-overlay-box {
+  color: #eee;
+}
+
+
+/*
+ColorBox Core Style:
+The following CSS is consistent between example themes and should not be altered.
+ */
+
+#colorbox,
+#cboxOverlay,
+#cboxWrapper {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 9999;
+  overflow: hidden;
+}
+
+#cboxOverlay {
+  position: fixed;
+  width: 100%;
+  height: 100%;
+}
+
+#cboxMiddleLeft,
+#cboxBottomLeft {
+  clear: left;
+}
+
+#cboxContent {
+  position: relative;
+}
+
+#cboxLoadedContent {
+  overflow: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+#cboxTitle {
+  margin: 0;
+}
+
+#cboxLoadingOverlay,
+#cboxLoadingGraphic {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+#cboxPrevious,
+#cboxNext,
+#cboxClose,
+#cboxSlideshow {
+  cursor: pointer;
+}
+
+.cboxPhoto {
+  float: left;
+  margin: auto;
+  border: 0;
+  display: block;
+  max-width: none;
+}
+
+.cboxIframe {
+  width: 100%;
+  height: 100%;
+  display: block;
+  border: 0;
+}
+
+#colorbox,
+#cboxContent,
+#cboxLoadedContent {
+  box-sizing: content-box;
+  -moz-box-sizing: content-box;
+  -webkit-box-sizing: content-box;
+}
+
+
+/* 
+  User Style:
+  Change the following styles to modify the appearance of ColorBox.  They are
+  ordered & tabbed in a way that represents the nesting of the generated HTML.
+   */
+
+#cboxOverlay {
+  /* background:url(../img/ui/overlay.png) repeat 0 0; */
+}
+
+#colorbox {
+  background-color: #444;
+  background-color: rgba(0, 0, 0, .75);
+}
+
+#colorbox[style] {
+  /* top: 0 !important;  top: 0; bottom: 0; left: 0; right: 0; */
+}
+
+#cboxTopLeft {
+  width: 21px;
+  height: 21px;
+  /*background:url(../img/ui/controls.png) no-repeat -101px 0 */
+  ;
+}
+
+#cboxTopRight {
+  width: 21px;
+  height: 21px;
+  /*background:url(../img/ui/controls.png) no-repeat -130px 0 */
+  ;
+}
+
+#cboxBottomLeft {
+  width: 21px;
+  height: 21px;
+  /*background:url(../img/ui/controls.png) no-repeat -101px -29px */
+  ;
+}
+
+#cboxBottomRight {
+  width: 21px;
+  height: 21px;
+  /*background:url(../img/ui/controls.png) no-repeat -130px -29px */
+  ;
+}
+
+#cboxMiddleLeft {
+  width: 21px;
+  /*background:url(../img/ui/controls.png) left top repeat-y */
+  ;
+}
+
+#cboxMiddleRight {
+  width: 21px;
+  /*background:url(../img/ui/controls.png) right top repeat-y */
+  ;
+}
+
+#cboxTopCenter {
+  height: 21px;
+  /*background:url(../img/ui/border.png) 0 0 repeat-x */
+  ;
+}
+
+#cboxBottomCenter {
+  height: 21px;
+  /*background:url(../img/ui/border.png) 0 -29px repeat-x */
+  ;
+}
+
+#cboxContent {
+  /*background:#fff;*/
+  overflow: hidden;
+}
+
+.cboxIframe {
+  background: #fff;
+}
+
+#cboxError {
+  padding: 50px;
+  border: 1px solid #ccc;
+}
+
+#cboxLoadedContent {
+  margin-bottom: 28px;
+}
+
+#cboxTitle {
+  position: absolute;
+  bottom: 4px;
+  left: 0;
+  text-align: center;
+  width: 100%;
+  color: #949494;
+}
+
+#cboxCurrent {
+  position: absolute;
+  bottom: 4px;
+  left: 58px;
+  color: #949494;
+}
+
+#cboxSlideshow {
+  position: absolute;
+  bottom: 4px;
+  right: 30px;
+  color: #0092ef;
+}
+
+#cboxPrevious,
+#cboxNext,
+#cboxClose {
+  background-image: url("https://lh3.googleusercontent.com/-aopYh60FBPw/URLYWU5Py3I/AAAAAAAAAVs/y8J7RIrgToM/s800/controls-custom.png");
+  background-repeat: no-repeat;
+}
+
+#cboxPrevious {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  background-position: 0 0;
+  width: 25px;
+  height: 25px;
+  text-indent: -9999px;
+}
+
+#cboxPrevious:hover {
+  background-position: 0 -25px;
+}
+
+#cboxNext {
+  position: absolute;
+  bottom: 0;
+  left: 27px;
+  background-position: -25px 0;
+  width: 25px;
+  height: 25px;
+  text-indent: -9999px;
+}
+
+#cboxNext:hover {
+  background-position: -25px -25px;
+}
+
+#cboxLoadingOverlay {
+  /*background:url(../img/ui/loading_background.png) no-repeat center center;*/
+}
+
+#cboxLoadingGraphic {
+  /*background:url(../img/ui/loading.gif) no-repeat center center;*/
+}
+
+#cboxClose {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  background-position: -50px 0;
+  width: 25px;
+  height: 25px;
+  text-indent: -9999px;
+}
+
+#cboxClose:hover {
+  background-position: -50px -25px;
+}
+
+@media only screen and (max-width: 480px) {
+  header {
+    height: 220px;
+  }
+  .image-wrap {
+    margin-top: 0;
+  }
+  .media .img img {
+    max-width: 288px;
+  }
+  .p-inner-window,
+  .hd h3 {
+    margin-right: 25em;
+    margin-left: 2.5%;
+  }
+  .image-wrap {
+    overflow: hidden;
+  }
+  #colorbox,
+  #cboxWrapper,
+  #cboxContent,
+  #cboxLoadedContent {
+    min-height: 1200px;
+  }
+  #cboxTitle,
+  #cboxCurrent,
+  #cboxSlideshow,
+  #cboxPrevious,
+  #cboxNext,
+  #cboxLoadingOverlay,
+  #cboxLoadingGraphic,
+  #cboxClose {
+    top: 0;
+    bottom: auto;
+  }
+  #cboxTitle {
+    margin-top: 100%;
+    margin-left: 2.5%;
+    text-align: left;
+  }
+  #cboxClose {
+    right: auto;
+    left: 0;
+    margin-left: 40%;
+  }
+  /* can be removed, is here now because of Codepen's iFrame */
+  #colorbox[style] {
+    top: 220px !important;
+  }
+}
+
+@media only screen and (min-width: 481px) and (max-width: 574px) {
+  header {
+    height: 150px;
+  }
+  .image-wrap {
+    margin-top: 0;
+  }
+  .hd h3,
+  .p-inner-window {
+    margin-right: 18em;
+    margin-left: 2.5%;
+  }
+  .p-inner-window {
+    margin-bottom: 3em;
+  }
+  #colorbox,
+  #cboxWrapper,
+  #cboxContent,
+  #cboxLoadedContent {
+    min-height: 592px;
+    min-height: 736px;
+  }
+  #cboxTitle,
+  #cboxCurrent,
+  #cboxSlideshow,
+  #cboxPrevious,
+  #cboxNext,
+  #cboxLoadingOverlay,
+  #cboxLoadingGraphic,
+  #cboxClose {
+    top: 0;
+    bottom: auto;
+  }
+  #cboxTitle {
+    margin-top: 92.5%;
+    margin-left: 2.5%;
+    text-align: left;
+  }
+  #cboxClose {
+    right: auto;
+    left: 0;
+    margin-left: 54%;
+  }
+  /* can be removed, is here now because of Codepen's iFrame */
+  #colorbox[style] {
+    top: 150px !important;
+  }
+}
+
+@media only screen and (min-width: 575px) and (max-width: 719px) {
+  .p-inner-window {
+    margin: 0 20em 0 2.5%;
+  }
+  .image-wrap {
+    overflow: hidden;
+  }
+  .hd h3,
+  .p-inner-window {
+    margin-right: 18em;
+    margin-left: 2.5%;
+  }
+  .p-inner-window {
+    margin-bottom: 3em;
+  }
+  #colorbox,
+  #cboxWrapper,
+  #cboxContent,
+  #cboxLoadedContent {
+    min-height: 592px;
+    min-height: 736px;
+  }
+  #cboxTitle,
+  #cboxCurrent,
+  #cboxSlideshow,
+  #cboxPrevious,
+  #cboxNext,
+  #cboxLoadingOverlay,
+  #cboxLoadingGraphic,
+  #cboxClose {
+    top: 0;
+    bottom: auto;
+  }
+  #cboxTitle {
+    margin-top: 73%;
+    margin-left: 2.5%;
+    text-align: left;
+  }
+  #cboxClose {
+    right: auto;
+    left: 0;
+    margin-left: 54%;
+  }
+  /* can be removed, is here now because of Codepen's iFrame */
+  #colorbox[style] {
+    top: 154px !important;
+  }
+}
+
+@media only screen and (min-width: 720px) {
+  .image-wrap {
+    overflow: visible;
+  }
+  .image-wrap,
+  footer {
+    width: 46em;
+    /* 736px */
+    margin: 1em auto 1em;
+  }
+  .media,
+  .bd,
+  .ft,
+  .hd {
+    overflow: hidden;
+  }
+  .media .img {
+    float: left;
+    margin-left: 1em;
+  }
+  .media .img img {
+    display: block;
+  }
+  #cboxClose {
+    margin-bottom: 380px;
+  }
+  /* can be removed, is here now because of Codepen's iFrame */
+  #colorbox[style] {
+    top: 154px !important;
+  }
+  #colorbox {
+    /* margin-top: -33px; */
+  }
+}

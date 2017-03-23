@@ -26,16 +26,23 @@ record = function(object, db = defaultTDB(), code = histry::histropts$history, f
         if(is.code(code))
             code = deparse(code, control = NULL)
         else if (is(code, "list"))
-            code = vapply(code, function(x) paste(deparse(x, control=NULL), collapse="\n"), character(1))
+            code = vapply(code, function(x) {
+                if(is.code(x))
+                    paste(deparse(x, control=NULL), collapse="\n")
+                else
+                    paste(x, collapse="\n")
+            }, character(1))
 
-        if(!is.null(code) && length(code) > 0) {
+        if(!is.null(code) && length(code) > 0 && any(nzchar(code))) {
             codescr = readScript(txt = code)
             codeinfo = getInputs(codescr)
+            if(is.code(symorpos))
+                symorpos = deparse(symorpos)
             codethread = getDependsThread(symorpos, codeinfo)
             ## do I Want to go back to code here, or keep as codeinfo?
             code = code[codethread] 
         } else {
-            code = NULL
+            code = ""
         }
     } else {
         code = ""

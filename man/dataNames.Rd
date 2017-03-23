@@ -12,4 +12,3 @@ dataNames(object)
 \value{
 A named list of variable names of the form list(x = "x.name", y = "y.name", groups = list(...)).
 }
-

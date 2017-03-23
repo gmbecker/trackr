@@ -1,6 +1,6 @@
 
 
-setMethod("prep_for_backend", c("ObjFeatureSet", "TrackrDB"),
+setMethod("prep_for_backend", c("FeatureSet", "TrackrDB"),
           function(object, target, opts,  verbose = FALSE)
 {
     
@@ -14,12 +14,14 @@ setMethod("prep_for_backend", c("ObjFeatureSet", "TrackrDB"),
 ## everything that isn't a TrackrDB. probably isn't safe long term, want
 ## more specific virtual class here?
 
-setMethod("prep_for_backend", c("ObjFeatureSet", "ANY"),
+## XXX TODO probably need separate methods for, eg RmdFeatureSet ...
+##setMethod("prep_for_backend", c("ObjFeatureSet", "ANY"),
+setMethod("prep_for_backend", c("FeatureSet", "ANY"),
           function(object, target, opts, verbose = FALSE) {
 
     id = uniqueID(object)
     if(verbose) {
-        message("Adding ", graphSys(object), " object with ID ", id, "...")
+        message("Adding ", class(object)[1], " object with ID ", id, "...")
     }
     
     ## UTC required for Solr dates
@@ -30,7 +32,7 @@ setMethod("prep_for_backend", c("ObjFeatureSet", "ANY"),
     img.ext = img_ext(opts)
     
     
-    if(!is.null(img.save.dir)) {
+    if(!is.null(img.save.dir) && doc$isplot) {
         if(!dir.exists(img.save.dir))
             dir.create(img.save.dir, recursive=TRUE)
         
@@ -57,6 +59,7 @@ setMethod("prep_for_backend", c("ObjFeatureSet", "ANY"),
     
     doc
 })
+
 
 ## setMethod("prep_for_backend", c("PlotFeatureSet", "TrackrDB"),
 ##           function(object, target, opts, verbose = FALSE) {
@@ -142,8 +145,8 @@ setMethod("trackr_write", c("JSONBackend"),
 
 
 
-## endomorphism
-## each level delegates but ultimately returns the same class it was passed
+## endomorphism (on target arg, NOT first arg)
+## each level delegates but ultimately returns the same class it was passed in target
 
 ## don't like that I only have list, * methods here, but doc should be the first
 ## argument...
@@ -164,7 +167,8 @@ setMethod("insert_record", c(target ="DocCollectionRef"),
     {
         ref = target
         target = docs(ref)
-        docs(ref) = callGeneric()
+        tmp = callGeneric()
+        docs(ref) = as(tmp, "DocList")
         ref
     })
 

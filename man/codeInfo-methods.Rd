@@ -2,19 +2,19 @@
 % Please edit documentation in R/Generics.R, R/accessor-methods.R
 \docType{methods}
 \name{codeInfo<-}
-\alias{codeInfo}
-\alias{codeInfo,ObjFeatureSet-method}
 \alias{codeInfo<-}
-\alias{codeInfo<-,ObjFeatureSet-method}
+\alias{codeInfo}
+\alias{codeInfo<-,FeatureSet-method}
+\alias{codeInfo,FeatureSet-method}
 \title{Mutator method for "codeinfo" slot of PlotFeatureSet (or one of its subclasses).}
 \usage{
 codeInfo(object) <- value
 
 codeInfo(object)
 
-\S4method{codeInfo}{ObjFeatureSet}(object) <- value
+\S4method{codeInfo}{FeatureSet}(object) <- value
 
-\S4method{codeInfo}{ObjFeatureSet}(object)
+\S4method{codeInfo}{FeatureSet}(object)
 }
 \arguments{
 \item{object}{An object of (super)class PlotFeatureSet. For accession, also plot objects of class ggplot or trellis.}
@@ -26,4 +26,3 @@ A modified object of (super)class PlotFeatureSet.
 
 A CodeDepends::ScriptInfo object
 }
-

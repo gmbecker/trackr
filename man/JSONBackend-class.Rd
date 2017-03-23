@@ -14,8 +14,9 @@
 
 \item{\code{last_load}}{POSIXct. The last time \code{data} was updated from disk.}
 }}
+
+
 \note{
 This is a reference class, which does NOT have standard copy-on-write
 semantics
 }
-

@@ -11,4 +11,3 @@
 
 \item{...}{Other named arguments (currently unused).}
 }
-

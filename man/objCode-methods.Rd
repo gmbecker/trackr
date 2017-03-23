@@ -2,19 +2,19 @@
 % Please edit documentation in R/Generics.R, R/accessor-methods.R
 \docType{methods}
 \name{objCode<-}
-\alias{objCode}
-\alias{objCode,ObjFeatureSet-method}
 \alias{objCode<-}
-\alias{objCode<-,ObjFeatureSet-method}
+\alias{objCode}
+\alias{objCode<-,FeatureSet-method}
+\alias{objCode,FeatureSet-method}
 \title{Mutator method for "code" slot of PlotFeatureSet (or one of its subclasses).}
 \usage{
 objCode(object) <- value
 
 objCode(object)
 
-\S4method{objCode}{ObjFeatureSet}(object) <- value
+\S4method{objCode}{FeatureSet}(object) <- value
 
-\S4method{objCode}{ObjFeatureSet}(object)
+\S4method{objCode}{FeatureSet}(object)
 }
 \arguments{
 \item{object}{An object of (super)class PlotFeatureSet. For accession, also plot objects of class ggplot or trellis.}
@@ -26,4 +26,3 @@ A modified object of (super)class PlotFeatureSet.
 
 A CodeDepends::Script object
 }
-

@@ -14,4 +14,3 @@ collapse_to_str(l, with.names = FALSE)
 \value{
 A comma-delimited character vector
 }
-

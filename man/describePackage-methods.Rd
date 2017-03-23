@@ -3,12 +3,12 @@
 \docType{methods}
 \name{describePackage}
 \alias{describePackage}
-\alias{describePackage,ObjFeatureSet-method}
+\alias{describePackage,FeatureSet-method}
 \title{Accessor method for ObjFeatureSet "analysispkg" slot.}
 \usage{
 describePackage(object)
 
-\S4method{describePackage}{ObjFeatureSet}(object)
+\S4method{describePackage}{FeatureSet}(object)
 }
 \arguments{
 \item{object}{An object of (super)class ObjFeatureSet.}
@@ -16,4 +16,3 @@ describePackage(object)
 \value{
 A list holding the name, title, and description of any packages with description files on the current path.
 }
-

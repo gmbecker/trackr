@@ -15,4 +15,3 @@ to search a trackr database and view the results. It can
 be used as a stand-alone Shiny application or from within the
 RStudio IDE as an addin
 }
-

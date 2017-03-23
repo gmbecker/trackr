@@ -2,8 +2,8 @@
 % Please edit documentation in R/Classes.R
 \docType{class}
 \name{TrackrOptions-class}
-\alias{TrackrOptions}
 \alias{TrackrOptions-class}
+\alias{TrackrOptions}
 \title{Trackr configuration optionso}
 \usage{
 TrackrOptions(insert_delay = 0, img_dir = "./images", img_ext = "png",
@@ -19,4 +19,3 @@ TrackrOptions(insert_delay = 0, img_dir = "./images", img_ext = "png",
 \item{backend_opts}{list. list of options specific to the backend. Currently ignored
 by trackr machinery.}
 }
-

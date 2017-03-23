@@ -16,4 +16,3 @@ graphSys(object)
 \value{
 A character vector representing the originating R package of the plot object.
 }
-

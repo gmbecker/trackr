@@ -8,4 +8,3 @@
 A class to contain information about the current session when
 working inside the RStudio IDE.
 }
-

@@ -14,7 +14,7 @@ setReplaceMethod(f = "titles",
 
 #' @rdname objCode-methods
 setReplaceMethod(f = "objCode", 
-    signature = "ObjFeatureSet",
+    signature = "FeatureSet",
     definition = function(object, value) {
         object@code <- as.character(parseCode(value))
         object@codeinfo <- CodeDepends::getInputs(parseCode(object@code))
@@ -27,7 +27,7 @@ setReplaceMethod(f = "objCode",
 
 #' @rdname codeInfo-methods
 setReplaceMethod(f = "codeInfo", 
-    signature = "ObjFeatureSet",
+    signature = "FeatureSet",
     definition = function(object, value) {
         object@codeinfo <- value
         # should do validity checking here
@@ -99,7 +99,7 @@ setReplaceMethod(f = "position",
 
 #' @rdname tags-methods
 setReplaceMethod(f = "tags", 
-    signature = "ObjFeatureSet",
+    signature = "FeatureSet",
     definition = function(object, value) {
         object@tags <- value
         # should do validity checking here
@@ -144,7 +144,7 @@ setReplaceMethod(f = "tags",
 
 #' @rdname tags-methods
 setMethod(f = "editTags", 
-    signature = "ObjFeatureSet",
+    signature = "FeatureSet",
     definition = function(object, value, option = c("replace", "add", "remove")) {
         option <- match.arg(option)
         switch(option,
@@ -188,7 +188,7 @@ setMethod(f = "titles",
 
 #' @rdname objCode-methods
 setMethod(f = "objCode",
-    signature = "ObjFeatureSet",
+    signature = "FeatureSet",
     definition = function(object) {
         object@code
     }
@@ -196,7 +196,7 @@ setMethod(f = "objCode",
 
 #' @rdname codeInfo-methods
 setMethod(f = "codeInfo",
-    signature = "ObjFeatureSet",
+    signature = "FeatureSet",
     definition = function(object) {
         object@codeinfo
     }
@@ -300,7 +300,7 @@ setMethod(f = "nObs",
 
 #' @rdname tags-methods
 setMethod(f = "tags", 
-    signature = "ObjFeatureSet",
+    signature = "FeatureSet",
     definition = function(object) {
         object@tags
     }
@@ -390,7 +390,7 @@ setMethod("img_ext", "TrackrOptions", function(db) db@img_ext)
 
 #' @rdname uniqueID-methods
 setMethod(f = "uniqueID",
-    signature = "ObjFeatureSet",
+    signature = "FeatureSet",
     definition = function(object) {
         object@uniqueid
     }
@@ -398,7 +398,7 @@ setMethod(f = "uniqueID",
 
 #' @rdname uniqueID-methods
 setReplaceMethod(f = "uniqueID", 
-    signature = "ObjFeatureSet",
+    signature = "FeatureSet",
     definition = function(object, value) {
         object@uniqueid <- value
         # should do validity checking here
@@ -437,7 +437,7 @@ setMethod("ndoc", "TrackrDB",
 
 makeToyAccessor = function(slname) {
     function(x) {
-        if(!is(x, "ObjFeatureSet"))
+        if(!is(x, "FeatureSet"))
             stop("direct accessor called on non-ObjFeatureSet. This should never happen please contact the maintainer")
         slot(x, slname)
     }
@@ -456,7 +456,7 @@ fsanalysisfile = makeToyAccessor("analysisfile")
 
 
 setGeneric("imagepath", function(x, db) standardGeneric("imagepath"))
-setMethod("imagepath", c("ObjFeatureSet", "ANY") , function(x, db) NA_character_)
+setMethod("imagepath", c("FeatureSet", "ANY") , function(x, db) NA_character_)
 setMethod("imagepath", c("PlotFeatureSet", "TrackrDB"), function(x, db) {
     if(!file.exists(img_dir(db)))
         dir.create(img_dir(db), recursive=TRUE)
@@ -466,7 +466,7 @@ setMethod("imagepath", c("PlotFeatureSet", "TrackrDB"), function(x, db) {
 
 
 setGeneric("previewpath", function(x, db) standardGeneric("previewpath"))
-setMethod("previewpath", c("ObjFeatureSet", "ANY"),  function(x, db) NA_character_)
+setMethod("previewpath", c("FeatureSet", "ANY"),  function(x, db) NA_character_)
 setMethod("previewpath", c("PlotFeatureSet", "TrackrDB"), function(x, db) {
     if(!file.exists(img_dir(db)))
         dir.create(img_dir(db), recursive=TRUE)
@@ -476,6 +476,6 @@ setMethod("previewpath", c("PlotFeatureSet", "TrackrDB"), function(x, db) {
 
 
 setGeneric("varnames", function(x) standardGeneric("varnames"))
-setMethod("varnames", "ObjFeatureSet", function(x) NA_character_)
+setMethod("varnames", "FeatureSet", function(x) NA_character_)
 setMethod("varnames", "DFFeatureSet", function(x) x@varnames)
 

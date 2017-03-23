@@ -16,4 +16,3 @@ A JSONBackend object, for use in creating a TrackrDB object.
 This function should generally not be called directly by end-users.
 See instead \code{\link{jsonTDB}}
 }
-

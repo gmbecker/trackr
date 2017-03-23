@@ -2,19 +2,19 @@
 % Please edit documentation in R/Generics.R, R/accessor-methods.R
 \docType{methods}
 \name{uniqueID<-}
-\alias{uniqueID}
-\alias{uniqueID,ObjFeatureSet-method}
 \alias{uniqueID<-}
-\alias{uniqueID<-,ObjFeatureSet-method}
+\alias{uniqueID}
+\alias{uniqueID,FeatureSet-method}
+\alias{uniqueID<-,FeatureSet-method}
 \title{Mutator method for "uniqueid" slot of ObjFeatureSet (or one of its subclasses).}
 \usage{
 uniqueID(object) <- value
 
 uniqueID(object)
 
-\S4method{uniqueID}{ObjFeatureSet}(object)
+\S4method{uniqueID}{FeatureSet}(object)
 
-\S4method{uniqueID}{ObjFeatureSet}(object) <- value
+\S4method{uniqueID}{FeatureSet}(object) <- value
 }
 \arguments{
 \item{object}{An object of (super)class ObjFeatureSet.}
@@ -26,4 +26,3 @@ A modified object of (super)class ObjFeatureSet.
 
 A character vector serving as the unique ID of the plot object in the database.
 }
-

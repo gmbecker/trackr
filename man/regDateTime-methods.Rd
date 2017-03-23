@@ -2,19 +2,19 @@
 % Please edit documentation in R/Generics.R, R/PlotWrapper.R
 \docType{methods}
 \name{regDateTime<-}
-\alias{regDateTime}
-\alias{regDateTime,ObjFeatureSet-method}
 \alias{regDateTime<-}
-\alias{regDateTime<-,ObjFeatureSet-method}
+\alias{regDateTime}
+\alias{regDateTime<-,FeatureSet-method}
+\alias{regDateTime,FeatureSet-method}
 \title{Mutator method for "regdate" slot of ObjFeatureSet (or one of its subclasses).}
 \usage{
 regDateTime(object) <- value
 
 regDateTime(object)
 
-\S4method{regDateTime}{ObjFeatureSet}(object) <- value
+\S4method{regDateTime}{FeatureSet}(object) <- value
 
-\S4method{regDateTime}{ObjFeatureSet}(object)
+\S4method{regDateTime}{FeatureSet}(object)
 }
 \arguments{
 \item{object}{An object of (super)class ObjFeatureSet.}
@@ -26,4 +26,3 @@ A modified object of (super)class ObjFeatureSet.
 
 A POSIXct timestamp representing the moment when the plot was registered.
 }
-

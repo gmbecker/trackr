@@ -12,4 +12,3 @@ gen_hash_id(x)
 \value{
 An 8 character vector
 }
-

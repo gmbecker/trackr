@@ -43,7 +43,7 @@ Suggests:
     rmarkdown,
     knitr
 VignetteBuilder: knitr
-Collate:
+Collate: 
     'Classes.R'
     'Generics.R'
     'PlotWrapper.R'
@@ -58,7 +58,5 @@ Collate:
     'knitr.R'
     'makeRStudioExtras.R'
     'parseCode.R'
-    'prep_for_backend.R'
     'shiny.R'
-    'zzz.R'
-RoxygenNote: 5.0.1
+RoxygenNote: 6.0.1

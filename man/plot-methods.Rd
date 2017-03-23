@@ -17,4 +17,3 @@
 \value{
 The plot object, plotted through its native print method.
 }
-

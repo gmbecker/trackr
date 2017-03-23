@@ -8,23 +8,36 @@ setClassUnion("characterOrNULL", c("character", "NULL"))
 
 ## define S4 classes
 
+.FeatureSet <- setClass("FeatureSet", contains="VIRTUAL",
+                        slots = c(user = "character",
+                                  regdate = "POSIXct",
+                                  uniqueid = "character",
+                                  analysispkg = "list",
+                                  tags = "character",
+                                  analysisfile = "character",
+                                  rstudioproject = "character",
+                                  generatedin = "character",
+                                  code = "character",
+                                  codeinfo = "ScriptInfo",
+                                  isplot = "logical",
+                                  fsetklass = "character")
+                        )
+
+
 .ObjFeatureSet <- setClass("ObjFeatureSet",
                            slots = c(klass = "character",
-                                     fsetklass = "character",
-                                     object = "ANY",
-                                     user = "character",
-                                     regdate = "POSIXct",
-                                     uniqueid = "character",
-                                     analysispkg = "list",
-                                     code = "character",
-                                     codeinfo = "ScriptInfo",
-                                     isplot = "logical",
-                                     tags = "character",
+                                     object = "ANY"##,
+                                     ##            user = "character",
+                                     ##regdate = "POSIXct",
+                                     ##uniqueid = "character",
+                                     ##analysispkg = "list",
+                                     ##tags = "character",
                                      ## currently only supported within RStudio
-                                     analysisfile = "character",
+                                     ##analysisfile = "character",
                                      ## should be NA_character if not in RStudio
-                                     rstudioproject = "character"
-                                     ))
+                                     ##rstudioproject = "character"
+                                     ),
+                           contains = "FeatureSet")
 
 
 
@@ -98,6 +111,26 @@ setClassUnion("characterOrNULL", c("character", "NULL"))
 .GraphicsFeatureSet <- setClass("GraphicsFeatureSet",
     # slots = c(),
     contains = "PlotFeatureSet")
+
+
+.RmdFeatureSet <- setClass("RmdFeatureSet",
+                           contains = "FeatureSet",
+                           slots = c(chunks = "list",
+                                     numouts = "numeric",
+                                     numplots = "numeric",
+                                     title = "character",
+                                     author = "character",
+                                     textkeywords = "character",
+                                     codekeywords = "character",
+                                     inputfiles = "character",
+                                     outputids = "character",
+                                     fullcode = "character",
+                                     ##its ScriptNodeInfo because we force it into single node and grab that info directly
+                                     fullcodeinfo = "ScriptNodeInfo",
+                                     rmdfile = "character",
+                                     outfile = "character"))
+
+
 
 
 #' @name TrackrOptions-class
@@ -215,3 +248,6 @@ setClass("RStudioExtras",
          prototype = list(file = NA_character_,
                           project = NA_character_)
          )
+
+listbackend = setRefClass("ListBackend", contains="DocCollectionRef")
+

@@ -2,10 +2,11 @@
 % Please edit documentation in R/Generics.R
 \docType{methods}
 \name{trackr_lookup}
+\alias{trackr_lookup}
 \alias{insert_record}
 \alias{prep_for_backend}
 \alias{remove_record}
-\alias{trackr_lookup}
+\alias{remove_record}
 \alias{trackr_search}
 \title{Backend-interface API
 
@@ -78,4 +79,3 @@ as \code{insert_record}
 \code{remove_record} should have the same writing behavior
 as \code{insert_record}
 }
-

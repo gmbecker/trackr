@@ -3,12 +3,12 @@
 \docType{methods}
 \name{parseCode}
 \alias{parseCode}
-\alias{parseCode,ANY-method}
+\alias{parseCode,expression-method}
 \alias{parseCode,call-method}
 \alias{parseCode,character-method}
-\alias{parseCode,expression-method}
 \alias{parseCode,ggplot-method}
 \alias{parseCode,trellis-method}
+\alias{parseCode,ANY-method}
 \title{Parse plot creation code into a CodeDepends::Script.}
 \usage{
 parseCode(code)
@@ -31,4 +31,3 @@ parseCode(code)
 \value{
 A CodeDepends::Script object.
 }
-

@@ -12,4 +12,3 @@ pfs_list_collapse(pfs)
 \value{
 A list.
 }
-

@@ -2,7 +2,6 @@
 % Please edit documentation in R/Classes.R
 \docType{class}
 \name{GraphicsFeatureSet-class}
-\alias{.GraphicsFeatureSet}
 \alias{GraphicsFeatureSet-class}
+\alias{.GraphicsFeatureSet}
 \title{An S4 subclass of PlotFeatureSet with additional slots for objects of class recordedplot.}
-

@@ -204,38 +204,41 @@ setMethod(f = "saveBasicPlot",
         
         type <- match.arg(type)
         if(type=="jpeg") type <- "jpg"
-        if(type=="tiff") type <- "tif"
-        success <- FALSE
-        # too much repetition -- refactor! look at ggsave for a good example.
-        switch(type,
-            png = {
-                ## write "plain" PNG (no metadata)
-                grDevices::png(filename, width = width, height = height, res = dpi, units = "in")
-                print(object@object)
-                invisible(dev.off())
-                success <- TRUE
-            },
-            jpg = {
-                grDevices::jpeg(filename, width = width, height = height, res = dpi, units = "in")
-                print(object@object)
-                invisible(dev.off())
-                success <- TRUE
-            },
-            bmp = {
-                grDevices::bmp(filename, width = width, height = height, res = dpi, units = "in")
-                print(object@object)
-                invisible(dev.off())
-                success <- TRUE
-            },
-            tif = {
-                grDevices::tiff(filename, width = width, height = height, res = dpi, units = "in")
-                print(object@object)
-                invisible(dev.off())
-                success <- TRUE
-            },
-            not_implemented(paste0("saving plot object as type ", type, "."))
-        )
-        return(success)
+    if(type=="tiff") type <- "tif"
+    success <- FALSE
+    if(is.null(object@object))
+        return(FALSE)
+    
+    ## too much repetition -- refactor! look at ggsave for a good example.
+    switch(type,
+           png = {
+        ## write "plain" PNG (no metadata)
+        grDevices::png(filename, width = width, height = height, res = dpi, units = "in")
+        print(object@object)
+        invisible(dev.off())
+        success <- TRUE
+    },
+    jpg = {
+        grDevices::jpeg(filename, width = width, height = height, res = dpi, units = "in")
+        print(object@object)
+        invisible(dev.off())
+        success <- TRUE
+    },
+    bmp = {
+        grDevices::bmp(filename, width = width, height = height, res = dpi, units = "in")
+        print(object@object)
+        invisible(dev.off())
+        success <- TRUE
+    },
+    tif = {
+        grDevices::tiff(filename, width = width, height = height, res = dpi, units = "in")
+        print(object@object)
+        invisible(dev.off())
+        success <- TRUE
+    },
+    not_implemented(paste0("saving plot object as type ", type, "."))
+    )
+    return(success)
 })
 
 ## No-op for non-plot feature sets. This shouldn't be necessary but
@@ -243,14 +246,14 @@ setMethod(f = "saveBasicPlot",
 ## TODO: make this unnecessary and then remove it
 
 setMethod(f="saveBasicPlot",
-          signature = "ObjFeatureSet",
+##          signature = "FeatureSet",
           definition = function(object, filename, type = c("png", "jpeg", "jpg", "tiff", "tif", "bmp"), width = 7, height = 7, dpi = 300) {
     TRUE
 })
 
 
 setMethod(f="saveEnrichedPlot",
-          signature = "ObjFeatureSet",
+          signature = "FeatureSet",
             definition = function(object, filename, type = "png", ...) {
     TRUE
 })
@@ -330,7 +333,7 @@ setMethod(f="saveEnrichedPlot",
 
 #' @rdname user-methods
 setReplaceMethod(f = "user", 
-    signature = "ObjFeatureSet",
+    signature = "FeatureSet",
     definition = function(object, value) {
         object@user <- value
         # should do validity checking here
@@ -342,7 +345,7 @@ setReplaceMethod(f = "user",
 
 #' @rdname regDateTime-methods
 setReplaceMethod(f = "regDateTime", 
-    signature = "ObjFeatureSet",
+    signature = "FeatureSet",
     definition = function(object, value) {
         object@regdate <- value
         # should do validity checking here
@@ -356,7 +359,7 @@ setReplaceMethod(f = "regDateTime",
 
 #' @rdname user-methods
 setMethod(f = "user",
-    signature = "ObjFeatureSet",
+    signature = "FeatureSet",
     definition = function(object) {
         object@user
     }
@@ -364,7 +367,7 @@ setMethod(f = "user",
 
 #' @rdname regDateTime-methods
 setMethod(f = "regDateTime",
-    signature = "ObjFeatureSet",
+    signature = "FeatureSet",
     definition = function(object) {
         object@regdate
     }
@@ -380,7 +383,7 @@ setMethod(f = "graphSys",
 
 #' @rdname describePackage-methods
 setMethod(f = "describePackage", 
-    signature = "ObjFeatureSet", 
+    signature = "FeatureSet", 
     definition = function(object) {
         object@analysispkg
     }
@@ -1303,52 +1306,91 @@ setMethod(f = "groupInfo",
     }
 )
 
+
+.ggplotPanelScheme = function(obj, v2.0 = ggplot_2.0()) {
+    if(v2.0) {
+        panel.scheme = tolower(gsub("Facet(.*)", "\\1", class(obj$facet)[[1]]))
+    } else {
+        panel.scheme <- grep("facet", class(obj$facet), value=TRUE, invert=TRUE)
+    }
+    
+    if(panel.scheme=="null"){
+        panel.scheme <- "none"   
+    }
+    panel.scheme
+
+}
+
+.ggplotPanelNames = function(obj, psch, v2.0 = ggplot_2.0()) {
+    if(v2.0) {
+        facinfo = obj$facet$params
+    } else {
+        facinfo = obj$facet
+    }
+    ret = NULL
+    if(psch =="wrap")
+        ret = names(facinfo$facets)
+    else if (psch == "grid")
+        ret = c(names(facinfo$rows), names(facinfo$cols))
+    ret
+    
+}
+
+.ggplotPanelLayoutDF = function(builtobj, v2.0=ggplot_2.0()){
+    
+    if(v2.0) {
+        ldf = builtobj$layout$panel_layout
+    } else {
+        ldf = builtobj$panel$layout
+    }
+    ldf
+}
+.ggplotPanelLevels = function(builtobj, pnames, ldf = .ggplotPanelLayoutDF(builtobj)) {
+    apply(ldf[pnames], 2, function(x) as.character(unique(x)))
+}
+
+
 #' @rdname groupInfo-methods
 setMethod(f = "groupInfo",
     signature = "ggplot",
     definition = function(object) {
-        panel.scheme <- grep("facet", class(object$facet), value=TRUE, invert=TRUE)
-        if(panel.scheme=="null"){
-            panel.scheme <- "none"   
-        }
-
-        panel.names <- NULL
-        if (panel.scheme=="wrap") {
-            panel.names <- names(object$facet$facets)
-        } else if (panel.scheme=="grid") {
-            panel.names <- c(names(object$facet$rows), names(object$facet$cols))
-        }
-
-        suppressMessages(built.object <- ggplot2::ggplot_build(object))
-        # convert factor to character
-        panel.levels <- apply(built.object$panel$layout[panel.names],
-            2, function(x) as.character(unique(x)))
-        # make into a list for uniformity
-        if (is.matrix(panel.levels)) {
-            panel.levels <- split(panel.levels, 
-                rep(colnames(panel.levels), each = nrow(panel.levels)))
-        }
-        # this parses calls like `factor(x)` and leaves us with just `x`
-        # not necessary for ggplot panels right now b/c it doesn't allow this to happen
-        # panel.names.info <- CodeDepends::readScript(txt = panel.names)
-        # panel.names <- sapply(CodeDepends::getInputs(panel.names.info), slot, "inputs")
-
-        # names(panel.info$var.levels) <- NULL
-
-        panel.info <- list(
-            count = nrow(built.object$panel$layout),
-            # sizes = , # this could be tricky b/c ggplot summarizes...
-            # scheme = panel.scheme,
-            vars = panel.names,
-            levels = collapse_to_str(panel.levels),
-            # levels = panel.levels,
-            num.vars = length(panel.names))
-        if (panel.info$count==1) {
-            panel.info = list()
-        }
-        list(panel = panel.info)
+    panel.scheme = .ggplotPanelScheme(object)
+    panel.names = .ggplotPanelNames(object, panel.scheme)
+    ## panel.names <- NULL
+    ## if (panel.scheme=="wrap") {
+    ##     panel.names <- names(object$facet$facets)
+    ## } else if (panel.scheme=="grid") {
+    ##     panel.names <- c(names(object$facet$rows), names(object$facet$cols))
+    ## }
+    
+    suppressMessages(built.object <- ggplot2::ggplot_build(object))
+                                        # convert factor to character
+    panel.levels <- .ggplotPanelLevels(built.object, pnames = panel.names)
+    ## make into a list for uniformity
+    if (is.matrix(panel.levels)) {
+        panel.levels <- split(panel.levels, 
+                              rep(colnames(panel.levels), each = nrow(panel.levels)))
     }
-)
+    ## this parses calls like `factor(x)` and leaves us with just `x`
+    ## not necessary for ggplot panels right now b/c it doesn't allow this to happen
+    ## panel.names.info <- CodeDepends::readScript(txt = panel.names)
+    ## panel.names <- sapply(CodeDepends::getInputs(panel.names.info), slot, "inputs")
+    
+    ## names(panel.info$var.levels) <- NULL
+    
+    panel.info <- list(
+        count = nrow(.ggplotPanelLayoutDF(built.object)),
+                                        # sizes = , # this could be tricky b/c ggplot summarizes...
+                                        # scheme = panel.scheme,
+        vars = panel.names,
+        levels = collapse_to_str(panel.levels),
+                                        # levels = panel.levels,
+        num.vars = length(panel.names))
+    if (panel.info$count==1) {
+        panel.info = list()
+    }
+    list(panel = panel.info)
+})
 
 #' @rdname groupInfo-methods
 setMethod(f = "groupInfo",

@@ -2,7 +2,6 @@
 % Please edit documentation in R/Classes.R
 \docType{class}
 \name{TrellisFeatureSet-class}
-\alias{.TrellisFeatureSet}
 \alias{TrellisFeatureSet-class}
+\alias{.TrellisFeatureSet}
 \title{An S4 subclass of PlotFeatureSet with additional slots for objects of class trellis.}
-

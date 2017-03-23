@@ -14,4 +14,3 @@ Query the backend for the number of docs it contains}
 
 \item{...}{not used.}
 }
-

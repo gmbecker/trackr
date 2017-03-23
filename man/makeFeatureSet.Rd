@@ -3,15 +3,14 @@
 \docType{methods}
 \name{makeFeatureSet}
 \alias{makeFeatureSet}
-\alias{makeFeatureSet,ANY-method}
-\alias{makeFeatureSet,ObjFeatureSet-method}
-\alias{makeFeatureSet,call-method}
-\alias{makeFeatureSet,character-method}
-\alias{makeFeatureSet,expression-method}
-\alias{makeFeatureSet,gTree-method}
 \alias{makeFeatureSet,ggplot-method}
-\alias{makeFeatureSet,recordedplot-method}
 \alias{makeFeatureSet,trellis-method}
+\alias{makeFeatureSet,gTree-method}
+\alias{makeFeatureSet,recordedplot-method}
+\alias{makeFeatureSet,expression-method}
+\alias{makeFeatureSet,call-method}
+\alias{makeFeatureSet,ObjFeatureSet-method}
+\alias{makeFeatureSet,ANY-method}
 \title{Construct an ObjFeatureSet.}
 \usage{
 makeFeatureSet(object, ...)
@@ -27,8 +26,6 @@ makeFeatureSet(object, ...)
 \S4method{makeFeatureSet}{expression}(object, ...)
 
 \S4method{makeFeatureSet}{call}(object, ...)
-
-\S4method{makeFeatureSet}{character}(object, ...)
 
 \S4method{makeFeatureSet}{ObjFeatureSet}(object, ...)
 
@@ -56,12 +53,11 @@ PlotFeatureSet S4 object containing a ObjFeatureSet object and extracted plot fe
 
 \item \code{call}: Construct a ObjFeatureSet from a call.
 
-\item \code{character}: Construct a ObjFeatureSet from a character vector representing a call to create a plot.
-
 \item \code{ObjFeatureSet}: No-op if we already have a ObjFeatureSet
 
 \item \code{ANY}: Catch-all for attempted construction of a ObjFeatureSet from an object not of class ggplot or trellis.
 }}
+
 \examples{
 library(ggplot2)
 pg <- ggplot(mtcars, aes(wt, mpg)) + geom_point()
@@ -79,4 +75,3 @@ pb <- recordPlot()
 pfs <- makeFeatureSet(pb)
 }
 }
-

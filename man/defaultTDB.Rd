@@ -10,4 +10,3 @@ defaultTDB(trackrdb)
 \item{trackrdb}{TrackrDB. The TrackrDB to which objects will be recorded
 by default. If missing, the current default is returned.}
 }
-

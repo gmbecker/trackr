@@ -2,9 +2,9 @@
 % Please edit documentation in R/accessor-methods.R
 \docType{methods}
 \name{trackr_options}
+\alias{trackr_options}
 \alias{img_dir}
 \alias{img_ext}
-\alias{trackr_options}
 \title{options extraction}
 \usage{
 trackr_options(db)
@@ -16,4 +16,3 @@ img_ext(db)
 \arguments{
 \item{db}{Object to extract information from}
 }
-

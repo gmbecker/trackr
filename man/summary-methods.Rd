@@ -10,4 +10,3 @@
 \arguments{
 \item{object}{An object of (super)class PlotFeatureSet.}
 }
-

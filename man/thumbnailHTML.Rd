@@ -9,4 +9,3 @@ thumbnailHTML(rec, imgurlfun, tdb = defaultTDB())
 \description{
 Create HTML representation of record
 }
-

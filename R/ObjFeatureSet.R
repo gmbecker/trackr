@@ -189,9 +189,62 @@ DFFeatureSet = function(object, fsetklass = "DFFeatureSet",
 }
 
         
-        
+superstupidenv = new.env()        
 
+RmdFeatureSet = function(rmdfile,
+                         outputfile,
+                         chunks,
+                         numouts = length(trackr_backend(objtdb)),
+                         numplots = sum(sapply(objrecords, function(x) x$isplot)),
+                         title = "", ## XXX TODO
+                         author = "", ## XXX TODO
+                         textkeywords = character(), ## XXX TODO
+                         codekeywords = character(), ## XXX TODO
+                         
+                         outputids = sapply(objrecords, function(x) x$uniqueid),
+                         ## begin duplicated from ObjFeatureSet constructor :(
+                         tags = character(),
+                         user = unname(Sys.info()["user"]),
+                         regdate = Sys.time(),
+                         analysispkg = scrape_descr(),
+                         analysisfile = .analysisFileOrNA(),
+                         rstudioproject = .rstudioProjOrNA(),
+                         fsetklass = "RmdFeatureSet" ,
+                         ## end duplicated ^^
+                         objrecords = findRecords(".", db = objtdb),
+                         objtdb) {
+    ## the braces make it one "script node" [[1]] gets the info for that one node
+    con = textConnection("tangletxt", "w", local=TRUE)
+    on.exit(close(con), add=TRUE)
 
+    knitr::knit(input = rmdfile, output = con, tangle=TRUE)
+    close(con)
+    on.exit(NULL)
+    scrinfo = getInputs(readScript(txt = c("{", tangletxt, "}")))[[1]] 
+    new("RmdFeatureSet",
+        ## XXX this is only inputs, what we actually want is outputs
+        ## BUT RMD reports very often have their date in them
+        ## which may or may not make them a "different report"
+        uniqueid = gen_hash_id(readLines(rmdfile)),
+        chunks = chunks, numouts = numouts, numplots = numplots,
+        title = title, author = author, textkeywords = textkeywords,
+        codekeywords = codekeywords,
+        inputfiles = scrinfo@files,
+        outputids= outputids,
+        fullcode = tangletxt,
+        fullcodeinfo = scrinfo,
+        rmdfile = rmdfile,
+        tags = tags,
+        user = user,
+        regdate = regdate,
+        analysispkg = analysispkg,
+        analysisfile = analysisfile,
+        rstudioproject = rstudioproject,
+        outfile = outputfile,
+        fsetklass = fsetklass,
+        isplot = FALSE)
+}
+                         
         
 
 
@@ -270,18 +323,18 @@ setMethod(f = "makeFeatureSet",
     }
 )
 
-#' @describeIn makeFeatureSet Construct a ObjFeatureSet from a character vector representing a call to create a plot.
-setMethod(f = "makeFeatureSet", 
-    signature = signature(object = "character"),
-    definition = function(object, ...) {
-        plot2 <- parse(text = object)
-        makeFeatureSet(plot2, ...)
-    }
-)
+# @describeIn makeFeatureSet Construct a ObjFeatureSet from a character vector representing a call to create a plot.
+## setMethod(f = "makeFeatureSet", 
+##     signature = signature(object = "character"),
+##     definition = function(object, ...) {
+##         plot2 <- parse(text = object)
+##         makeFeatureSet(plot2, ...)
+##     }
+## )
 
 #' @describeIn makeFeatureSet No-op if we already have a ObjFeatureSet
 setMethod(f = "makeFeatureSet", 
-    signature = signature(object = "ObjFeatureSet"),
+    signature = signature(object = "FeatureSet"),
     definition = function(object, ...) object
 )
 
@@ -291,7 +344,7 @@ setMethod(f = "makeFeatureSet",
     signature = signature(object = "ANY"),
     definition = function(object, ...) {
     cls = class(object)
-    ssum = capture.output(str(obj, max.level=1))
+    ssum = capture.output(str(object, max.level=1))
     ObjFeatureSet(
         object = object,
         fsetklass = "ObjFeatureSet",
@@ -501,66 +554,42 @@ setMethod(f = "generateTags", "ANY", generateDefTags)
 #' @return A list.
 #' @rdname as-methods
 #' @export
-as.list.ObjFeatureSet <- function(x, ...) {
+##as.list.ObjFeatureSet <- function(x, ...) {
+as.list.FeatureSet <- function(x, ...) {
     out =  lapply(slotNames(x), function(nm) slot(x, nm))
     names(out) <- slotNames(x)
     out$regdate <- format(x@regdate, "%Y-%m-%d")
-    out$regtime = format(x@regdate, "%H:%M:%S")
-    out$regdatetime = format(x@regdate, "%Y-%m-%dT%H:%M:%SZ")
-    out$code = unlist(lapply(objCode(x)@.Data, function(i) paste(deparse(i), collapse="")))
+    out$regtime <- format(x@regdate, "%H:%M:%S")
+    out$regdatetime <- format(x@regdate, "%Y-%m-%dT%H:%M:%SZ")
+    out$code <- unlist(lapply(objCode(x)@.Data, function(i) paste(deparse(i), collapse="")))
     out$codeinfo <- lapply(codeInfo(x), as.list)
+    out$codeinfo$functions = names(out$codeinfo$functions) 
 
-    ## out <- list(
-    ##     user = x@user,
-    ##     package = x@package, 
-    ##     # date as string not ideal but the data.frame converts POSIXct to numeric
-    ##     # regdate = format(x@regdate, "%Y-%m-%d"),
-    ##     # regtime = format(x@regdate, "%H:%M:%S"),
-    ##     # format so solr can read it
-    ##     regdatetime = format(x@regdate, "%Y-%m-%dT%H:%M:%SZ"),
-    ##     titles = x@titles,
-    ##     varlabels = x@varlabels,
-    ##     grouping = x@grouping,
-    ##     nobs = x@nobs,
-    ##     haslegend = x@haslegend,
-    ##     coordsys = x@coordsys,
-    ##     vartypes = x@vartypes,
-    ##     annotationtext = x@annotationtext,
-    ##     analysispkg = x@analysispkg,
-    ##     tags = x@tags,
-    ##     # code = x@code
-    ##     code = unlist(lapply(plotCode(x)@.Data, function(i) paste(deparse(i), collapse=""))),
-    ##     codeinfo = lapply(codeInfo(x), as.list)
-    ##     isplot = x@isplot
-    ##     objclass = x@klass
-    ## )
-    
-
-    ## if (class(x)=="GGplotFeatureSet") {
-    ##     out <- c(out, list(
-    ##         geom = x@geom,
-    ##         stat = x@stat,
-    ##         position = x@position,
-    ##         num.layers = x@num.layers))
-    ## }
-    ## lst <-
-    ## lst$object <- NULL
-    ## lst$codeinfo = lapply(codeInfo(x), as.list)
-    ## out = flatten5(lst)
-     # http://stackoverflow.com/a/18539199
-     keys <- unique(unlist(lapply(out$codeinfo, names)))
-     out$codeinfo <- setNames(do.call(mapply, c(FUN=c, lapply(out$codeinfo, `[`, keys))), keys)
-     out$codeinfo <- sapply(out$codeinfo, unique)
+    keys <- unique(unlist(lapply(out$codeinfo, names)))
+    out$codeinfo <- setNames(do.call(mapply, c(FUN=c, lapply(out$codeinfo, `[`, keys))), keys)
+    out$codeinfo <- sapply(out$codeinfo, unique)
     return(out)
 }
 
-setAs(from = "ObjFeatureSet", 
+##setAs(from = "ObjFeatureSet",
+setAs(from = "FeatureSet", 
     to = "list", 
     def = function(from) {
-        as.list.ObjFeatureSet(from)
+        as.list.FeatureSet(from)
     }
-)
+    )
 
+setAs(from = "RmdFeatureSet",
+      to = "list",
+      def = function(from) {
+    ret = as.list.FeatureSet(from)
+    ret$fullcodeinfo = as.list(ret$fullcodeinfo)
+    ret$fullcodeinfo$functions = names(ret$fullcodeinfo$functions)
+    ## keys <- unique(unlist(lapply(ret$fullcodeinfo, names)))
+    ## ret$fullcodeinfo = setNames(do.call(mapply, c(FUN=c, lapply(ret$fullcodeinfo, `[`, keys))), keys)
+    ## ret$fullcodeinfo <- sapply(ret$fullcodeinfo, unique)
+    ret
+})
 #' @title Export a ScriptNodeInfo object as a list
 #' @param x A ScriptNodeInfo object.
 #' @param ... Other named arguments (currently unused).
@@ -568,7 +597,9 @@ setAs(from = "ObjFeatureSet",
 #' @rdname CodeDepends-methods
 #' @export
 as.list.ScriptNodeInfo <- function(x, ...) {
-    sapply(slotNames(x), function(i) slot(x, i))
+    ret = lapply(slotNames(x), function(i) slot(x, i))
+    names(ret) = slotNames(x)
+    ret
 }
 
 setAs(from = "ScriptNodeInfo", 
@@ -586,7 +617,19 @@ setAs(from = "ScriptNodeInfo",
                    "tags", "code", "codeinfo",
                    "isplot", "klass", "geom", "stat",
                    "position", "num.layers",
-                   "varsummaries"
+                   "varsummaries",
+                   "generatedin",
+                   ## RMD attributes
+                   "author", "textkeywords",
+                   "outputids",
+                   "fullcode",
+                   "fullcodeinfo",
+                   "rmdfile",
+                   "outfile",
+                   "numouts",
+                   "numplots",
+                   "chunks"
+                   
                    )
 #' @title Collapse particular fields of a ObjFeatureSet to delimited character vectors.
 #' @param pfs An object of (super)class ObjFeatureSet.

@@ -2,7 +2,7 @@
  ##    out$regtime = format(x@regdate, "%H:%M:%S")
 ##    out$regdatetime = format(x@regdate, "%Y-%m-%dT%H:%M:%SZ")
 
-noflat = c("codeinfo", "object")
+noflat = c("codeinfo", "object", "fullcodeinfo")
 listRecToFeatureSet = function(lst) {
     clsdef = getClass(lst$fsetklass)
     slts = getSlots(clsdef)
@@ -27,7 +27,7 @@ listRecToFeatureSet = function(lst) {
 
 
 norecurse = c("varnames", "varsummaries", "varclasses", "na", ## for na.rm
-              "codeinfo"
+              "codeinfo", "fullcodeinfo", "outputids", "chunks" 
               )
 
 unflattenField = function(lst, sl, recursive=TRUE) {

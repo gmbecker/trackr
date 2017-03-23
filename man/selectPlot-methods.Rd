@@ -27,4 +27,3 @@ selectPlot(object, terms, ...)
 \value{
 A boolean indicating whether the terms were found.
 }
-

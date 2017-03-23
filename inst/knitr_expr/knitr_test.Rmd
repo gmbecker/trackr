@@ -1,0 +1,30 @@
+---
+title: "Save plots using recordr and knitr"
+author: "Sara Moore"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Using recordr with knitr}
+  %\VignetteEngine{knitr::rmarkdown}
+  \usepackage[utf8]{inputenc}
+---
+
+
+some text
+
+```{r plot}
+library(ggplot2)
+
+p = qplot(hp, wt, data = mtcars)
+p
+```
+
+
+more text
+
+```{r lm}
+
+fit = lm(hp~wt, data = mtcars)
+fit
+```
+
+even more text

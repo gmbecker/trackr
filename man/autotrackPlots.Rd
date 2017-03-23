@@ -16,4 +16,3 @@ the default.}
 \value{
 NULL, invisibly.
 }
-

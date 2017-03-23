@@ -2,9 +2,9 @@
 % Please edit documentation in R/Generics.R, R/PlotWrapper.R
 \docType{methods}
 \name{saveEnrichedPlot}
-\alias{loadEnrichedPlot}
 \alias{saveEnrichedPlot}
 \alias{saveEnrichedPlot,PlotFeatureSet-method}
+\alias{loadEnrichedPlot}
 \title{Save the plot object owned by an object of class/superclass PlotFeatureSet as an image with metadata.}
 \usage{
 saveEnrichedPlot(object, filename, ...)

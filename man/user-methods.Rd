@@ -2,19 +2,19 @@
 % Please edit documentation in R/Generics.R, R/PlotWrapper.R
 \docType{methods}
 \name{user<-}
-\alias{user}
-\alias{user,ObjFeatureSet-method}
 \alias{user<-}
-\alias{user<-,ObjFeatureSet-method}
+\alias{user}
+\alias{user<-,FeatureSet-method}
+\alias{user,FeatureSet-method}
 \title{Mutator method for "user" slot of ObjFeatureSet (or one of its subclasses).}
 \usage{
 user(object) <- value
 
 user(object)
 
-\S4method{user}{ObjFeatureSet}(object) <- value
+\S4method{user}{FeatureSet}(object) <- value
 
-\S4method{user}{ObjFeatureSet}(object)
+\S4method{user}{FeatureSet}(object)
 }
 \arguments{
 \item{object}{An object of (super)class ObjFeatureSet.}
@@ -26,4 +26,3 @@ A modified object of (super)class ObjFeatureSet.
 
 A character vector serving as the username associated with the plot object in the database.
 }
-

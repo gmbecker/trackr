@@ -2,19 +2,19 @@
 % Please edit documentation in R/Generics.R, R/accessor-methods.R
 \docType{methods}
 \name{tags<-}
-\alias{editTags}
-\alias{editTags,ObjFeatureSet-method}
-\alias{tags}
-\alias{tags,ANY-method}
-\alias{tags,ObjFeatureSet-method}
-\alias{tags,gTree-method}
-\alias{tags,ggplot-method}
-\alias{tags,trellis-method}
 \alias{tags<-}
-\alias{tags<-,ObjFeatureSet-method}
-\alias{tags<-,gTree-method}
+\alias{editTags}
+\alias{tags}
+\alias{tags<-,FeatureSet-method}
 \alias{tags<-,ggplot-method}
 \alias{tags<-,trellis-method}
+\alias{tags<-,gTree-method}
+\alias{editTags,FeatureSet-method}
+\alias{tags,FeatureSet-method}
+\alias{tags,ggplot-method}
+\alias{tags,trellis-method}
+\alias{tags,gTree-method}
+\alias{tags,ANY-method}
 \title{Mutator method for PlotFeatureSet "tags" slot.}
 \usage{
 tags(object) <- value
@@ -23,7 +23,7 @@ editTags(object, value, option)
 
 tags(object)
 
-\S4method{tags}{ObjFeatureSet}(object) <- value
+\S4method{tags}{FeatureSet}(object) <- value
 
 \S4method{tags}{ggplot}(object) <- value
 
@@ -31,10 +31,10 @@ tags(object)
 
 \S4method{tags}{gTree}(object) <- value
 
-\S4method{editTags}{ObjFeatureSet}(object, value, option = c("replace", "add",
+\S4method{editTags}{FeatureSet}(object, value, option = c("replace", "add",
   "remove"))
 
-\S4method{tags}{ObjFeatureSet}(object)
+\S4method{tags}{FeatureSet}(object)
 
 \S4method{tags}{ggplot}(object)
 
@@ -60,4 +60,3 @@ A modified object of (super)class PlotFeatureSet.
 
 A character vector of user-defined tags.
 }
-

@@ -2,8 +2,8 @@
 % Please edit documentation in R/Classes.R
 \docType{class}
 \name{TrackrDB-class}
-\alias{TrackrDB}
 \alias{TrackrDB-class}
+\alias{TrackrDB}
 \title{Trackr database}
 \usage{
 TrackrDB(opts = TrackrOptions(...), backend = JSONBackend(), ...)
@@ -15,4 +15,3 @@ TrackrDB(opts = TrackrOptions(...), backend = JSONBackend(), ...)
 
 \item{...}{ignored.}
 }
-

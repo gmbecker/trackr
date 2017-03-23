@@ -2,8 +2,8 @@
 % Please edit documentation in R/Classes.R
 \docType{class}
 \name{PlotFeatureSet-class}
-\alias{.PlotFeatureSet}
 \alias{PlotFeatureSet-class}
+\alias{.PlotFeatureSet}
 \title{An S4 class called PlotFeatureSet}
 \section{Slots}{
 

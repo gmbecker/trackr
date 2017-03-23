@@ -9,4 +9,3 @@ not_implemented(reason = NULL)
 \arguments{
 \item{reason}{An optional character vector describing the feature.}
 }
-

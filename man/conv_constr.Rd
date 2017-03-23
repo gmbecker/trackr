@@ -29,4 +29,3 @@ saved into. Passed to default construction of \code{opts}. Defaults to
 \value{
 A TrackrDB object
 }
-
