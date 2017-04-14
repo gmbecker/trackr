@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<title>Enabling discoverability of results in R</title>
+<meta name="author" content="(Gabriel Becker(@groundwalkergmb), Sara Moore, Michael Lawrence)"/>
+<style type="text/css">
+.underline { text-decoration: underline; }
+</style>
+<link rel="stylesheet" href="http://cdn.jsdelivr.net/reveal.js/3.0.0/css/reveal.css"/>
+
+<link rel="stylesheet" href="http://cdn.jsdelivr.net/reveal.js/3.0.0/css/theme/moon.css" id="theme"/>
+
+<link rel="stylesheet" href="./JSM2016.css"/>
+
+<!-- If the query includes 'print-pdf', include the PDF print sheet -->
+<script>
+    if( window.location.search.match( /print-pdf/gi ) ) {
+        var link = document.createElement( 'link' );
+        link.rel = 'stylesheet';
+        link.type = 'text/css';
+        link.href = 'http://cdn.jsdelivr.net/reveal.js/3.0.0/css/print/pdf.css';
+        document.getElementsByTagName( 'head' )[0].appendChild( link );
+    }
+</script>
+</head>
+<body>
+<div class="reveal">
+<div class="slides">
+<section id="sec-title-slide"><h1 class="title">Enabling discoverability of results in R</h1><h2 class="author">Gabriel Becker(@groundwalkergmb), Sara Moore, Michael Lawrence</h2><p class="date">Created: 2016-08-03 Wed 12:14</p>
+</section>
+<section>
+<section id="slide-orgheadline2">
+<h2 id="orgheadline2"><span class="section-number-2">1</span> So you have an awesome result &#x2026;</h2>
+<div class="outline-text-2" id="text-1">
+</div></section>
+<section id="slide-orgheadline1">
+<h3 id="orgheadline1"><span class="section-number-3">1.1</span> That's great</h3>
+<p>
+No, really. Good results are hard to find.
+</p>
+</section>
+</section>
+<section>
+<section id="slide-orgheadline5">
+<h2 id="orgheadline5"><span class="section-number-2">2</span> Two questions</h2>
+<div class="outline-text-2" id="text-2">
+</div></section>
+<section id="slide-orgheadline3">
+<h3 id="orgheadline3"><span class="section-number-3">2.1</span> Is it reproducible?</h3>
+</section>
+<section id="slide-orgheadline4">
+<h3 id="orgheadline4"><span class="section-number-3">2.2</span> How will someone find it?</h3>
+<ol class="fragment">
+<li>Your collaborators now</li>
+<li>You in a year</li>
+
+</ol>
+</section>
+</section>
+<section>
+<section id="slide-orgheadline7">
+<h2 id="orgheadline7"><span class="section-number-2">3</span> Let's talk Discoverability</h2>
+<div class="outline-text-2" id="text-3">
+</div></section>
+<section id="slide-orgheadline6">
+<h3 id="orgheadline6"><span class="section-number-3">3.1</span> Discoverability is</h3>
+<p>
+the ability to
+</p>
+<ul>
+<li>discover the existence of,</li>
+<li>locate, and</li>
+<li>retrieve in a useful form</li>
+
+</ul>
+<p>
+Research, results, and computational artifacts
+</p>
+
+</section>
+</section>
+<section>
+<section id="slide-orgheadline8">
+<h2 id="orgheadline8"><span class="section-number-2">4</span> Super-flashy live demo time!</h2>
+<p>
+Note: Side-by-side R session and open RSS feed. plot a plot and see
+it show up 'magically' in the rss feed. Then search for a previous
+one and grab its code from the metadata stored in the db
+</p>
+
+</section>
+</section>
+<section>
+<section id="slide-orgheadline9">
+<h2 id="orgheadline9"><span class="section-number-2">5</span> How do we discover things now?</h2>
+<ul>
+<li>Pubmed/Google Scholar/the library</li>
+<li>Figshare/Rpubs/Github + nbviewer</li>
+<li>Email authors/dig around on your hdd</li>
+
+</ul>
+</section>
+</section>
+<section>
+<section id="slide-orgheadline18">
+<h2 id="orgheadline18"><span class="section-number-2">6</span> It's all about the (meta)data</h2>
+<div class="outline-text-2" id="text-6">
+</div></section>
+<section id="slide-orgheadline10">
+<h3 id="orgheadline10"><span class="section-number-3">6.1</span> Figshare knows it</h3>
+<ul>
+<li>Q: how discoverable is my research?</li>
+<li>A: It depends on what metadata you tag it with.</li>
+
+</ul>
+<p>
+From Figshare FAQ (paraphrase)
+</p>
+</section>
+<section id="slide-orgheadline11">
+<h3 id="orgheadline11"><span class="section-number-3">6.2</span> Where does metadata come from?</h3>
+
+<div class="figure">
+<p><img src="./unclesam.jpg" alt="unclesam.jpg" class="fragment" />
+</p>
+</div>
+</section>
+<section id="slide-orgheadline12">
+<h3 id="orgheadline12"><span class="section-number-3">6.3</span> That's tedious and you probably won't do it</h3>
+<p>
+I know
+</p>
+</section>
+<section id="slide-orgheadline13">
+<h3 id="orgheadline13"><span class="section-number-3">6.4</span> Sources of automatically inferable metadata</h3>
+<p>
+We can infer useful metadata about an object from the
+</p>
+<ol>
+<li>computing environment</li>
+<li>object</li>
+<li>script</li>
+<li>data being analyzed/transformed</li>
+
+</ol>
+</section>
+<section id="slide-orgheadline14">
+<h3 id="orgheadline14"><span class="section-number-3">6.5</span> The computing environment</h3>
+<ul>
+<li>Who made the object</li>
+<li>When</li>
+<li>What packages were used/loaded</li>
+
+</ul>
+</section>
+<section id="slide-orgheadline15">
+<h3 id="orgheadline15"><span class="section-number-3">6.6</span> The object</h3>
+<p>
+R objects are necessarily self-describing
+</p>
+<ul>
+<li><code>names</code>, <code>dim</code>, element classes on a <code>data.frame</code></li>
+<li><code>levels</code> on a factor</li>
+<li>Generally content of the object
+<ul>
+<li>think <code>dput</code></li>
+
+</ul></li>
+
+</ul>
+
+</section>
+<section id="slide-orgheadline16">
+<h3 id="orgheadline16"><span class="section-number-3">6.7</span> The code</h3>
+<ul>
+<li>Perfect low-level description of 
+<ul>
+<li>how the object was made</li>
+<li>what it is</li>
+
+</ul></li>
+<li>Often strong hints of
+<ul>
+<li>goal of analysis</li>
+<li>thoughts/assumptions of analyst</li>
+
+</ul></li>
+
+</ul>
+
+</section>
+<section id="slide-orgheadline17">
+<h3 id="orgheadline17"><span class="section-number-3">6.8</span> The data</h3>
+<p>
+What
+</p>
+<ul>
+<li>data was analyzed?</li>
+<li>aspects of the dataset were used?</li>
+<li>transformations were applied</li>
+
+</ul>
+</section>
+</section>
+<section>
+<section id="slide-orgheadline26">
+<h2 id="orgheadline26"><span class="section-number-2">7</span> Plots</h2>
+<div class="outline-text-2" id="text-7">
+</div></section>
+<section id="slide-orgheadline19">
+<h3 id="orgheadline19"><span class="section-number-3">7.1</span> How we make plots</h3>
+
+<div class="figure">
+<p><img src="./questiontoplot.png" alt="questiontoplot.png" />
+</p>
+</div>
+</section>
+<section id="slide-orgheadline20">
+<h3 id="orgheadline20"><span class="section-number-3">7.2</span> Plot design/choice tells us</h3>
+<ul>
+<li>What analyst thought was important</li>
+<li>What relationships s/he was looking for</li>
+
+</ul>
+</section>
+<section id="slide-orgheadline21">
+<h3 id="orgheadline21"><span class="section-number-3">7.3</span> Plots</h3>
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<tbody>
+<tr>
+<td class="org-left"><img src="./pricedens.png" alt="pricedens.png" /></td>
+<td class="org-left"><img src="./carathist.png" alt="carathist.png" /></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="slide-orgheadline22">
+<h3 id="orgheadline22"><span class="section-number-3">7.4</span> Plots</h3>
+
+<div class="figure">
+<p><img src="./pricevcarat.png" alt="pricevcarat.png" />
+</p>
+</div>
+</section>
+<section id="slide-orgheadline23">
+<h3 id="orgheadline23"><span class="section-number-3">7.5</span> Plots</h3>
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<tbody>
+<tr>
+<td class="org-left"><img src="./pricevcaratgroup.png" alt="pricevcaratgroup.png" /></td>
+<td class="org-left"><img src="./pricevcaratgroupfac.png" alt="pricevcaratgroupfac.png" /></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="slide-orgheadline24">
+<h3 id="orgheadline24"><span class="section-number-3">7.6</span> Flipping the script</h3>
+
+<div class="figure">
+<p><img src="./findingplot.png" alt="findingplot.png" />
+</p>
+</div>
+</section>
+<section id="slide-orgheadline25">
+<h3 id="orgheadline25"><span class="section-number-3">7.7</span> Metadata about plots</h3>
+<ul>
+<li>geom/plotting function used</li>
+<li>vars plotted</li>
+<li>conditioning/grouping vars
+<ul>
+<li>levels</li>
+
+</ul></li>
+<li>Titles, axis labels, legend, other text</li>
+
+</ul>
+
+</section>
+</section>
+<section>
+<section id="slide-orgheadline29">
+<h2 id="orgheadline29"><span class="section-number-2">8</span> Enough 'theory'! What does it do?</h2>
+<div class="outline-text-2" id="text-8">
+</div></section>
+<section id="slide-orgheadline27">
+<h3 id="orgheadline27"><span class="section-number-3">8.1</span> Store computational artifacts</h3>
+<p>
+In an
+</p>
+<ul>
+<li>Annotated</li>
+<li>Searchable</li>
+<li>Retrievable</li>
+
+</ul>
+<p>
+Form
+</p>
+</section>
+<section id="slide-orgheadline28">
+<h3 id="orgheadline28"><span class="section-number-3">8.2</span> Automatically generate</h3>
+<p>
+Low-level semantic annotations
+</p>
+<ul>
+<li>Code
+<ul>
+<li>Tracked automatically</li>
+
+</ul></li>
+<li>Summaries of object</li>
+
+</ul>
+
+</section>
+</section>
+<section>
+<section id="slide-orgheadline34">
+<h2 id="orgheadline34"><span class="section-number-2">9</span> How do can you use it?</h2>
+<div class="outline-text-2" id="text-9">
+</div></section>
+<section id="slide-orgheadline30">
+<h3 id="orgheadline30"><span class="section-number-3">9.1</span> Mostly just go about your business</h3>
+<div class="org-src-container">
+
+<pre  class="src src-R"><span style="color: #D0372D;">library</span>(recordr)
+<span style="color: #8D8D84;">##</span>
+<span style="color: #8D8D84;">## </span><span style="color: #8D8D84; font-style: italic;">Your analysis code here</span>
+<span style="color: #8D8D84;">##</span>
+record(myplot)
+</pre>
+</div>
+
+</section>
+<section id="slide-orgheadline31">
+<h3 id="orgheadline31"><span class="section-number-3">9.2</span> Code tracking</h3>
+<ul>
+<li>Code tracked automatically while pkg is loaded
+<ul>
+<li>All recorded objects have full code-provenance</li>
+
+</ul></li>
+
+</ul>
+</section>
+<section id="slide-orgheadline32">
+<h3 id="orgheadline32"><span class="section-number-3">9.3</span> Automatically recording objects</h3>
+<ul>
+<li><code>autorecord</code> function, records
+<ul>
+<li>all lattice/ggplot2 plots when drawn</li>
+<li>any object passed to <code>summary()</code></li>
+
+</ul></li>
+
+</ul>
+
+</section>
+<section id="slide-orgheadline33">
+<h3 id="orgheadline33"><span class="section-number-3">9.4</span> finding recorded objects</h3>
+<div class="org-src-container">
+
+<pre  class="src src-R">res = vtSearch(<span style="color: #008000;">"mtcars"</span>)
+</pre>
+</div>
+
+<div class="org-src-container">
+
+<pre  class="src src-R">res2 = vtSearch(<span style="color: #008000;">"Awesome"</span>)
+</pre>
+</div>
+
+</section>
+</section>
+<section>
+<section id="slide-orgheadline40">
+<h2 id="orgheadline40"><span class="section-number-2">10</span> Sure, but why?</h2>
+<div class="outline-text-2" id="text-10">
+</div></section>
+<section id="slide-orgheadline35">
+<h3 id="orgheadline35"><span class="section-number-3">10.1</span> Collaboration/reporting</h3>
+<ul>
+<li>RSS feed of plots/results in real time</li>
+<li>Searchable web frontend</li>
+<li>Distribution mechanism</li>
+
+</ul>
+</section>
+<section id="slide-orgheadline36">
+<h3 id="orgheadline36"><span class="section-number-3">10.2</span> Automatic annotation</h3>
+<ul>
+<li>Plot.ly and figshare support tags
+<ul>
+<li>But don't generate them!</li>
+
+</ul></li>
+
+</ul>
+</section>
+<section id="slide-orgheadline37">
+<h3 id="orgheadline37"><span class="section-number-3">10.3</span> Organizational efficiency</h3>
+<ul>
+<li>Has someone in my org already studied this data?
+<ul>
+<li>what did they find?</li>
+<li>Maybe I should collab with them.</li>
+
+</ul></li>
+<li>And vice versa</li>
+
+</ul>
+</section>
+<section id="slide-orgheadline38">
+<h3 id="orgheadline38"><span class="section-number-3">10.4</span> Organizational safety</h3>
+<ul>
+<li>I have a result and I'm about to make $100M bet on it
+<ul>
+<li>Are there 9 historical results that disagree?</li>
+
+</ul></li>
+
+</ul>
+</section>
+<section id="slide-orgheadline39">
+<h3 id="orgheadline39"><span class="section-number-3">10.5</span> Your own sanity</h3>
+<ul>
+<li>Where the @$#% did I put that model/plot/etc I need for this
+paper?</li>
+
+</ul>
+</section>
+</section>
+<section>
+<section id="slide-orgheadline43">
+<h2 id="orgheadline43"><span class="section-number-2">11</span> History tracking</h2>
+<div class="outline-text-2" id="text-11">
+</div></section>
+<section id="slide-orgheadline41">
+<h3 id="orgheadline41"><span class="section-number-3">11.1</span> histry package</h3>
+<ul>
+<li>Start tracking code you run when it is loaded</li>
+<li>R session or knitting documents</li>
+
+</ul>
+</section>
+<section id="slide-orgheadline42">
+<h3 id="orgheadline42"><span class="section-number-3">11.2</span> Demo</h3>
+<ul>
+<li>History in a knitr document</li>
+
+</ul>
+
+
+</section>
+</section>
+<section>
+<section id="slide-orgheadline45">
+<h2 id="orgheadline45"><span class="section-number-2">12</span> Availability</h2>
+<div class="outline-text-2" id="text-12">
+</div></section>
+<section id="slide-orgheadline44">
+<h3 id="orgheadline44"><span class="section-number-3">12.1</span> Open source and on Github</h3>
+<ul>
+<li>recordr: <a href="http://github.com/gmbecker/recordr">gmbecker/recordr</a></li>
+<li>histry: <a href="http://github.com/gmbecker/histry">gmbecker/histry</a></li>
+
+</ul>
+
+</section>
+</section>
+<section>
+<section id="slide-orgheadline46">
+<h2 id="orgheadline46"><span class="section-number-2">13</span> Acknowledgements</h2>
+<ul>
+<li>Sara Moore</li>
+<li>Michael Lawrence</li>
+<li>Biecek et al's archivist package</li>
+
+</ul>
+</section>
+</section>
+</div>
+</div>
+<script src="http://cdn.jsdelivr.net/reveal.js/3.0.0/lib/js/head.min.js"></script>
+<script src="http://cdn.jsdelivr.net/reveal.js/3.0.0/js/reveal.js"></script>
+
+<script>
+// Full list of configuration options available here:
+// https://github.com/hakimel/reveal.js#configuration
+Reveal.initialize({
+
+controls: true,
+progress: true,
+history: false,
+center: true,
+slideNumber: 'c',
+rollingLinks: false,
+keyboard: true,
+overview: true,
+
+theme: Reveal.getQueryHash().theme, // available themes are in /css/theme
+transition: Reveal.getQueryHash().transition || 'default', // default/cube/page/concave/zoom/linear/fade/none
+transitionSpeed: 'default',
+multiplex: {
+    secret: '', // null if client
+    id: '', // id, obtained from socket.io server
+    url: '' // Location of socket.io server
+},
+
+// Optional libraries used to extend on reveal.js
+dependencies: [
+ { src: 'http://cdn.jsdelivr.net/reveal.js/3.0.0/lib/js/classList.js', condition: function() { return !document.body.classList; } },
+ { src: 'http://cdn.jsdelivr.net/reveal.js/3.0.0/plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+ { src: 'http://cdn.jsdelivr.net/reveal.js/3.0.0/plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+ { src: 'http://cdn.jsdelivr.net/reveal.js/3.0.0/plugin/zoom-js/zoom.js', async: true, condition: function() { return !!document.body.classList; } },
+ { src: 'http://cdn.jsdelivr.net/reveal.js/3.0.0/plugin/notes/notes.js', async: true, condition: function() { return !!document.body.classList; } }]
+});
+</script>
+</body>
+</html>

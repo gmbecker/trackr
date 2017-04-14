@@ -1,0 +1,173 @@
+#+TITLE: Enabling discoverability of results in R
+#+author: Gabriel Becker(@groundwalkergmb), Sara Moore, Michael Lawrence
+#+email: @groundwalkergmb
+#+options: toc:nil
+#+options: H:2
+#+REVEAL_EXTRA_CSS: ./JSM2016.css
+* So you have an awesome result ...
+** That's great
+   No, really. Good results are hard to find.
+* Two questions
+** Is it reproducible? 
+** How will someone find it?
+#+ATTR_REVEAL: :frag t
+1. Your collaborators now
+2. You in a year
+* Let's talk Discoverability
+** Discoverability is
+   the ability to
+   - discover the existence of,
+   - locate, and
+   - retrieve in a useful form
+Research, results, and computational artifacts
+
+* Super-flashy live demo time!
+  Note: Side-by-side R session and open RSS feed. plot a plot and see
+  it show up 'magically' in the rss feed. Then search for a previous
+  one and grab its code from the metadata stored in the db
+  
+* How do we discover things now?
+   - Pubmed/Google Scholar/the library
+   - Figshare/Rpubs/Github + nbviewer
+   - Email authors/dig around on your hdd 
+* It's all about the (meta)data
+** Figshare knows it
+   - Q: how discoverable is my research?
+   - A: It depends on what metadata you tag it with. 
+From Figshare FAQ (paraphrase)
+** Where does metadata come from?
+#+attr_latex: :width .45\textwidth :align center
+#+attr_reveal: :frag t
+   [[./unclesam.jpg]]
+** That's tedious and you probably won't do it
+I know
+** Sources of automatically inferable metadata
+   We can infer useful metadata about an object from the
+1. computing environment
+2. object
+3. script
+4. data being analyzed/transformed
+** The computing environment
+   - Who made the object
+   - When
+   - What packages were used/loaded
+** The object
+   R objects are necessarily self-describing
+   - ~names~, ~dim~, element classes on a ~data.frame~
+   - ~levels~ on a factor
+   - Generally content of the object
+     - think ~dput~ 
+
+** The code
+   - Perfect low-level description of 
+     - how the object was made
+     - what it is
+   - Often strong hints of
+     - goal of analysis
+     - thoughts/assumptions of analyst
+
+** The data
+   What
+   - data was analyzed?
+   - aspects of the dataset were used?
+   - transformations were applied
+* Plots
+** How we make plots
+[[./questiontoplot.png]]
+** Plot design/choice tells us
+   - What analyst thought was important
+   - What relationships s/he was looking for
+** Plots
+#+ATTR_LATEX: :width .45\textwidth
+   | [[./pricedens.png]] | [[./carathist.png]] | 
+** Plots
+#+attr_latex: :width .45\textwidth
+   [[./pricevcarat.png]]
+** Plots
+#+ATTR_LATEX: :width .45\textwidth
+| [[./pricevcaratgroup.png]] | [[./pricevcaratgroupfac.png]] |
+** Flipping the script
+[[./findingplot.png]]
+** Metadata about plots
+   - geom/plotting function used
+   - vars plotted
+   - conditioning/grouping vars
+     - levels
+   - Titles, axis labels, legend, other text
+     
+* Enough 'theory'! What does it do?
+** Store computational artifacts
+   In an
+   - Annotated
+   - Searchable
+   - Retrievable
+   Form
+** Automatically generate
+   Low-level semantic annotations
+   - Code
+     - Tracked automatically
+   - Summaries of object
+
+* How do can you use it?
+** Mostly just go about your business
+#+BEGIN_SRC R :eval false :export code
+library(recordr)
+##
+## Your analysis code here
+##
+record(myplot)
+#+END_SRC
+
+** Code tracking 
+- Code tracked automatically while pkg is loaded
+  - All recorded objects have full code-provenance
+** Automatically recording objects
+- ~autorecord~ function, records
+  - all lattice/ggplot2 plots when drawn
+  - any object passed to ~summary()~
+
+** finding recorded objects
+#+BEGIN_SRC R
+res = vtSearch("mtcars")
+#+END_SRC
+
+#+BEGIN_SRC R
+res2 = vtSearch("Awesome")
+#+END_SRC
+
+* Sure, but why?
+** Collaboration/reporting
+   - RSS feed of plots/results in real time
+   - Searchable web frontend
+   - Distribution mechanism
+** Automatic annotation
+   - Plot.ly and figshare support tags
+     - But don't generate them!
+** Organizational efficiency
+   - Has someone in my org already studied this data?
+     - what did they find?
+     - Maybe I should collab with them.
+   - And vice versa
+** Organizational safety
+   - I have a result and I'm about to make $100M bet on it
+     - Are there 9 historical results that disagree?
+** Your own sanity
+   - Where the @$#% did I put that model/plot/etc I need for this
+     paper?
+* History tracking
+** histry package
+- Start tracking code you run when it is loaded
+- R session or knitting documents
+** Demo
+- History in a knitr document
+
+
+* Availability
+** Open source and on Github
+- recordr: [[http://github.com/gmbecker/recordr][gmbecker/recordr]]
+- histry: [[http://github.com/gmbecker/histry][gmbecker/histry]]
+
+* Acknowledgements   
+- Sara Moore
+- Michael Lawrence
+- Biecek et al's archivist package
