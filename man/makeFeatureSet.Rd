@@ -9,7 +9,7 @@
 \alias{makeFeatureSet,recordedplot-method}
 \alias{makeFeatureSet,expression-method}
 \alias{makeFeatureSet,call-method}
-\alias{makeFeatureSet,ObjFeatureSet-method}
+\alias{makeFeatureSet,FeatureSet-method}
 \alias{makeFeatureSet,ANY-method}
 \title{Construct an ObjFeatureSet.}
 \usage{
@@ -27,7 +27,7 @@ makeFeatureSet(object, ...)
 
 \S4method{makeFeatureSet}{call}(object, ...)
 
-\S4method{makeFeatureSet}{ObjFeatureSet}(object, ...)
+\S4method{makeFeatureSet}{FeatureSet}(object, ...)
 
 \S4method{makeFeatureSet}{ANY}(object, ...)
 }
@@ -53,7 +53,7 @@ PlotFeatureSet S4 object containing a ObjFeatureSet object and extracted plot fe
 
 \item \code{call}: Construct a ObjFeatureSet from a call.
 
-\item \code{ObjFeatureSet}: No-op if we already have a ObjFeatureSet
+\item \code{FeatureSet}: No-op if we already have a ObjFeatureSet
 
 \item \code{ANY}: Catch-all for attempted construction of a ObjFeatureSet from an object not of class ggplot or trellis.
 }}

@@ -55,6 +55,36 @@ getBaseS3Class = function(x) tail(class(x), 1)
 getTopS3Class = function(x) head(class(x), 1)
 
 
+#' @title FeatureSet contstructors
+#' @description Constructors for different typed FeatureSet subclasses. These
+#' should only be used when customizing metadata extraction, i.e., in custom
+#' makeFeatureSet methods. Not intended to be called directly by end users.
+#' Because the arguments listed here unavoidably map to class slots, and because
+#' most of them should NOT be set directly even in customization code, they are
+#' semi-internal implementation details and are subject to change. 
+#'
+#' Arguments described as 'Do not manually set' have default values that should
+#' be used in virtually all cases. Overriding these in custom makeFeatureSet
+#' methods can lead to undefined behavior by the trackr system. 
+#' @rdname fset_constructors
+#' @param object object to extract metadata from
+#' @param code Do not manually set
+#' @param codeinfo Do not manually set
+#' @param klass Do not manually set
+#' @param tags Tags to associate with the object
+#' @param user Do not manually set
+#' @param uniqueid Do not manually set. EVER.
+#' @param regdate Do not manually set
+#' @param analysispkg Do not manually set
+#' @param analysisfile Do not manually set
+#' @param rstudioproject Do not manually set 
+#' @param fsetklass The FeatureSet subclass being created. This should be
+#' overridden with custom FeatureSet subclasses
+#' @param isplot Is the 
+#' @param ... For ObjFeatureSet and RmdFeatureSet, unused. For Other
+#' constructors, passed to the parent constructor.
+#' @return An object of a class that inherits from FeatureSet
+#' @export
 ObjFeatureSet = function(  object,
                          code = as.character(parseCode(object)),
                          codeinfo = CodeDepends::getInputs(parseCode(code)),
@@ -73,6 +103,7 @@ ObjFeatureSet = function(  object,
                          rstudioproject = .rstudioProjOrNA(),
                          fsetklass = "ObjFeatureSet" ,
                          isplot= FALSE,
+                         generatedin = character(),
                          ...) {
     
     tags <- unique(c(tags, tags(object), generateTags(object)))
@@ -90,9 +121,13 @@ ObjFeatureSet = function(  object,
         rstudioproject = rstudioproject,
         fsetklass = fsetklass,
         isplot = isplot,
-        ...)
+        generatedin = generatedin,
+        sessioninfo = sessionInfo())
 }
 
+#' @rdname fset_constructors
+#' @param package The plotting package used to create a plot. 
+#' @export
 PlotFeatureSet = function(object, fsetklass = "PlotFeatureSet",
                           package = NA_character_,
                           ...) {
@@ -116,6 +151,8 @@ PlotFeatureSet = function(object, fsetklass = "PlotFeatureSet",
         package = package)
 }
 
+#' @rdname fset_constructors
+#' @export
 GGplotFeatureSet = function(object, fsetklass = "GGplotFeatureSet",...) {
 
     ## beef up the ggplot object with some theme info
@@ -150,6 +187,8 @@ GGplotFeatureSet = function(object, fsetklass = "GGplotFeatureSet",...) {
         )
 }
 
+#' @rdname fset_constructors
+#' @export
 TrellisFeatureSet = function(object, fsetklass = "TrellisFeatureSet", ...) {
 
     innerobj = PlotFeatureSet(object = object,
@@ -160,7 +199,8 @@ TrellisFeatureSet = function(object, fsetklass = "TrellisFeatureSet", ...) {
     new("TrellisFeatureSet", innerobj)
 }
 
-
+#' @rdname fset_constructors
+#' @export
 GraphicsFeatureSet = function(object, fsetklass = "GraphicsFeatureSet", ...) {
 
     innerobj = PlotFeatureSet(object = object,
@@ -172,6 +212,12 @@ GraphicsFeatureSet = function(object, fsetklass = "GraphicsFeatureSet", ...) {
 }
 
 
+#' @rdname fset_constructors
+#' @param vars Do not manually set
+#' @param varclasses Do not manually set
+#' @param varsummaries Do not manually set
+#' @param nobs Do not manually set
+#' @export
 DFFeatureSet = function(object, fsetklass = "DFFeatureSet",
                         vars = names(object),
                         varclasses = sapply(object, getTopS3Class),
@@ -191,8 +237,24 @@ DFFeatureSet = function(object, fsetklass = "DFFeatureSet",
         
 superstupidenv = new.env()        
 
+#' @rdname fset_constructors
+#' @param rmdfile The (input) RMD file
+#' @param outputfile the path to the woven report
+#' @param chunks The code and text chunks of the dynamic document
+#' @param numouts Do not manually set
+#' @param numplots Do not manually set
+#' @param title Do not manually set
+#' @param author Do not manually set
+#' @param textkeywords Keywords extracted from the text
+#' @param codekeywords Keywords extracted from the code
+#' @param outputids Do not manually set
+#' @param objrecords Do not manually set. EVER.
+#' @param objtdb The (temporary) trackerdb where individual displayed
+#'     outputs were recorded during the weaving process.
 RmdFeatureSet = function(rmdfile,
                          outputfile,
+                         uniqueid,
+                         rmdfileid = gen_hash_id(readLines(rmdfile)),
                          chunks,
                          numouts = length(trackr_backend(objtdb)),
                          numplots = sum(sapply(objrecords, function(x) x$isplot)),
@@ -212,7 +274,9 @@ RmdFeatureSet = function(rmdfile,
                          fsetklass = "RmdFeatureSet" ,
                          ## end duplicated ^^
                          objrecords = findRecords(".", db = objtdb),
-                         objtdb) {
+                         objtdb,
+                         figurefiles = NA_character_,
+                         ...) {
     ## the braces make it one "script node" [[1]] gets the info for that one node
     con = textConnection("tangletxt", "w", local=TRUE)
     on.exit(close(con), add=TRUE)
@@ -225,7 +289,8 @@ RmdFeatureSet = function(rmdfile,
         ## XXX this is only inputs, what we actually want is outputs
         ## BUT RMD reports very often have their date in them
         ## which may or may not make them a "different report"
-        uniqueid = gen_hash_id(readLines(rmdfile)),
+        uniqueid = uniqueid, ##gen_hash_id(readLines(rmdfile)),
+        rmdfileid = rmdfileid,
         chunks = chunks, numouts = numouts, numplots = numplots,
         title = title, author = author, textkeywords = textkeywords,
         codekeywords = codekeywords,
@@ -242,6 +307,8 @@ RmdFeatureSet = function(rmdfile,
         rstudioproject = rstudioproject,
         outfile = outputfile,
         fsetklass = fsetklass,
+        sessioninfo = sessionInfo(),
+        figurefiles = figurefiles,
         isplot = FALSE)
 }
                          
@@ -801,9 +868,22 @@ flatten4 <- function(x) {
 is.code = function(x) is.function(x) || is.expression(x) || is.call(x) || is.name(x)
 
 
+sinfotolist = function(sinfo) {
+    ret = sinfo
+    ret$R.version = unlist(sinfo$R.version)
+    ret$otherPkgs = sapply(sinfo$otherPkgs, function(x) x$Version)
+    ret$loadedOnly = sapply(sinfo$loadedOnly, function(x) x$Version)
+    ret
+
+
+}
+
 flatten5 <- function(x) {
     x$object <- NULL
     x$data <- NULL
+    if(is(x$sessioninfo, "sessionInfo"))
+        x$sessioninfo = sinfotolist(x$sessioninfo)
+  
     while(any(vapply(x, is.list, logical(1)))) {
         x <- lapply(x, function(x) if(is.list(x)) x else list(x))
         x <- unlist(x, recursive=FALSE) 

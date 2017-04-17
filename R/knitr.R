@@ -49,36 +49,66 @@ recplothook = function(x, opts, ...) {
 ##' tracing certain functions within the knitr and evaluate packages will break
 ##' this function. 
 ##' @export
-knit_and_record = function(input, ..., verbose = FALSE) {
-    tmptdb = TrackrDB(backend = listbackend())
+knit_and_record = function(input, ..., verbose = FALSE,
+                           tmptdb = TrackrDB(backend= ListBackend())) {
     oldtdb = defaultTDB()
     on.exit(defaultTDB(oldtdb))
     defaultTDB(tmptdb)
-    knitrtracer(FALSE) ## probably unnecessary
+    ## knitrtracer(FALSE) ## probably unnecessary
+    evaltracer(FALSE)
     evaltracer(TRUE, TRUE)
 
     superstupidenv$chunks = NULL
     suppressMessages(trace(knitr:::split_file, exit = quote(assign("chunks", returnValue(), envir = trackr:::superstupidenv)),
           print = FALSE))
-    on.exit(untrace(knitr:::split_file))
+    on.exit(untrace(knitr:::split_file), add = TRUE)
 
 
+    if("output" %in% names(list(...)))
+        odir = dirname(list(...)$output)
+    else
+        odir = getwd()
+
+    starttime = Sys.time()
     resfile = knit(input = input, ...)
-    suppressMessages(untrace(knitr:::split_file))
-    on.exit(NULL)
+
+    figpath = file.path(odir, "figure")
+    figs = character()
+    if(file.exists(figpath))
+        figs = list.files(figpath, full.names=TRUE)
+    if(length(figs) > 0) {
+        ## these are integers. ugh. thisisfine.jpg
+        figmtimes = sapply(figs, function(x) file.info(x)$mtime)
+        figs = figs[figmtimes > starttime]
+    }
+
+    figmd5 = character()
+    if(length(figs) > 0) {
+        figmd5 = tools::md5sum(figs)
+    }
+
+    uniqueid = gen_hash_id(c(readLines(resfile), figmd5))
+        
+    
+  
     chunks = superstupidenv$chunks
     superstupidenv$chunks = NULL
 
     evaltracer(FALSE)
-    knitrtracer(TRUE)
+    evaltracer(TRUE)
+
+    defaultTDB(oldtdb)
+    suppressMessages(untrace(knitr:::split_file))
+    on.exit(NULL)
+
     rmdfs = RmdFeatureSet(rmdfile = input, objtdb = tmptdb,
-                          outputfile = resfile, chunks = chunks)
+                          uniqueid = uniqueid,
+                          outputfile = resfile, chunks = chunks,
+                          figurefiles = figs)
     objfsets = lapply(docs(trackr_backend(tmptdb)), function(x) {
         fs = listRecToFeatureSet(x)
         fs@generatedin = uniqueID(rmdfs)
         fs})
-    defaultTDB(oldtdb)
-    on.exit(NULL)
     record(rmdfs, code =NULL, verbose = verbose)
     lapply(objfsets, function(x) record(x, code = objCode(x),
                                         symorpos = length(code),

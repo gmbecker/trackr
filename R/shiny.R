@@ -57,6 +57,16 @@ setMethod("thumbnailHTML", "PlotFeatureSet",
                           ))
 })
 
+## setMethod("thumbnailHTML", "RmdFeatureSet",
+##           function(rec, imgurlfun, tdb = defaultTDB()) {
+##     tags = htmltools::tags
+##     tags$a(href = paste0("#", uniqueID(rec)),
+##            class = "group-cbox1 inline",
+##            tags$p("Recorded Rmd Report"),
+##            tags$p(rmdfile(rec)),
+##            tags$div(class = "thumbnail",
+##                     tags$iframe()
+## })
 
 
 genericMetadata = function(rec) {
@@ -177,40 +187,6 @@ $(".inline").colorbox({inline:true, width:"736px"});
 #                 </div>
 #                 </div>
 #                 
-                
-## .innerToHTML2 = function(rec, imgurlfun) {
-##   file.copy(rec[["image.path"]], file.path("./images", basename(rec[["image.path"]])))
-##     div(style="display:none",
-##     div(id = rec[["id"]],
-##         class = "inner-overlay-box",
-##         div(class = "media",
-##             htmltools::tags$a(href="#", classs = "img",
-##                    img(alt="", 
-##                        src = imgurlfun(file = file.path("./images/",
-##                                                         basename(rec[["image.path"]]))
-##                                        ) ,
-##                        class = "img-inner-window"
-##                        )
-##                    ),
-##             p(sprintf("Created by %s at %s", rec[["user"]], rec[["regdatetime"]])),
-##             div(p(sprintf("RStudio Project (if any): %s\nAnalysis Script (if known): %s", 
-##                           rec[["rstudioinfo"]]["project"],
-##                           rec[["rstudioinfo"]]["file"])))
-##         )
-##     ))
-            
-  
-  
-  
-  
-## }
-
-## .multiToHTML = function(reclist, imgurlfun) {
-##   if(is.null(reclist) || length(reclist) < 1)
-##     div(class = "trackr_results")
-##   else
-##     tagAppendChildren(div(class = "trackr_results"), list = lapply(reclist, .innerToHTML, imgurlfun = imgurlfun))
-## }
 
 
 ##' RStudio addin/Shiny app for artifact discovery

@@ -2,7 +2,7 @@
 % Please edit documentation in R/PlotWrapper.R
 \name{gen_hash_id}
 \alias{gen_hash_id}
-\title{Create an 8 character "xxhash32" hash of an R object.}
+\title{Create an 16 character "SpookyHashV2" hash of an R object.}
 \usage{
 gen_hash_id(x)
 }
@@ -10,5 +10,5 @@ gen_hash_id(x)
 \item{x}{An R object}
 }
 \value{
-An 8 character vector
+An character vector with a prefix and 16 character hash of \code{x}
 }

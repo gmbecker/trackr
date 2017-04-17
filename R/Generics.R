@@ -694,6 +694,13 @@ setGeneric("trackr_search", function(pattern, target, opts,
 
 
 
+#' @title customizing-metadata
+#' @name generateTags
+#' @rdname customizing-metadata
+#' @param object The object to generate tags for
+#' @return A character vector of tags to associate with \code{object} during the
+#' recording process
+#' @export
 setGeneric("generateTags", function(object) standardGeneric("generateTags"))
 
 

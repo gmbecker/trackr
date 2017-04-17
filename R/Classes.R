@@ -5,8 +5,10 @@ NULL
 
 setClassUnion("characterOrNULL", c("character", "NULL"))
 # setClassUnion("GGplotOrTrellis", c("ggplot", "trellis"))
-
+setOldClass("sessionInfo")
 ## define S4 classes
+
+setClassUnion("sinfoOrList", c("sessionInfo", "list"))
 
 .FeatureSet <- setClass("FeatureSet", contains="VIRTUAL",
                         slots = c(user = "character",
@@ -19,8 +21,10 @@ setClassUnion("characterOrNULL", c("character", "NULL"))
                                   generatedin = "character",
                                   code = "character",
                                   codeinfo = "ScriptInfo",
+                                  sessioninfo = "sinfoOrList", 
                                   isplot = "logical",
-                                  fsetklass = "character")
+                                  fsetklass = "character",
+                                  trackrversion = "character")
                         )
 
 
@@ -128,7 +132,9 @@ setClassUnion("characterOrNULL", c("character", "NULL"))
                                      ##its ScriptNodeInfo because we force it into single node and grab that info directly
                                      fullcodeinfo = "ScriptNodeInfo",
                                      rmdfile = "character",
-                                     outfile = "character"))
+                                     outfile = "character",
+                                     rmdfileid = "character",
+                                     figurefiles = "character"))
 
 
 
@@ -250,4 +256,6 @@ setClass("RStudioExtras",
          )
 
 listbackend = setRefClass("ListBackend", contains="DocCollectionRef")
-
+ListBackend = function(lst = list()) {
+    listbackend(docs = new("DocList", lst))
+}

@@ -21,7 +21,7 @@ Depends:
     CodeDepends,
     histry
 Imports:
-    digest,
+    fastdigest,
     ggplot2,
     lattice,
     rdocdb,
@@ -29,7 +29,6 @@ Imports:
     methods,
     CodeDepends,
     RJSONIO,
-    fastdigest,
     rsolr
 Suggests:
     proto,

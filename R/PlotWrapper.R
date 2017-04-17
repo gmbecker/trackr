@@ -33,14 +33,16 @@ setOldClass("trellis")
 setOldClass("gTree")
 
 
-#' @title Create an 8 character "xxhash32" hash of an R object.
+#' @importFrom fastdigest fastdigest
+#' @title Create an 16 character "SpookyHashV2" hash of an R object.
 #' @param x An R object
-#' @return An 8 character vector
+#' @return An character vector with a prefix and 16 character hash of \code{x}
 gen_hash_id <- function(x) {
     # need to exclude regdate from hashing.
     # this is not ideal, but does the trick.
     # regDateTime(x) <- as.POSIXct("1970-01-01 00:00:01", tz = "UTC")
-    digest::digest(x, "xxhash32", seed = 0)
+    ##    digest::digest(x, "xxhash32", seed = 0)
+    paste0("SpkyV2:", fastdigest(x))
 }
 
 ## Implementation of show method for PlotFeatureSet class

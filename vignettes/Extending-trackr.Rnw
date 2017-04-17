@@ -33,6 +33,7 @@
 \tableofcontents
 \newpage
 
+\section{Creating custom backends}
 The \rpkg{trackr} package supports storing metadata and artifacts in either a JSON file or Solr database. To extend \rpkg{trackr} to support a new storage backend, it is necessary to define a derivative of \rclass{VirtHistoryTracker} and implement methods on six generic functions:
 \begin{enumerate}
 \item \rfun{prep_for_backend}, which prepares a \rclass{PlotFeatureSet} for insertion into the backend data store;
@@ -164,4 +165,73 @@ assignment of \rexpr{NULL} into an existing entry is equivalent to removal.
 Thus, only \rfun{trackr_write} and \rfun{trackr_search} methods are actually required 
 in many cases, including the \rclass{list}-backend case we presented here. 
         
+\section{Customizing metadata extraction}
+
+\subsection{Adding custom tags for a class}
+
+Metadata extraction can be customized in two ways within the
+\rpkg{trackr} framework. First, users can define an S4 method for the
+\rfun{generateTags} generic for a class. This is called by
+\rfun{makeFeatureSet} methods \rpgk{trackr} provides to perform
+metadata extraction, and is passed the object that \rpkg{trackr} is
+extracting metadata from. Any (character) values returned will be
+added to the tags for the object. This provides an easy way to add
+non-key-value annotations to objects you are \rfun{record}ing.
+
+NOTE: defining an S3 method (simply creating a function called
+\rfun{generateTags.yourclass} will not work. You must create a formal
+method.
+
+
+<<generateTags>>=
+y = 5
+class(y) = "sillyclass"
+setMethod(generateTags, "sillyclass", function(object) "Hi vignette readers!")
+fs = makeFeatureSet(y)
+tags(fs)
+@ 
+
+\subsection{Defining customized formal metadata for a class}
+Customizing tag generation only allows us to add tags, however. We can
+also customize the formal key-value metadata pairs generated for a
+class of object. This is a two-step process. First we extend the
+virtual \rclass{FeatureSet} class with a subclass that adds slots for
+the formal pieces of metadata we will extract from objects of a
+particular class. Often we will actually inherit from
+\rclass{ObjFeatureSet}, which has slots for the object itself and its
+class. We will create a toy example which customizes the metadata
+extracted from integer vectors by capturing the set of unique values
+the vector takes.
+
+<<FeatureSet_class>>=
+setClass("AwesomeIntFeatureSet", contains = "ObjFeatureSet",
+         slots = c(uniquevals = "integer"))
+@ 
+
+
+We then define a method for \rfun{makeFeatureSet} that takes an
+integer vector and returns an \rclass{AwesomeIntFeatureSet}
+object. How the internals of the method behave is up to the author,
+but suggested practice when inheriting from a subclass of
+\rclass{FeatureSet} --- as we are here by inheriting from
+\rclass{ObjFeatureSet} --- is to use the constructor for the parent
+class to generate any non-customized information, then use that in
+construction of the final object, like so.
+
+<<makeFeatureSet>>=
+setMethod("makeFeatureSet", "integer", function(object, ...) {
+    innerobj = ObjFeatureSet(object, ...) 
+    new("AwesomeIntFeatureSet", innerobj, uniquevals = unique(object))
+    })
+
+x = sample(1:20, 20, replace=TRUE)
+makeFeatureSet(x)@uniquevals
+@ 
+
+
+
+
+
+
+
 \end{document}
