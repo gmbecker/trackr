@@ -91,7 +91,7 @@ knit_and_record = function(input, ..., verbose = FALSE,
         
     
   
-    chunks = superstupidenv$chunks
+    chunks = unlist(lapply( superstupidenv$chunks, function(x) x$input))
     superstupidenv$chunks = NULL
 
     evaltracer(FALSE)

@@ -1,7 +1,7 @@
 Package: trackr
 Type: Package
 Title: Semantic Annotation and Discoverability System for R-based artifacts
-Version: 0.6.0
+Version: 0.6.1
 Date: 2015-07-01
 Authors@R: c(
     person("Sara", "Moore", role = c("aut", "cre"),
@@ -58,4 +58,5 @@ Collate:
     'makeRStudioExtras.R'
     'parseCode.R'
     'shiny.R'
+    'showMethods.R'
 RoxygenNote: 6.0.1

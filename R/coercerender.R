@@ -6,7 +6,9 @@ noflat = c("codeinfo", "object", "fullcodeinfo")
 listRecToFeatureSet = function(lst) {
     clsdef = getClass(lst$fsetklass)
     slts = getSlots(clsdef)
+    sltpres = names(slts) [ names(slts) %in% names(lst)]
     lst[sapply(lst, is.null)] = NA_character_
+    lst[sltpres] = lapply(sltpres, function(x) {if(is(lst[[x]], "AsIs")) character() else lst[[x]]})
     lst$regdate = as.POSIXct(strptime(lst$regdatetime, "%Y-%m-%dT%H:%M:%SZ" ))
     toflat = setdiff(names(slts), c(names(lst), noflat))
     for(sl in toflat) {
@@ -27,7 +29,8 @@ listRecToFeatureSet = function(lst) {
 
 
 norecurse = c("varnames", "varsummaries", "varclasses", "na", ## for na.rm
-              "codeinfo", "fullcodeinfo", "outputids", "chunks" 
+              "codeinfo", "fullcodeinfo", "outputids", "chunks",
+              "sessioninfo"
               )
 
 unflattenField = function(lst, sl, recursive=TRUE) {

@@ -42,7 +42,7 @@ gen_hash_id <- function(x) {
     # this is not ideal, but does the trick.
     # regDateTime(x) <- as.POSIXct("1970-01-01 00:00:01", tz = "UTC")
     ##    digest::digest(x, "xxhash32", seed = 0)
-    paste0("SpkyV2:", fastdigest(x))
+    paste0("SpkyV2_", fastdigest(x))
 }
 
 ## Implementation of show method for PlotFeatureSet class

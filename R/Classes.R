@@ -119,7 +119,7 @@ setClassUnion("sinfoOrList", c("sessionInfo", "list"))
 
 .RmdFeatureSet <- setClass("RmdFeatureSet",
                            contains = "FeatureSet",
-                           slots = c(chunks = "list",
+                           slots = c(chunks = "character",
                                      numouts = "numeric",
                                      numplots = "numeric",
                                      title = "character",
