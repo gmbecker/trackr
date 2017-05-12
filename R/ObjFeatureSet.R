@@ -37,13 +37,13 @@ scrape_descr <- function(start_dir = getwd(), fields = c("Package", "Title", "De
 
     curdir = normalizePath(start_dir)
     res = list()
-    while(!curdir %in% c(normalizePath("~"), normalizePath("/"))) {
+    while(!curdir %in% c(normalizePath("~/"), normalizePath("/"))) {
         dfile = file.path(curdir, "DESCRIPTION")
         if(file.exists(dfile)) {
             dsc = as.data.frame(read.dcf(dfile, fields), stringsAsFactors=FALSE)
             res = c(res, list(as.list(dsc)))
         }
-        curdir = normalizePath(file.path(curdir, ".."))
+        curdir = normalizePath(file.path(curdir, "../"))
     }
     res
 
@@ -263,7 +263,8 @@ RmdFeatureSet = function(rmdfile,
                          textkeywords = character(), ## XXX TODO
                          codekeywords = character(), ## XXX TODO
                          
-                         outputids = sapply(objrecords, function(x) x$uniqueid),
+                         outputids = sapply(objrecords, function(x) x$uniqueid,
+                                            USE.NAMES=FALSE),
                          ## begin duplicated from ObjFeatureSet constructor :(
                          tags = character(),
                          user = unname(Sys.info()["user"]),
@@ -284,7 +285,11 @@ RmdFeatureSet = function(rmdfile,
     knitr::knit(input = rmdfile, output = con, tangle=TRUE)
     close(con)
     on.exit(NULL)
-    scrinfo = getInputs(readScript(txt = c("{", tangletxt, "}")))[[1]] 
+    scrinfo = getInputs(readScript(txt = c("{", tangletxt, "}")))[[1]]
+
+    ## XXX TODO take this out and fix it a better way someday...
+    names(outputids) = NULL
+    
     new("RmdFeatureSet",
         ## XXX this is only inputs, what we actually want is outputs
         ## BUT RMD reports very often have their date in them
@@ -870,9 +875,11 @@ is.code = function(x) is.function(x) || is.expression(x) || is.call(x) || is.nam
 
 sinfotolist = function(sinfo) {
     ret = sinfo
-    ret$R.version = unlist(sinfo$R.version)
-    ret$otherPkgs = sapply(sinfo$otherPkgs, function(x) x$Version)
-    ret$loadedOnly = sapply(sinfo$loadedOnly, function(x) x$Version)
+    rv = sinfo$R.version
+    names(rv)[names(rv) == "svn rev"] = "svnrev"
+    ret$R.version = unlist(rv)
+    ret$otherPkgs = unname(sapply(sinfo$otherPkgs, function(x) paste(x$Package, x$Version, sep=":")))
+    ret$loadedOnly = unname(sapply(sinfo$loadedOnly, function(x) paste(x$Package, x$Version, sep=":")))
     ret
 
 

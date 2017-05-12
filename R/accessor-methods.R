@@ -457,7 +457,8 @@ fsanalysisfile = makeToyAccessor("analysisfile")
 
 setGeneric("imagepath", function(x, db) standardGeneric("imagepath"))
 setMethod("imagepath", c("FeatureSet", "ANY") , function(x, db) NA_character_)
-setMethod("imagepath", c("PlotFeatureSet", "TrackrDB"), function(x, db) {
+##setMethod("imagepath", c("PlotFeatureSet", "TrackrDB"), function(x, db) {
+setMethod("imagepath", c("FeatureSet", "TrackrDB"), function(x, db) {
     if(!file.exists(img_dir(db)))
         dir.create(img_dir(db), recursive=TRUE)
     file.path(img_dir(db), paste(uniqueID(x), img_ext(db), sep="."))
@@ -467,7 +468,8 @@ setMethod("imagepath", c("PlotFeatureSet", "TrackrDB"), function(x, db) {
 
 setGeneric("previewpath", function(x, db) standardGeneric("previewpath"))
 setMethod("previewpath", c("FeatureSet", "ANY"),  function(x, db) NA_character_)
-setMethod("previewpath", c("PlotFeatureSet", "TrackrDB"), function(x, db) {
+##setMethod("previewpath", c("PlotFeatureSet", "TrackrDB"), function(x, db) {
+setMethod("previewpath", c("FeatureSet", "TrackrDB"), function(x, db) {
     if(!file.exists(img_dir(db)))
         dir.create(img_dir(db), recursive=TRUE)
     file.path(img_dir(db), paste0(uniqueID(x), "_thumb.", img_ext(db)))

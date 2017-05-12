@@ -50,7 +50,7 @@ recplothook = function(x, opts, ...) {
 ##' this function. 
 ##' @export
 knit_and_record = function(input, ..., verbose = FALSE,
-                           tmptdb = TrackrDB(backend= ListBackend())) {
+                           tmptdb = TrackrDB(backend= ListBackend(), img_dir = trackr:::img_dir(defaultTDB()))) {
     oldtdb = defaultTDB()
     on.exit(defaultTDB(oldtdb))
     defaultTDB(tmptdb)
@@ -69,8 +69,14 @@ knit_and_record = function(input, ..., verbose = FALSE,
     else
         odir = getwd()
 
+    require(rmarkdown)
     starttime = Sys.time()
-    resfile = knit(input = input, ...)
+    if(grepl("[Rr][Mm][Dd]$", input))
+        resfile = render(input = input,output_format = html_document(self_contained = FALSE, mathjax = NULL),
+                         run_pandoc = TRUE, ...)
+    else if (grepl("[Rr][Nn][Ww]$", input))
+        resfile = render(input = input,  output_format = "pdf_document",
+                         run_pandoc=TRUE, ...)
 
     figpath = file.path(odir, "figure")
     figs = character()
@@ -108,6 +114,7 @@ knit_and_record = function(input, ..., verbose = FALSE,
     objfsets = lapply(docs(trackr_backend(tmptdb)), function(x) {
         fs = listRecToFeatureSet(x)
         fs@generatedin = uniqueID(rmdfs)
+        fs@regdate = rmdfs@regdate
         fs})
     record(rmdfs, code =NULL, verbose = verbose)
     lapply(objfsets, function(x) record(x, code = objCode(x),
@@ -116,3 +123,11 @@ knit_and_record = function(input, ..., verbose = FALSE,
     oldtdb
         
 }
+
+.trytodothething = function(outfile, trackropts, id) {
+        
+
+    
+}
+
+    

@@ -10,65 +10,120 @@ setMethod("prep_for_backend", c("FeatureSet", "TrackrDB"),
 
 
 
+setGeneric("make_image_files", function(object, opts) standardGeneric("make_image_files"))
+setMethod("make_image_files", "PlotFeatureSet",
+          function(object, opts) {
+    
+
+    img.save.dir = img_dir(opts)
+    img.ext = img_ext(opts)
+
+    id = uniqueID(object)
+    
+    if(!dir.exists(img.save.dir))
+        dir.create(img.save.dir, recursive=TRUE)
+    
+    thumbpath= file.path(img.save.dir, paste0(id, "_thumb.", img.ext))
+    invisible(saveBasicPlot(object, 
+                            thumbpath,
+                            width = 5, height = 5, dpi = 50))
+    feedpath = file.path(img.save.dir, paste0(id, "_feed.", img.ext))
+    invisible(saveBasicPlot(object, 
+                            feedpath,
+                            width = 5, height = 5, dpi = 100))
+                                        # main image with R object embedded as metadata
+    mainpath = file.path(img.save.dir, paste0(id, ".", img.ext))
+    saveEnrichedPlot(object, mainpath)
+    
+        
+    list(preview.path = basename(thumbpath), image.path = basename(mainpath))
+})
+
+setMethod("make_image_files", "RmdFeatureSet",
+          function(object, opts) {
+    img.save.dir = img_dir(opts)
+    img.ext = img_ext(opts)
+    
+    
+    if(!dir.exists(img.save.dir))
+        dir.create(img.save.dir, recursive=TRUE)
+  
+    if(!require("RSelenium"))
+        ret = callNextMethod() ## this will hit FeatureSet, ie the default.
+    else {
+        ## can't figure out how to get phantomjs screenshot to respect window size...
+        suppressMessages(rs <- rsDriver(browser = "chrome", geckover=NULL, check=FALSE)) ##"phantomjs"))
+        on.exit(rs$server$stop(), add = TRUE)
+
+        cl = rs[["client"]]
+        cl$setWindowSize(480L, 640L)         
+        cl$navigate(paste0("file://", normalizePath(object@outfile)))
+        
+        fil = file.path(img.save.dir, paste0(uniqueID(object), c("_thumb.",".", "_feed."), img.ext))
+        cl$screenshot(file = fil[1])
+        ## RSelenium doesn't appeart to allow you to control the size of screenshots, so we
+        ## will have to hope that blacklight can shrink the full size image itself.
+        cl$close()
+        file.copy(fil[1], fil[2], overwrite = TRUE)
+        file.copy(fil[1], fil[3], overwrite = TRUE)
+        
+        ret = list(preview.path = basename(fil[1]), image.path = basename(fil[2]))
+        
+        if(is(ret, "try-error"))
+            ret = callNextMethod() ## this will hit FeatureSet, ie the default
+        
+    }
+
+    ret
+})
+
+setMethod("make_image_files", "FeatureSet",
+          function(object, opts) {
+    img.save.dir = img_dir(opts)
+    img.ext = img_ext(opts)
+    
+    
+    if(!dir.exists(img.save.dir))
+        dir.create(img.save.dir, recursive=TRUE)
+    
+    paths = file.path(img.save.dir, paste0(uniqueID(object), c("_thumb.", ".","_feed."), img.ext))
+    
+    file.copy(system.file("images/Rlogo.png", package = "trackr"), paths[1])
+    file.copy(system.file("images/Rlogo.png", package = "trackr"), paths[2])
+    file.copy(system.file("images/Rlogo.png", package = "trackr"), paths[3])
+    list(preview.path = basename(paths[1]), image.path = basename(paths[2]))
+})
+
+setMethod("make_image_files", "ANY",
+          function(object, opts) stop("make_image_files called on a non FeatureSet object. This shouldn't happen, please contact the package maintainer."))
+    
 
 ## everything that isn't a TrackrDB. probably isn't safe long term, want
 ## more specific virtual class here?
 
-## XXX TODO probably need separate methods for, eg RmdFeatureSet ...
-##setMethod("prep_for_backend", c("ObjFeatureSet", "ANY"),
 setMethod("prep_for_backend", c("FeatureSet", "ANY"),
-          function(object, target, opts, verbose = FALSE) {
+          function(object, target, opts = trackr_options(target), verbose = FALSE) {
 
     id = uniqueID(object)
     if(verbose) {
         message("Adding ", class(object)[1], " object with ID ", id, "...")
     }
-    
+
     ## UTC required for Solr dates
+
     object@regdate <- .POSIXct(object@regdate, tz="UTC")
-    doc <- c(id = id, flatten5(as(object, "list")))
     
-    img.save.dir = img_dir(opts)
-    img.ext = img_ext(opts)
-    
-    
-    if(!is.null(img.save.dir) && doc$isplot) {
-        if(!dir.exists(img.save.dir))
-            dir.create(img.save.dir, recursive=TRUE)
-        
-        thumbpath= file.path(img.save.dir, paste0(id, "_thumb.", img.ext))
-        invisible(saveBasicPlot(object, 
-                                thumbpath,
-                                width = 5, height = 5, dpi = 50))
-        feedpath = file.path(img.save.dir, paste0(id, "_feed.", img.ext))
-        invisible(saveBasicPlot(object, 
-                                feedpath,
-                                width = 5, height = 5, dpi = 100))
-                                        # main image with R object embedded as metadata
-        mainpath = file.path(img.save.dir, paste0(id, ".", img.ext))
-        saveEnrichedPlot(object, mainpath)
-        
-        
-        doc$preview.path = thumbpath
-        doc$image.path = mainpath
-    }
-    
+    ## make images. This is a generic, so handles all FeatureSet types and errors
+    ## if a non-FeatureSet obj ever gets to it. 
+    imgpathlist = make_image_files(object, opts)
+    doc <- c(id = id, flatten5(as(object, "list")), imgpathlist)
+    doc = doc
     if (verbose) {
         cat("ID ", id, "\n")
     }
     
     doc
 })
-
-
-## setMethod("prep_for_backend", c("PlotFeatureSet", "TrackrDB"),
-##           function(object, target, opts, verbose = FALSE) {
-##     res = callNextMethod()
-##     ## we don't want the actual object in the database
-##     ## it won't serialize properly to, e.g., JSON
-##     res$object = NULL
-##     res
-## })
 
 
 ## Funnel to the character (id) method
@@ -369,20 +424,25 @@ setMethod("trackr_search", c("character", "SolrList"),
                    verbose = TRUE) {
 ##    if(is.null(fields))
 ##        fields = fieldNames(target)
-    if(is.null(fields))
-        fields = "text"
+  
     ##res = .grepl_helper(pattern, target[,fields[1]])
-    res = grepl(pattern, target[,fields[1]])
-    for(f in fields[-1]) 
-        ##res = res | .grepl_helper(pattern, target[,f])
-        res = res | grepl(pattern, target[,f])
+    ## res = grepl(pattern, target[,fields[1]])
+    ## for(f in fields[-1]) 
+    ##     ##res = res | .grepl_helper(pattern, target[,f])
+    ##     res = res | grepl(pattern, target[,f])
+
+    if(is.null(fields))
+        res = searchDocs(target, pattern)
+    else {
+        
+        solrq = paste(paste(fields, pattern, sep = ":"), collapse = " OR ")
+        res = searchDocs(target, solrq)
+    }
     
-    inds = which(res) # this drops NAs
-    ret = target[inds]
     switch(ret_type,
-           id = ids(ret),
-           doclist = ret, 
-           df = as(ret, "data.frame"),
+           id = ids(res),
+           doclist = res, 
+           df = as(res, "data.frame"),
            backend = stop("No backend-specific return type implemented for this backend."))
 })
     

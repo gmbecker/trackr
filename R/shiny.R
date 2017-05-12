@@ -19,11 +19,11 @@ setMethod("thumbnailHTML", "list",
 
 })
 
-setMethod("thumbnailHTML", "ObjFeatureSet", function(rec, imgurlfun, tdb) {
-    htmltools::tags$a(href=paste0("#", uniqueID(rec)),
-                                  class = "group-cbox1 inline",
-                      div(paste(rec@klass, "object")))
-})
+## setMethod("thumbnailHTML", "ObjFeatureSet", function(rec, imgurlfun, tdb) {
+##     htmltools::tags$a(href=paste0("#", uniqueID(rec)),
+##                                   class = "group-cbox1 inline",
+##                       div(paste(rec@klass, "object")))
+## })
 
 setMethod("thumbnailHTML", "DFFeatureSet", function(rec, imgurlfun,
                                                     tdb = defaultTDB()) {
@@ -42,9 +42,13 @@ setMethod("thumbnailHTML", "DFFeatureSet", function(rec, imgurlfun,
            )
 })
 
-setMethod("thumbnailHTML", "PlotFeatureSet",
+## setMethod("thumbnailHTML", "PlotFeatureSet",
+setMethod("thumbnailHTML", "FeatureSet",
+          
           function(rec, imgurlfun, tdb = defaultTDB()) {
     pfimg = previewpath(rec, tdb)
+    if(!file.exists(pfimg))
+        stop("not found")
     file.copy(pfimg, file.path("./images", basename(pfimg)))
     
     htmltools::tags$a(href = paste0("#", uniqueID(rec)),
@@ -68,13 +72,14 @@ setMethod("thumbnailHTML", "PlotFeatureSet",
 ##                     tags$iframe()
 ## })
 
+ifnotnull = function(x) if(length(x) >0) x else NA
 
 genericMetadata = function(rec) {
     div(
         p(sprintf("Created by %s at %s", fsuser(rec), fsregdatetime(rec))),
         div(p(sprintf("RStudio Project (if any): %s\nAnalysis Script (if known): %s", 
-                      fsrstudioproject(rec),
-                      fsanalysisfile(rec)))
+                      ifnotnull(fsrstudioproject(rec)),
+                      ifnotnull(fsanalysisfile(rec))))
             )
     )
 }
@@ -89,7 +94,8 @@ setMethod("detailHTML", "list",
 
 })
 
-setMethod("detailHTML", "PlotFeatureSet",
+## setMethod("detailHTML", "PlotFeatureSet",
+setMethod("detailHTML", "FeatureSet",
           function(rec, imgurlfun, tdb = defaultTDB()) {
 
     imgfil = imagepath(rec, tdb)
@@ -145,20 +151,22 @@ $(".inline").colorbox({inline:true, width:"736px"});
     if(is.null(reclist) || length(reclist) < 1)
         div(class = "trackr_results")
     else {
+        nms = names(reclist)
+        if(is.null(nms))
+          nms = 1:length(reclist)
         retdiv = div(class="trackr_results", 
                      tagAppendChildren(htmltools::tags$section(class="image-wrap cf clear",
                                                                id="image-wrap"),
-                                       list = lapply(reclist,
-                                               thumbnailHTML, 
-                                               imgurlfun = imgurlfun,
-                                               tdb = tdb)))
-        tagAppendChildren(retdiv, list = c(lapply(reclist,
-                                                  function(rec, iuf, db) {
-                                      div(style="display:none",
-                                          detailHTML(rec, imgurlfun = iuf,
-                                                     tdb = db
-                                                     )
-                                          )
+                                       list = lapply(nms, function(i, ...) thumbnailHTML(reclist[[i]], ...),
+                                                     imgurlfun = imgurlfun,
+                                                     tdb = tdb)))
+        tagAppendChildren(retdiv, list = c(lapply(nms, function(i, iuf, db) {
+                                                           rec = reclist[[i]]
+                                                           div(style="display:none",
+                                                               detailHTML(rec, imgurlfun = iuf,
+                                                                          tdb = db)
+                                                           )
+        
                                   }, iuf = imgurlfun, db = tdb),
                                   list(htmltools::tags$script(HTML(codestr)))))
     }

@@ -171,7 +171,12 @@ setMethod(f = "saveEnrichedPlot",
                 png::writePNG(p.png, target = filename,
                     text = as(object, "data.frame"), metadata = object@object)
             } else {
-                warning("Plot not saved.")
+                ## this interacts with plots that are part of Rmd files.
+                ## Getting rid of this for the live demo. Refactor in some
+                ## smarter way someday.
+
+                ##XXX
+                ##warning("Plot not saved.")
             }
         } else {
             not_implemented("saving plot with metadata as type other than PNG.")
@@ -1189,44 +1194,43 @@ setMethod(f = "geomObject",
 
 #' @rdname geomObject-methods
 setMethod(f = "geomObject",
-    signature = "ggplot",
-    definition = function(object) {
-        require(proto, quietly=TRUE)
+          signature = "ggplot",
+          definition = function(object) {
+    suppressWarnings(require(proto, quietly=TRUE))
+    
+    ## access to geom name thanks to http://stackoverflow.com/questions/13457562/
+    ## if original geom order does not matter, could sort these before collapsing
+    ## but should re-sort stat in geom order too
+    ## may also want an auxillary function that "translates" ggplot's geoms into more common language
+    p.geom.params <- sapply(lapply(object$layers, as.list), "[[", "geom_params",
+                            simplify=FALSE)
+    ## names(p.geom.params) <- make.names(sapply(lapply(object$layers, as.list), 
+    ##     function(x) x$geom$objname))
+    
+    names(p.geom.params) <- make.names(sapply(lapply(object$layers, as.list),
+                                              .geom_name))
+    
+    ## for the future
+    ## sapply(lapply(object$layers, as.list), x$geom$parent.env()$objname)
 
-        # access to geom name thanks to http://stackoverflow.com/questions/13457562/
-        # if original geom order does not matter, could sort these before collapsing
-        # but should re-sort stat in geom order too
-        # may also want an auxillary function that "translates" ggplot's geoms into more common language
-        p.geom.params <- sapply(lapply(object$layers, as.list), "[[", "geom_params",
-            simplify=FALSE)
-        ## names(p.geom.params) <- make.names(sapply(lapply(object$layers, as.list), 
-        ##     function(x) x$geom$objname))
+    ##in ggplot 2.0 default_aes is not a function anymore, at least sometimes.
+    
+    p.geom.defaults <- sapply(lapply(object$layers, as.list), 
+                              function(x) {
+        if(is(x$geom$default_aes, "function"))
+            x$geom$default_aes()
+        else
+            x$geom$default_aes
+    }, simplify=FALSE)
+    ## sapply(lapply(object$layers, as.list), 
+    ##   function(x) x$stat$default_geom(), simplify=FALSE)
+    
+    p.geom <- mapply(merge.named.lists, p.geom.params, p.geom.defaults, SIMPLIFY = FALSE)
 
-        names(p.geom.params) <- make.names(sapply(lapply(object$layers, as.list),
-                                                  .geom_name))
-
-        # for the future
-        # sapply(lapply(object$layers, as.list), x$geom$parent.env()$objname)
-
-        ##in ggplot 2.0 default_aes is not a function anymore, at least sometimes.
-        
-        p.geom.defaults <- sapply(lapply(object$layers, as.list), 
-            function(x) {
-            if(is(x$geom$default_aes, "function"))
-                x$geom$default_aes()
-            else
-                x$geom$default_aes
-        }, simplify=FALSE)
-        # sapply(lapply(object$layers, as.list), 
-        #   function(x) x$stat$default_geom(), simplify=FALSE)
-
-        p.geom <- mapply(merge.named.lists, p.geom.params, p.geom.defaults, SIMPLIFY = FALSE)
-
-        p.geom <- sapply(p.geom, 
-            function(x) setNames(object = x, americanize(names(x))), simplify=FALSE)
-        list(type = names(p.geom), params = p.geom)
-    }
-)
+    p.geom <- sapply(p.geom, 
+                     function(x) setNames(object = x, americanize(names(x))), simplify=FALSE)
+    list(type = names(p.geom), params = p.geom)
+})
 
 #' @rdname geomObject-methods
 setMethod(f = "geomObject",

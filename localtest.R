@@ -1,5 +1,5 @@
 options(error=recover)
-library(recordr)
+library(trackr)
 library(ggplot2)
 
 data(Chem97, package = "mlmRev")
@@ -34,14 +34,19 @@ solr.uri <- "http://localhost:8983/solr/recordr"
 ## ## but will maintain consistency with search results received via UI
 sl <- SolrList(solr.uri, requestHandler="search")
 
+dir =  "~/gabe/checkedout"
+dir.create(file.path(dir, "trackr_imgs"))
+fil = file.path(dir,"vtdb_json_test.json")
+
+
+tdb = TrackrDB(TrackrOptions(img_dir = blklight.img.dir), backend = sl)
+defaultTDB(tdb)
+
 
 #addToDataStore(pg, sl, img.save.dir = blklight.img.dir, verbose=TRUE)
 
 ## db =new("ViztrackrDB", backend = sl, opts = new("ViztrackrOptions", insert_delay = 1, img_dir = blklight.img.dir, img_ext = "png"))
 
-dir =  "~/gabe/checkedout"
-dir.create(file.path(dir, "vt_json_imgs"))
-fil = file.path(dir,"vtdb_json_test.json")
 unlink(fil)
 db = jsonVTDB(fil, img_dir = file.path(dir, "vt_json_imgs"))
 

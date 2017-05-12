@@ -1,6 +1,6 @@
 ---
-title: "Save plots using recordr and knitr"
-author: "Sara Moore"
+title: "knitr support test for recordr"
+author: "Gabriel Becker and Sara Moore"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{Using recordr with knitr}
@@ -9,7 +9,9 @@ vignette: >
 ---
 
 
-some text
+I'm testing knitr_and_record. Can it find this fancy phrase?
+
+How about these plots? horsepower is an interesting thing to study
 
 ```{r plot}
 library(ggplot2)
@@ -27,4 +29,4 @@ fit = lm(hp~wt, data = mtcars)
 fit
 ```
 
-even more text
+Seems like horsepower is related to weight!

@@ -9,17 +9,22 @@ listRecToFeatureSet = function(lst) {
     sltpres = names(slts) [ names(slts) %in% names(lst)]
     lst[sapply(lst, is.null)] = NA_character_
     lst[sltpres] = lapply(sltpres, function(x) {if(is(lst[[x]], "AsIs")) character() else lst[[x]]})
-    lst$regdate = as.POSIXct(strptime(lst$regdatetime, "%Y-%m-%dT%H:%M:%SZ" ))
+    if(!is.null(lst$regdatetime) && is(lst$regdatetime, "POSIXct"))
+        lst$regdate = lst$regdatetime
+    else if(!is.null(lst$regdatetime))
+        lst$regdate = as.POSIXct(strptime(lst$regdatetime, "%Y-%m-%dT%H:%M:%SZ" ))
+    else if(!is.null(lst$regdate) && is(lst$regdate, "character"))
+        lst$regdate = as.POSIXct(strptime(lst$regdate, "%Y-%m-%dT%H:%M:%SZ" ))    
     toflat = setdiff(names(slts), c(names(lst), noflat))
     for(sl in toflat) {
         lst = unflattenField(lst, sl)
 
     }
     lst$codeinfo = getInputs(parseCode(lst$code))
+    lst$object = NULL
     
     
     ret = do.call(new, c(Class = lst$fsetklass,
-                         object = list(NULL),
                          lst[names(lst) %in% names(slts)]))
     objCode(ret) = paste(as.character(lst$code), collapse="\n")
     ret
