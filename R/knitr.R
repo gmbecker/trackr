@@ -50,7 +50,7 @@ recplothook = function(x, opts, ...) {
 ##' this function. 
 ##' @export
 knit_and_record = function(input, ..., verbose = FALSE,
-                           tmptdb = TrackrDB(backend= ListBackend(), img_dir = trackr:::img_dir(defaultTDB()))) {
+                           tmptdb = TrackrDB(backend= ListBackend(), img_dir = img_dir(defaultTDB()))) {
     oldtdb = defaultTDB()
     on.exit(defaultTDB(oldtdb))
     defaultTDB(tmptdb)
@@ -77,15 +77,16 @@ knit_and_record = function(input, ..., verbose = FALSE,
     else if (grepl("[Rr][Nn][Ww]$", input))
         resfile = render(input = input,  output_format = "pdf_document",
                          run_pandoc=TRUE, ...)
-
+    endtime = Sys.time()
     figpath = file.path(odir, "figure")
     figs = character()
+    
     if(file.exists(figpath))
         figs = list.files(figpath, full.names=TRUE)
     if(length(figs) > 0) {
         ## these are integers. ugh. thisisfine.jpg
         figmtimes = sapply(figs, function(x) file.info(x)$mtime)
-        figs = figs[figmtimes > starttime]
+        figs = figs[figmtimes > starttime & figmtimes <= endtime]
     }
 
     figmd5 = character()
@@ -111,6 +112,11 @@ knit_and_record = function(input, ..., verbose = FALSE,
                           uniqueid = uniqueid,
                           outputfile = resfile, chunks = chunks,
                           figurefiles = figs)
+    imgpat = paste0("(", paste(rmdfs@outputids, collapse="|"), ")")
+    imgfiles = list.files(img_dir(tmptdb), pattern = imgpat, full.names = TRUE)
+    print(imgfiles)
+    stopifnot(length(imgfiles) == 3 * length(rmdfs@outputids))
+    file.copy(imgfiles, file.path(img_dir(oldtdb), basename(imgfiles)))
     objfsets = lapply(docs(trackr_backend(tmptdb)), function(x) {
         fs = listRecToFeatureSet(x)
         fs@generatedin = uniqueID(rmdfs)

@@ -151,7 +151,7 @@ setClass("TrackrOptions",
 
 #' @rdname TrackrOptions-class
 #' @param insert_delay numeric. delay in seconds between insertions.
-#' @param img_dir character. Directory to save image files in.
+#' @param img_dir character. Directory to save image files in. This will be normalized via normalizePath
 #' @param img_ext character. extension to give image files.
 #' @param backend_opts list. list of options specific to the backend. Currently ignored
 #' by trackr machinery.
@@ -160,10 +160,12 @@ TrackrOptions = function(insert_delay = 0,
                             img_dir = "./images",
                             img_ext = "png",
                             backend_opts = list(...),
-                            ...) {
+                         ...) {
+    if(!file.exists(img_dir))
+        dir.create(img_dir, recursive=TRUE)
     new("TrackrOptions",
         insert_delay = insert_delay,
-        img_dir = img_dir,
+        img_dir = normalizePath(img_dir),
         img_ext = img_ext,
         backend_opts = backend_opts)
 }
