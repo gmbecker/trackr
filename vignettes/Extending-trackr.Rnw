@@ -53,8 +53,8 @@ To implement our backend, we first define the S4 class representing an instance 
 <<>>=
 library(trackr)
 
-lb = setRefClass("ListBackend", fields = list(dat = "list"))
-ListBackend = function() lb$new()
+lb = setRefClass("BasicListBackend", fields = list(dat = "list"))
+BasicListBackend = function() lb$new()
 @
 
 We then define our methods which will allow \rpkg{trackr} to interact with our backend. For full customization, we could in principle first write a specific \rfun{prep_for_backend} method. When writing custom \rfun{prep_for_backend} methods, they must:
@@ -72,7 +72,7 @@ All \rfun{instert_record} and \rfun{remove_record} methods must accept five and 
 \begin{enumerate}
 \item object - the document to be inserted or deleted within the datastore,
   or the id of the record to be deleted;
-\item id - the unique id to associate with the added plot, or the id of the plot to remove (\emph{insert_record only};
+\item {id - the unique id to associate with the added plot, or the id of the plot to remove \emph{insert\_record only});}
 \item target - the backend object (of the new class that we have created);
 \item opts - a \rclass{TrackrOptions} object
 \item verbose - a logical indicating whether the backend should emit informational messages (if supported)
@@ -81,13 +81,13 @@ All \rfun{instert_record} and \rfun{remove_record} methods must accept five and 
 The methods themselves must then update the backend object by performing the desired insertion or removal, assign the updated backend back into the database, and return the database. In our toy list-backend case, we can achieve this like so:
 
 <<>>=
-setMethod("insert_record", c( target = "ListBackend"),
+setMethod("insert_record", c( target = "BasicListBackend"),
 function(object, id, target, opts, verbose = FALSE) {
     target$dat[[id]] = object
     invisible(target)
 })
 
-setMethod("remove_record", c(object = "character", target = "ListBackend"), 
+setMethod("remove_record", c(object = "character", target = "BasicListBackend"), 
 function(object, target, opts, verbose = FALSE) {
     ## object is the id
     target$dat[[object]] = NULL
@@ -102,7 +102,7 @@ Along with our \rfun{insert_record} and \rfun{remove_record} methods, we must de
 Because our \rclass{list} backend has no persistent storage behind it, our \rfun{trackr_write} method does nothing:
 
 <<>>=
-setMethod("trackr_write", c(target = "ListBackend"), 
+setMethod("trackr_write", c(target = "BasicListBackend"), 
 function(target, opts, verbose = FALSE) target)
 @
 
@@ -112,7 +112,7 @@ Next is a \rfun{trackr_lookup} method, which takes the \rexpr{object}, \rexpr{db
 The \rexpr{object} argument can be an R object representing, an \rclass{ObjectFeatureSet} object, or a \rclass{character} id. As with \rfun{remote_record}, however, general methods provided by \rpkg{trackr} funnel all dispatch through character-based methods, so we only need to provide a \rclass{character} id-based lookup method when defining a backend. We implement this like so:
 
 <<>>=
-setMethod("trackr_lookup", c("character", target = "ListBackend"),
+setMethod("trackr_lookup", c("character", target = "BasicListBackend"),
 function(object, target, opts, exist = FALSE){
     found = which(object == names(target$dat))
     if(exist)
@@ -128,7 +128,7 @@ In the case of our backend, \rfun{trackr_search} will loop through our list and 
 
 <<>>=
 
-setMethod("trackr_search", c(pattern = "character", target = "ListBackend"),
+setMethod("trackr_search", c(pattern = "character", target = "BasicListBackend"),
           function(pattern, target, opts, fields = NULL, ret_type = c("id", "list", "backend"),
                    verbose = TRUE) {
     if(is.null(fields)) {
@@ -146,7 +146,7 @@ With this, our backend is complete and ready for use.
 
 library(ggplot2)
 plt = qplot(x = 1:10, y = rnorm(10))
-be = ListBackend()
+be = BasicListBackend()
 db = TrackrDB(backend = be)
 defaultTDB(db)
 
@@ -172,7 +172,7 @@ in many cases, including the \rclass{list}-backend case we presented here.
 Metadata extraction can be customized in two ways within the
 \rpkg{trackr} framework. First, users can define an S4 method for the
 \rfun{generateTags} generic for a class. This is called by
-\rfun{makeFeatureSet} methods \rpgk{trackr} provides to perform
+\rfun{makeFeatureSet} methods \rpkg{trackr} provides to perform
 metadata extraction, and is passed the object that \rpkg{trackr} is
 extracting metadata from. Any (character) values returned will be
 added to the tags for the object. This provides an easy way to add

@@ -378,6 +378,14 @@ setMethod("trackr_search", c("character", "DocCollectionRef"),
 }
 
 
+
+setMethod("trackr_search", c("character", "DocCollectionRef"),
+          function(pattern, target, opts, fields = NULL, ret_type = c("doclist", "id", "backend"),
+                   verbose = TRUE) {
+    trackr_search(pattern = pattern, target = target$docs, opts = opts, fields = fields, ret_type = ret_type)
+})
+
+
 setMethod("trackr_search", c("character", "DocCollection"),
           function(pattern, target, opts, fields = NULL, ret_type = c("doclist", "id", "backend"),
                    verbose = TRUE) {
