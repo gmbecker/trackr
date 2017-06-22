@@ -1,7 +1,7 @@
 Package: trackr
 Type: Package
 Title: Semantic Annotation and Discoverability System for R-based artifacts
-Version: 0.6.4
+Version: 0.6.5
 Date: 2015-07-01
 Authors@R: c(
     person("Sara", "Moore", role = c("aut", "cre"),
@@ -24,7 +24,6 @@ Imports:
     fastdigest,
     ggplot2,
     lattice,
-    rdocdb,
     gridGraphics,
     methods,
     CodeDepends,
@@ -49,6 +48,7 @@ VignetteBuilder: knitr
 Collate: 
     'Classes.R'
     'Generics.R'
+    'DocCollectionRef-methods.R'
     'PlotWrapper.R'
     'ObjFeatureSet.R'
     'Trackr-main-API.R'

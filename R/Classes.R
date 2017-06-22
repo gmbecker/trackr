@@ -1,4 +1,4 @@
-##' @import rdocdb
+##' @import rsolr
 NULL
 
 ## define necessary class unions
@@ -197,6 +197,22 @@ TrackrDB = function(opts = TrackrOptions(...), backend = JSONBackend(), ...)
     new("TrackrDB", opts = opts, backend = backend)
 
 
+
+
+#' @name DocCollectionRef
+#' @title Reference to a DocCollection
+#'
+#' @description A reference class which carries around a DocCollection, suitable
+#' for use as a trackr backend.
+#' @docType methods
+#' @rdname DocCollection-refclasses
+#' @exportClass DocCollectionRef
+.docrefclass = setRefClass("DocCollectionRef",
+            fields = list(docs = "DocCollection"))
+
+
+
+
 #' @name JSONBackend-class
 #' @title JSON backend for trackr
 #' @slot data list. An in-memory list representation of the data in the db
@@ -218,6 +234,7 @@ jsonbackend = setRefClass("JSONBackend",
                                 else
                                     .self$.file = val
                             }))
+
 
 #' @name JSONBackend
 #' @title JSON backend contstructor
@@ -257,7 +274,18 @@ setClass("RStudioExtras",
                           project = NA_character_)
          )
 
+
+
+
+#' @rdname DocCollection-refclasses
+#' @exportClass ListBackend
+#' @aliases ListBackend-class
 listbackend = setRefClass("ListBackend", contains="DocCollectionRef")
+#' @rdname DocCollection-refclasses
+#' @export
+#' @aliases ListBackend
 ListBackend = function(lst = list()) {
     listbackend(docs = new("DocList", lst))
 }
+
+

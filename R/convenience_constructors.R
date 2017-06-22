@@ -32,8 +32,6 @@ jsonTDB = function(file = "~/.trackr/objdb.json",
 #' @export
 solrTDB = function(core, requestHandler = "search", opts = TrackrOptions(...),
                     ...) {
-    if(!require("rsolr"))
-        stop("Can't create a solar-backed TrackrDB without rsolr installed")
     backend = SolrList(core, requestHandler = requestHandler)
     TrackrDB(opts = opts, backend = backend)
 }

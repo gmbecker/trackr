@@ -83,50 +83,8 @@ setGeneric(name = "saveBasicPlot",
 setGeneric(name = "selectPlot",
     def = function(object, terms, ...) {
         standardGeneric("selectPlot")
-    }
-)
+})
 
-## #' @name addToDataStore
-## #' @title Add a PlotFeatureSet to a data store like a Solr core/index.
-## #' @param object An object of class PlotFeatureSet, ggplot, or trellis.
-## #' @param data.store An object representing the data store to which the object should be added.  Currently implemented options: rsolr::SolrList.
-## #' @param ... Other named arguments.
-## #' @return An updated data store object.
-## #' @rdname addToDataStore
-## #' @export
-## setGeneric(name = "addToDataStore",
-##     def = function(object, data.store, ...) {
-##         standardGeneric("addToDataStore")
-##     }
-## )
-
-## #' @name searchDataStore
-## #' @title Search a database of plot objects.
-## #' @param q A character vector representing a search query. Multiple queries are combined with an OR operator.
-## #' @param data.store An object representing the data store that should be searched.  Currently implemented options: rsolr::SolrList.
-## #' @param ... Other named arguments.
-## #' @return A data.frame (or data-store-specific analogue) of results
-## #' @rdname searchDataStore
-## #' @export
-## setGeneric(name = "searchDataStore",
-##     def = function(q, data.store, ...) {
-##         standardGeneric("searchDataStore")
-##     }
-## )
-
-## #' @name removeFromDataStore
-## #' @title Remove an object from a data store like a Solr core/index.
-## #' @param object An object of class PlotFeatureSet or a character vector corresponding to a unique ID of an object in the data store.
-## #' @param data.store An object representing the data store from which the object should be removed.  Currently implemented options: rsolr::SolrList.
-## #' @param ... Other named arguments.
-## #' @return An updated data store object.
-## #' @rdname removeFromDataStore
-## #' @export
-## setGeneric(name = "removeFromDataStore",
-##     def = function(object, data.store, ...) {
-##         standardGeneric("removeFromDataStore")
-##     }
-## )
 
 #' @name parseCode
 #' @title Parse plot creation code into a CodeDepends::Script.
