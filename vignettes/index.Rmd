@@ -24,9 +24,9 @@ knitr::opts_chunk$set(
 
 To run all examples and vignettes, the following packages should be installed:
 
-* From CRAN: `ggplot2`, `lattice`, `proto`, `digest`, `png`, `httr`, `MASS`, `MEMSS`, `mlmRev`, `devtools`
+* From CRAN: `ggplot2`, `lattice`, `proto`, `digest`, `png`, `httr`, `MASS`, `MEMSS`, `mlmRev`, `devtools`, `CodeDepends`, `rsolr`
 * From Bioconductor: `BiocGenerics` 
-* From Github: `duncantl/CodeDepends`, `lawremi/rsolr`, `lawremi/restfulr`, `lawremi/rdocdb`
+
 
 
 # Create some example plots
@@ -37,7 +37,7 @@ use throughout the demonstration.
 ```{r}
 
 library(trackr)
-library(rdocdb) #need it for ndoc, etc calls
+
 
 library(ggplot2)
 library(lattice)

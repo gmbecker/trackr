@@ -14,7 +14,7 @@
 #' @rdname main-api
 #' @export
 
-record = function(object, db = defaultTDB(), code = histry::histropts$history, force = FALSE,
+record = function(object, db = defaultTDB(), code = histry::histry(), force = FALSE,
                    verbose = FALSE, symorpos = NULL) {
 
     if(!is.null(code)) {

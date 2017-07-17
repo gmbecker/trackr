@@ -62,7 +62,7 @@ autotrackPlots = function(trackrdb = trackropts$trackrdb) {
     if(!trackingHistory())
         stop("cannot autotrack plots without automatic history tracking")
 
-    qexpr = quote(addTaskCallback(function(expr, value, success, printed, tracker) { record(value, db = trackropts$trackrdb, symorpos = length(histry::histropts$history$exprs)); FALSE}))
+    qexpr = quote(addTaskCallback(function(expr, value, success, printed, tracker) { record(value, db = trackropts$trackrdb, symorpos = length(histry::histry())); FALSE}))
     trace(lattice:::print.trellis, qexpr,
           where = asNamespace("lattice"))
     trace(ggplot2:::print.ggplot, qexpr, 

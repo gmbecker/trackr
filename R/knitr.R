@@ -3,7 +3,7 @@ recplothook = function(x, opts, ...) {
         warning("cannot record plot, default db not set. Use defaultTDB() in the first chunk to do this")
     } else if(!is.null(ggplot2:::last_plot())){
         
-        len = length(histry::histropts$history$exprs)
+        len = length(histry::histry())
         record(ggplot2:::last_plot(), symorpos = len)
     }
     paste0("![", x, "]")
@@ -67,26 +67,39 @@ knit_and_record = function(input, ..., verbose = FALSE,
     if("output" %in% names(list(...)))
         odir = dirname(list(...)$output)
     else
-        odir = getwd()
+        odir = dirname(input) #getwd()
 
     require(rmarkdown)
     starttime = Sys.time()
     if(grepl("[Rr][Mm][Dd]$", input))
         resfile = render(input = input,output_format = html_document(self_contained = FALSE, mathjax = NULL),
                          run_pandoc = TRUE, ...)
-    else if (grepl("[Rr][Nn][Ww]$", input))
+    else if (grepl("[Rr][Nn][Ww]$", input)) {
         resfile = render(input = input,  output_format = "pdf_document",
                          run_pandoc=TRUE, ...)
+    }
     endtime = Sys.time()
-    figpath = file.path(odir, "figure")
+    filenamestub = gsub("(.*)\\.R..$", "\\1", basename(input))
+    figpath = file.path(odir, paste0(filenamestub, "_files"))
     figs = character()
-    
+
+    if(file.exists(file.path(odir, "figure"))) {
+        dir.create(file.path(figpath, "figure-html"))
+        file.copy(list.files(file.path(odir, "figure"), full.names=TRUE), file.path(figpath, "figure-html"))
+    }
     if(file.exists(figpath))
-        figs = list.files(figpath, full.names=TRUE)
-    if(length(figs) > 0) {
-        ## these are integers. ugh. thisisfine.jpg
-        figmtimes = sapply(figs, function(x) file.info(x)$mtime)
-        figs = figs[figmtimes > starttime & figmtimes <= endtime]
+        figs = list.files(figpath, recursive=TRUE)
+
+    figsfull = file.path(figpath, figs)
+
+   
+   
+    if(length(figs) > 0 && grepl("html", resfile, ignore.case=TRUE)) {
+        alllines = readLines(resfile)
+        figs = figs[sapply(basename(figs), function(x) any(grepl(x, alllines)))]
+        ## ## these are integers. ugh. thisisfine.jpg
+        ## figmtimes = sapply(figsfull, function(x) file.info(x)$mtime)
+        ## figs = figs[figmtimes > starttime & figmtimes <= endtime]
     }
 
     figmd5 = character()
