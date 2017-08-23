@@ -10,6 +10,7 @@ setMethod("prep_for_backend", c("FeatureSet", "TrackrDB"),
 
 
 
+
 setGeneric("make_image_files", function(object, opts) standardGeneric("make_image_files"))
 setMethod("make_image_files", "PlotFeatureSet",
           function(object, opts) {
@@ -79,6 +80,38 @@ setMethod("make_image_files", "RmdFeatureSet",
     ret
 })
 
+
+draw_text_icon = function(object, kl = object@klass) {
+    plot.new()
+    plot.window(xlim = c(0,1), ylim = c(0,1))
+    text(abrevClass(kl), x = .5, y = .5, cex = 20,
+         family = "Helvetica", pos = 3)
+    text(kl[1], x = .5, y = .25, cex = 2,
+         family = "Helvetica", pos = 3)
+}
+
+setMethod("make_image_files", "ObjFeatureSet",
+          function(object, opts) {
+    img.save.dir = img_dir(opts)
+    img.ext = img_ext(opts)
+    
+    
+    if(!dir.exists(img.save.dir))
+        dir.create(img.save.dir, recursive=TRUE)
+    
+    paths = file.path(img.save.dir, paste0(uniqueID(object), c("_thumb.", ".","_feed."), img.ext))
+    png(paths[1])
+    draw_text_icon(object = object)
+    dev.off()
+
+    file.copy(system.file(paths[1], package = "trackr"), paths[2])
+    file.copy(system.file(paths[1], package = "trackr"), paths[3])
+    list(preview.path = basename(paths[1]), image.path = basename(paths[2]))
+    
+    
+    
+
+
 setMethod("make_image_files", "FeatureSet",
           function(object, opts) {
     img.save.dir = img_dir(opts)
@@ -89,7 +122,7 @@ setMethod("make_image_files", "FeatureSet",
         dir.create(img.save.dir, recursive=TRUE)
     
     paths = file.path(img.save.dir, paste0(uniqueID(object), c("_thumb.", ".","_feed."), img.ext))
-    
+
     file.copy(system.file("images/Rlogo.png", package = "trackr"), paths[1])
     file.copy(system.file("images/Rlogo.png", package = "trackr"), paths[2])
     file.copy(system.file("images/Rlogo.png", package = "trackr"), paths[3])
