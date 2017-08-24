@@ -16,7 +16,7 @@ specialcases = list(character = "chr",
 abrevClass = function(klass, spc = specialcases) {
     if(klass %in% names(spc))
         return(spc[[klass]])
-
+    
     if(length(klass) > 1)
         klass = klass[1]
     hasupper = grepl("[[:upper:]]", klass)
@@ -25,7 +25,7 @@ abrevClass = function(klass, spc = specialcases) {
         abrev = gsub("[^[:upper:]]", "", klass)
     } else if (hassplit) {
         absects = strsplit(klass, "(\\.|_)")[[1]]
-
+        
         abrev = substr(absects, 1, 1)
         abrev = paste(abrev, collapse = "")
     } else {
@@ -39,4 +39,3 @@ abrevClass = function(klass, spc = specialcases) {
     }
     tolower(abrev)
 }
-

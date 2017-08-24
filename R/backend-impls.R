@@ -109,7 +109,7 @@ setMethod("make_image_files", "ObjFeatureSet",
     list(preview.path = basename(paths[1]), image.path = basename(paths[2]))
     
     
-    
+})
 
 
 setMethod("make_image_files", "FeatureSet",
