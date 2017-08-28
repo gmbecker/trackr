@@ -104,11 +104,9 @@ setMethod("make_image_files", "ObjFeatureSet",
     draw_text_icon(object = object)
     dev.off()
 
-    file.copy(system.file(paths[1], package = "trackr"), paths[2])
-    file.copy(system.file(paths[1], package = "trackr"), paths[3])
+    file.copy(paths[1], to = paths[2])
+    file.copy(paths[1], to = paths[3])
     list(preview.path = basename(paths[1]), image.path = basename(paths[2]))
-    
-    
 })
 
 
