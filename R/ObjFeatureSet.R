@@ -212,6 +212,16 @@ GraphicsFeatureSet = function(object, fsetklass = "GraphicsFeatureSet", ...) {
 }
 
 
+.makeClassesTab = function(df) {
+    paste(names(df), sapply(df, getTopS3Class), sep =":")
+    
+}
+
+.makeSummaryTable = function(v) {
+    s = summary(v)
+    paste(names(s), s, sep=":")
+}
+
 #' @rdname fset_constructors
 #' @param vars Do not manually set
 #' @param varclasses Do not manually set
@@ -220,8 +230,8 @@ GraphicsFeatureSet = function(object, fsetklass = "GraphicsFeatureSet", ...) {
 #' @export
 DFFeatureSet = function(object, fsetklass = "DFFeatureSet",
                         vars = names(object),
-                        varclasses = sapply(object, getTopS3Class),
-                        varsummaries = structure(lapply(object, summary), names = names(object)),
+                        varclasses = .makeClassesTab(object),
+                        varsummaries = structure(lapply(object, .makeSummaryTable), names = names(object)),
                         nobs = nrow(object),
                         ...) {
     innerobj = ObjFeatureSet(object = object, fsetklass = fsetklass, ...)
