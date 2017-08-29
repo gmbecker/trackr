@@ -100,10 +100,10 @@ setMethod("make_image_files", "ObjFeatureSet",
         dir.create(img.save.dir, recursive=TRUE)
     
     paths = file.path(img.save.dir, paste0(uniqueID(object), c("_thumb.", ".","_feed."), img.ext))
-    png(paths[1])
+    png(paths[1], width = 5, height = 5, dpi= 50, units  "in")
     draw_text_icon(object = object)
     dev.off()
-
+    
     file.copy(paths[1], to = paths[2])
     file.copy(paths[1], to = paths[3])
     list(preview.path = basename(paths[1]), image.path = basename(paths[2]))
