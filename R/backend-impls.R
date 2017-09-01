@@ -84,10 +84,12 @@ setMethod("make_image_files", "RmdFeatureSet",
 draw_text_icon = function(object, kl = object@klass) {
     plot.new()
     plot.window(xlim = c(0,1), ylim = c(0,1))
-    text(abrevClass(kl), x = .5, y = .5, cex = 20,
-         family = "Helvetica", pos = 3)
-    text(kl[1], x = .5, y = .25, cex = 2,
-         family = "Helvetica", pos = 3)
+    old = par(mar = c(0.1, 0.1, 0.1, 0.1))
+    on.exit(par(old))
+    text(abrevClass(kl), x = .45, y = .45, cex = 11,
+         family = "Helvetica", pos = 3, adj = c(.5, .5), offset = 0)
+    text(kl[1], x = .45, y = .05, cex = 1.5,
+         family = "Helvetica", pos = 3, adj = c(.5, .5), offset = 0)
 }
 
 setMethod("make_image_files", "ObjFeatureSet",
@@ -100,7 +102,7 @@ setMethod("make_image_files", "ObjFeatureSet",
         dir.create(img.save.dir, recursive=TRUE)
     
     paths = file.path(img.save.dir, paste0(uniqueID(object), c("_thumb.", ".","_feed."), img.ext))
-    png(paths[1], width = 5, height = 5, dpi= 50, units  "in")
+    png(paths[1], width = 250, height = 250, units = "px")
     draw_text_icon(object = object)
     dev.off()
     
