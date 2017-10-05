@@ -5,10 +5,10 @@
 \alias{as.data.frame.ObjFeatureSet}
 \title{Export a ObjFeatureSet as list}
 \usage{
-\method{as.list}{FeatureSet}(x, ...)
+as.list.FeatureSet(x, ...)
 
-\method{as.data.frame}{ObjFeatureSet}(x, row.names = NULL, optional = FALSE,
-  ..., long = FALSE)
+as.data.frame.ObjFeatureSet(x, row.names = NULL, optional = FALSE, ...,
+  long = FALSE)
 }
 \arguments{
 \item{x}{A ObjFeatureSet.}

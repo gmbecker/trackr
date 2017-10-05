@@ -24,7 +24,8 @@ setClassUnion("sinfoOrList", c("sessionInfo", "list"))
                                   sessioninfo = "sinfoOrList", 
                                   isplot = "logical",
                                   fsetklass = "character",
-                                  trackrversion = "character")
+                                  trackrversion = "character",
+                                  clineargs = "character")
                         )
 
 

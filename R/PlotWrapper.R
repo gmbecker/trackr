@@ -150,59 +150,39 @@ not_implemented <- function(reason = NULL) {
     invisible(NULL)
 }
 
-#' @param type The type of metadata-enriched image to save. Default is "png"
-#' @rdname enrichedPlot-methods
-#' @export
-setMethod(f = "saveEnrichedPlot",
-    signature = "PlotFeatureSet",
-    definition = function(object, filename, type = "png", ...) {
-        success <- saveBasicPlot(object, filename, type, ...)
-        # read back in, "enrich"
-        if(type=="png") {
-            if(success) {
-                ## read back in the PNG because 
-                ## writePNG wants raw matrix/array of image contents as input
-                p.png <- png::readPNG(filename)
+## #' @param type The type of metadata-enriched image to save. Default is "png"
+## #' @rdname enrichedPlot-methods
+## #' @export
+## setMethod(f = "saveEnrichedPlot",
+##     signature = "PlotFeatureSet",
+##     definition = function(object, filename, type = "png", ...) {
+##         success <- saveBasicPlot(object, filename, type, ...)
+##         ## we don't enrich plots anymore. It makes the image files too big. If we
+##         ## want the object saved it should be submitted to the backend itself (e.g.,
+##         ## in the client bundle of a grex)
+        
+##         invisible(NULL)
+##     }
+## )
 
-                ## write 8-bit, deflate-compressed, non-quantized, non-interlaced image
-                ## with database-style (sample/placeholder) text metadata
-                ##      + a serialized R object as add'l metadata
-                ## (note that this overwrites the "plain" PNG written out above)
-                png::writePNG(p.png, target = filename,
-                    text = as(object, "data.frame"), metadata = object@object)
-            } else {
-                ## this interacts with plots that are part of Rmd files.
-                ## Getting rid of this for the live demo. Refactor in some
-                ## smarter way someday.
+## #' @describeIn enrichedPlot-methods Load the (R) plot object previously saved as metadata in an image file.
+## #' @export
+## loadEnrichedPlot <- function(filename, type = "png", ...) {
+##     # just read in R object (png metadata)
+##     res <- NULL
+##     if (type=="png") {
+##         if (file.exists(filename)) {
+##             p.png <- png::readPNG(filename, info = TRUE)
 
-                ##XXX
-                ##warning("Plot not saved.")
-            }
-        } else {
-            not_implemented("saving plot with metadata as type other than PNG.")
-        }
-        invisible(NULL)
-    }
-)
-
-#' @describeIn enrichedPlot-methods Load the (R) plot object previously saved as metadata in an image file.
-#' @export
-loadEnrichedPlot <- function(filename, type = "png", ...) {
-    # just read in R object (png metadata)
-    res <- NULL
-    if (type=="png") {
-        if (file.exists(filename)) {
-            p.png <- png::readPNG(filename, info = TRUE)
-
-            res <- attr(p.png, "metadata")
-        } else {
-            warning("Plot not found.")
-        }
-    } else {
-        not_implemented("loading plot with metadata as type other than PNG.")
-    }
-    res
-}
+##             res <- attr(p.png, "metadata")
+##         } else {
+##             warning("Plot not found.")
+##         }
+##     } else {
+##         not_implemented("loading plot with metadata as type other than PNG.")
+##     }
+##     res
+## }
 
 #' @describeIn saveBasicPlot Save the plot object owned by an object of class/superclass PlotFeatureSet as an image.
 setMethod(f = "saveBasicPlot",
@@ -259,11 +239,11 @@ setMethod(f="saveBasicPlot",
 })
 
 
-setMethod(f="saveEnrichedPlot",
-          signature = "FeatureSet",
-            definition = function(object, filename, type = "png", ...) {
-    TRUE
-})
+## setMethod(f="saveEnrichedPlot",
+##           signature = "FeatureSet",
+##             definition = function(object, filename, type = "png", ...) {
+##     TRUE
+## })
 
 
 

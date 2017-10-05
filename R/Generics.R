@@ -41,19 +41,20 @@ setGeneric(name = "makeFeatureSet",
 #     )
 # }
 
-#' @name saveEnrichedPlot
-#' @title Save the plot object owned by an object of class/superclass PlotFeatureSet as an image with metadata.
-#' @param object An object of (super)class PlotFeatureSet.
-#' @param filename The full filename, including path, where the plot should be saved.
-#' @param ... Other named arguments passed on to the class-specific basic image save method.
-#' @return NULL
-#' @rdname enrichedPlot-methods
-#' @export
-setGeneric(name = "saveEnrichedPlot",
-    def = function(object, filename, ...) {
-        standardGeneric("saveEnrichedPlot")
-    }
-)
+## we don't do this anymore
+## #' @name saveEnrichedPlot
+## #' @title Save the plot object owned by an object of class/superclass PlotFeatureSet as an image with metadata.
+## #' @param object An object of (super)class PlotFeatureSet.
+## #' @param filename The full filename, including path, where the plot should be saved.
+## #' @param ... Other named arguments passed on to the class-specific basic image save method.
+## #' @return NULL
+## #' @rdname enrichedPlot-methods
+## #' @export
+## setGeneric(name = "saveEnrichedPlot",
+##     def = function(object, filename, ...) {
+##         standardGeneric("saveEnrichedPlot")
+##     }
+## )
 
 #' @name saveBasicPlot
 #' @title Save the plot object owned by an object of class/superclass PlotFeatureSet as an image.

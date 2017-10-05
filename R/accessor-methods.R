@@ -481,3 +481,8 @@ setGeneric("varnames", function(x) standardGeneric("varnames"))
 setMethod("varnames", "FeatureSet", function(x) NA_character_)
 setMethod("varnames", "DFFeatureSet", function(x) x@varnames)
 
+
+
+setGeneric("cline_args", function(x) standardGeneric("cline_args"))
+setMethod("cline_args", "missing", function(x) collapsed_cline_args())
+setMethod("cline_args", "FeatureSet", function(x) x@clineargs)

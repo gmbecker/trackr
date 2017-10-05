@@ -6,8 +6,8 @@
 \alias{findRecords}
 \title{Primary high-level API functions for Trackr Databases}
 \usage{
-record(object, db = defaultTDB(), code = histry::histropts$history,
-  force = FALSE, verbose = FALSE, symorpos = NULL)
+record(object, db = defaultTDB(), code = histry::histry(), force = FALSE,
+  verbose = FALSE, symorpos = NULL)
 
 rmRecord(object, db = defaultTDB(), verbose = FALSE)
 

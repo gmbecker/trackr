@@ -32,9 +32,10 @@ setMethod("make_image_files", "PlotFeatureSet",
     invisible(saveBasicPlot(object, 
                             feedpath,
                             width = 5, height = 5, dpi = 100))
-                                        # main image with R object embedded as metadata
+    ## main full res image. We no longer embed the R object as metadata due to size
+    ## issues when used in practice.
     mainpath = file.path(img.save.dir, paste0(id, ".", img.ext))
-    saveEnrichedPlot(object, mainpath)
+    saveBasicPlot(object, mainpath)
     
         
     list(preview.path = basename(thumbpath), image.path = basename(mainpath))

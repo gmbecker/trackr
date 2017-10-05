@@ -1,7 +1,7 @@
 Package: trackr
 Type: Package
 Title: Semantic Annotation and Discoverability System for R-based artifacts
-Version: 0.6.8.5
+Version: 0.6.8.6
 Date: 2015-07-01
 Authors@R: c(
     person("Sara", "Moore", role = c("aut", "cre"),
@@ -47,11 +47,12 @@ Suggests:
 VignetteBuilder: knitr
 Collate: 
     'Classes.R'
-    'Generics.R'
     'DocCollectionRef-methods.R'
+    'Generics.R'
     'PlotWrapper.R'
     'ObjFeatureSet.R'
     'Trackr-main-API.R'
+    'abbrev.R'
     'accessor-methods.R'
     'autotrack.R'
     'backend-impls.R'
@@ -63,5 +64,4 @@ Collate:
     'parseCode.R'
     'shiny.R'
     'showMethods.R'
-    'abbrev.R'
 RoxygenNote: 6.0.1

@@ -49,6 +49,8 @@ scrape_descr <- function(start_dir = getwd(), fields = c("Package", "Title", "De
 
 }
 
+collapsed_cline_args = function() paste(commandArgs(), collapse = " ")
+
 
 ##because S3, grumble mumble
 getBaseS3Class = function(x) tail(class(x), 1)
@@ -122,7 +124,8 @@ ObjFeatureSet = function(  object,
         fsetklass = fsetklass,
         isplot = isplot,
         generatedin = generatedin,
-        sessioninfo = sessionInfo())
+        sessioninfo = sessionInfo(),
+        clineargs= collapsed_cline_args())
 }
 
 #' @rdname fset_constructors
@@ -324,7 +327,8 @@ RmdFeatureSet = function(rmdfile,
         fsetklass = fsetklass,
         sessioninfo = sessionInfo(),
         figurefiles = figurefiles,
-        isplot = FALSE)
+        isplot = FALSE,
+        clineargs = collapsed_cline_args())
 }
                          
         

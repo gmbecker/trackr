@@ -12,7 +12,7 @@ TrackrOptions(insert_delay = 0, img_dir = "./images", img_ext = "png",
 \arguments{
 \item{insert_delay}{numeric. delay in seconds between insertions.}
 
-\item{img_dir}{character. Directory to save image files in.}
+\item{img_dir}{character. Directory to save image files in. This will be normalized via normalizePath}
 
 \item{img_ext}{character. extension to give image files.}
 

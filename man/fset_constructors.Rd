@@ -29,16 +29,16 @@ TrellisFeatureSet(object, fsetklass = "TrellisFeatureSet", ...)
 GraphicsFeatureSet(object, fsetklass = "GraphicsFeatureSet", ...)
 
 DFFeatureSet(object, fsetklass = "DFFeatureSet", vars = names(object),
-  varclasses = sapply(object, getTopS3Class),
-  varsummaries = structure(lapply(object, summary), names = names(object)),
-  nobs = nrow(object), ...)
+  varclasses = .makeClassesTab(object),
+  varsummaries = structure(lapply(object, .makeSummaryTable), names =
+  names(object)), nobs = nrow(object), ...)
 
 RmdFeatureSet(rmdfile, outputfile, uniqueid,
   rmdfileid = gen_hash_id(readLines(rmdfile)), chunks,
   numouts = length(trackr_backend(objtdb)),
   numplots = sum(sapply(objrecords, function(x) x$isplot)), title = "",
   author = "", textkeywords = character(), codekeywords = character(),
-  outputids = sapply(objrecords, function(x) x$uniqueid),
+  outputids = sapply(objrecords, function(x) x$uniqueid, USE.NAMES = FALSE),
   tags = character(), user = unname(Sys.info()["user"]),
   regdate = Sys.time(), analysispkg = scrape_descr(),
   analysisfile = .analysisFileOrNA(), rstudioproject = .rstudioProjOrNA(),

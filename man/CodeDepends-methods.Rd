@@ -4,7 +4,7 @@
 \alias{as.list.ScriptNodeInfo}
 \title{Export a ScriptNodeInfo object as a list}
 \usage{
-\method{as.list}{ScriptNodeInfo}(x, ...)
+as.list.ScriptNodeInfo(x, ...)
 }
 \arguments{
 \item{x}{A ScriptNodeInfo object.}
