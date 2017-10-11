@@ -483,6 +483,6 @@ setMethod("varnames", "DFFeatureSet", function(x) x@varnames)
 
 
 
-setGeneric("cline_args", function(x) standardGeneric("cline_args"))
-setMethod("cline_args", "missing", function(x) collapsed_cline_args())
-setMethod("cline_args", "FeatureSet", function(x) x@clineargs)
+## setGeneric("cline_args", function(x) standardGeneric("cline_args"))
+## setMethod("cline_args", "missing", function(x) collapsed_cline_args())
+## setMethod("cline_args", "FeatureSet", function(x) x@clineargs)

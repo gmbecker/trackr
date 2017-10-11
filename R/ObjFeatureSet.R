@@ -124,8 +124,7 @@ ObjFeatureSet = function(  object,
         fsetklass = fsetklass,
         isplot = isplot,
         generatedin = generatedin,
-        sessioninfo = sessionInfo(),
-        clineargs= collapsed_cline_args())
+        sessioninfo = sessionInfo())
 }
 
 #' @rdname fset_constructors
@@ -327,8 +326,7 @@ RmdFeatureSet = function(rmdfile,
         fsetklass = fsetklass,
         sessioninfo = sessionInfo(),
         figurefiles = figurefiles,
-        isplot = FALSE,
-        clineargs = collapsed_cline_args())
+        isplot = FALSE)
 }
                          
         
