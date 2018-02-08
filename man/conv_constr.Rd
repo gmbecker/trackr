@@ -19,13 +19,16 @@ solrTDB(core, requestHandler = "search", opts = TrackrOptions(...), ...)
 saved into. Passed to default construction of \code{opts}. Defaults to
 \code{<directory of file>/images}. ignored if \code{opts} is specified explicitly.}
 
+\item{\dots}{ANY. Used to construct \code{opts}. Ignored if
+\code{opts} is specified explicitly.}
+
 \item{core}{character. The URI for the solr core to use}
 
 \item{requestHandler}{character. Passed to \code{SolrList} constructor}
-
-\item{\dots{}}{ANY. Used to construct \code{opts}. Ignored if
-\code{opts} is specified explicitly.}
 }
 \value{
 A TrackrDB object
+}
+\description{
+Convenience constructors for JSON and Solr-based trackr backends.
 }

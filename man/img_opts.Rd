@@ -3,8 +3,14 @@
 \docType{methods}
 \name{trackr_options}
 \alias{trackr_options}
+\alias{trackr_options,ANY-method}
+\alias{trackr_options,TrackrDB-method}
 \alias{img_dir}
+\alias{img_dir,TrackrDB-method}
+\alias{img_dir,TrackrOptions-method}
 \alias{img_ext}
+\alias{img_ext,TrackrDB-method}
+\alias{img_ext,TrackrOptions-method}
 \title{options extraction}
 \usage{
 trackr_options(db)
@@ -15,4 +21,7 @@ img_ext(db)
 }
 \arguments{
 \item{db}{Object to extract information from}
+}
+\description{
+These functions extract the trackr options associated with a backend.
 }

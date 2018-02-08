@@ -1,13 +1,13 @@
 Package: trackr
 Type: Package
-Title: Semantic Annotation and Discoverability System for R-based artifacts
-Version: 0.6.8.7
+Title: Semantic Annotation and Discoverability System for R-Based Artifacts
+Version: 0.7.0
 Date: 2015-07-01
 Authors@R: c(
-    person("Sara", "Moore", role = c("aut", "cre"),
-        email = "moore.sara@gene.com"),
-    person("Gabriel", "Becker", role = "aut",
-        email = "becker.gabriel@gene.com"))
+    person("Gabriel", "Becker", role = c("aut", "cre"),
+        email = "becker.gabriel@gene.com"),
+    person("Sara", "Moore", role = c("aut"),
+        email = "moore.sara@gene.com"))
 Copyright: Genentech, Inc.
 Maintainer: Gabriel Becker <becker.gabriel@gene.com>
 Description: Automatically annotates R-based artifacts
@@ -17,8 +17,6 @@ Description: Automatically annotates R-based artifacts
 	     interrogating such artifacts.
 License: Artistic-2.0
 Depends:
-    methods,
-    CodeDepends,
     histry (>= 0.0.2.2)
 Imports:
     fastdigest,
@@ -32,7 +30,7 @@ Imports:
     htmltools,
     miniUI,
     shiny,
-    histry (>= 0.0.2.2)
+    rmarkdown
 Suggests:
     proto,
     png,
@@ -42,8 +40,9 @@ Suggests:
     MEMSS,
     mlmRev,
     dplyr,
-    rmarkdown,
-    knitr
+    gridExtra,
+    RSelenium,
+    rstudioapi
 VignetteBuilder: knitr
 Collate: 
     'Classes.R'

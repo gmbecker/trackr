@@ -6,7 +6,7 @@
 \alias{codeInfo}
 \alias{codeInfo<-,FeatureSet-method}
 \alias{codeInfo,FeatureSet-method}
-\title{Mutator method for "codeinfo" slot of PlotFeatureSet (or one of its subclasses).}
+\title{Accessors for the code analysis information of FeatureSet objects}
 \usage{
 codeInfo(object) <- value
 
@@ -23,6 +23,7 @@ codeInfo(object)
 }
 \value{
 A modified object of (super)class PlotFeatureSet.
-
-A CodeDepends::ScriptInfo object
+}
+\description{
+Get or set the analysis information for the code associated with a FeatureSet object. This should not be called directly.
 }

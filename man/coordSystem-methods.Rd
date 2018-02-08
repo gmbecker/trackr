@@ -29,3 +29,6 @@ coordSystem(object)
 \value{
 A character vector describing the coordinate system employed in the plot.
 }
+\description{
+Get the coordinate system for a plot or PlotFeatureSet.
+}

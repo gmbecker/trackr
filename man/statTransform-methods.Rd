@@ -11,7 +11,7 @@
 \alias{statTransform,gTree-method}
 \alias{statTransform<-,GGplotFeatureSet-method}
 \alias{statTransform,GGplotFeatureSet-method}
-\title{Mutator method for GGplotFeatureSet "stat" slot.}
+\title{Accessors for the stat(s) of GGplotFeatureSet objects}
 \usage{
 statTransform(object) <- value
 
@@ -36,6 +36,7 @@ statTransform(object)
 }
 \value{
 A modified object of class GGplotFeatureSet.
-
-A named list of parameters for statistical transforms in each layer of the plot.
+}
+\description{
+Get or set the stat transform(s)  associated with a GGplotFeatureSet object. This should not be called directly.
 }

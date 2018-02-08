@@ -357,17 +357,19 @@ setMethod(f = "tags",
 setGeneric("trackr_backend", function(db) standardGeneric("trackr_backend"))
 setGeneric("trackr_backend<-", function(db, value) standardGeneric("trackr_backend<-"))
 #' @title options extraction
+#' @description These functions extract the trackr options associated with a backend.
 #' @rdname img_opts
 #' @param db Object to extract information from
 #' @docType methods
 #' @export
+#' @aliases trackr_options,ANY-method trackr_options,TrackrDB-method
 setGeneric("trackr_options", function(db) standardGeneric("trackr_options"))
 #' @rdname img_opts
-#' @aliases img_dir
+#' @aliases img_dir img_dir,TrackrDB-method img_dir,TrackrOptions-method
 #' @export
 setGeneric("img_dir", function(db) standardGeneric("img_dir"))
 #' @rdname img_opts
-#' @aliases img_ext
+#' @aliases img_ext img_ext,TrackrDB-method img_ext,TrackrOptions-method
 #' @export
 setGeneric("img_ext", function(db) standardGeneric("img_ext"))
 
@@ -417,10 +419,10 @@ setMethod(f = "uniqueID",
     })
 
 #' @title Number of docs in a TrackrDB
-#' Query the backend for the number of docs it contains
+#' @description Query the backend for the number of docs it contains
 #' @param x TrackrDB.
 #' @param ... not used.
-#' @aliases ndoc-method,TrackrDB
+#' @aliases ndoc,TrackrDB-method
 #' @docType methods
 #' @export
 setMethod("ndoc", "TrackrDB",

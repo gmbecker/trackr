@@ -68,7 +68,7 @@ We then define our methods which will allow \rpkg{trackr} to interact with our b
 
 In practice, however, \rpkg{trackr} provides an "ANY" method which will generally suffice for most backends. It returns a \rclass{list} with a generated id and a flattened \rclass{list} of the plot's metadata, along with saving out image files based on the options set on your \rclass{TrackrDB}. We will use this method by simply not creating a backend-specific one for our \rclass{ListBackend} class.  With \rfun{prep_for_backend} addressed, we move on to methods for inserting plots into and removing them from our \rclass{list} data store.
 
-All \rfun{instert_record} and \rfun{remove_record} methods must accept five and four arguments, respectively:
+All \rfun{insert\_record} and \rfun{remove\_record} methods must accept five and four arguments, respectively:
 \begin{enumerate}
 \item object - the document to be inserted or deleted within the datastore,
   or the id of the record to be deleted;
@@ -149,7 +149,6 @@ plt = qplot(x = 1:10, y = rnorm(10))
 be = BasicListBackend()
 db = TrackrDB(backend = be)
 defaultTDB(db)
-
 record(plt)
 findRecords("rnorm")
 

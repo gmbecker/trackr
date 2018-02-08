@@ -1,10 +1,10 @@
 recplothook = function(x, opts, ...) {
     if(is.null(defaultTDB())) {
         warning("cannot record plot, default db not set. Use defaultTDB() in the first chunk to do this")
-    } else if(!is.null(ggplot2:::last_plot())){
+    } else if(!is.null(ggplot2::last_plot())){
         
         len = length(histry::histry())
-        record(ggplot2:::last_plot(), symorpos = len)
+        record(ggplot2::last_plot(), symorpos = len)
     }
     paste0("![", x, "]")
 
@@ -16,7 +16,7 @@ recplothook = function(x, opts, ...) {
     if(is.null(rfun))
         ## lifted from knitr:::knit_handlers (knitr:::utils.R) 
         rfun = function(x, ...) {
-            res = withVisible(knit_print(x, ...))
+            res = withVisible(knitr::knit_print(x, ...))
                                         # indicate the htmlwidget result with a special class so we can attach
                                         # the figure caption to it later in wrap.knit_asis
             if (inherits(x, 'htmlwidget'))
@@ -30,6 +30,12 @@ recplothook = function(x, opts, ...) {
     }
 }
 
+
+obfu_code = paste0("suppressMessages(trace(knitr::", ":split_file, exit = quote(assign('chunks', returnValue(), envir = trackr_knit_env)), print = FALSE))")
+
+obfu_untrc =  paste0("suppressMessages(untrace(knitr::", ":split_file))")
+
+parseEval = function(txt) eval(parse(text=txt))
 
 ##' @title Knit and record an Rmd, Rnw, etc file
 ##'
@@ -45,9 +51,11 @@ recplothook = function(x, opts, ...) {
 ##' @param ... Passed directly to \code{knit}
 ##' @param verbose passed to (multiple) \code{record} calls for report and its
 ##' outputs
+##' @param tmptdb A TrackrDB in which to temporarily record results which are printed within the dynamic document. Generally this should not need to be changed, as it is only used to collect the records so they can be associated with the result for the whole document (in the defaultTDB).
 ##' @note as with all knitr support in the histry and trackr packages, manually
 ##' tracing certain functions within the knitr and evaluate packages will break
-##' this function. 
+##' this function.
+##' @import rmarkdown
 ##' @export
 knit_and_record = function(input, ..., verbose = FALSE,
                            tmptdb = TrackrDB(backend= ListBackend(), img_dir = img_dir(defaultTDB()))) {
@@ -57,19 +65,16 @@ knit_and_record = function(input, ..., verbose = FALSE,
     ## knitrtracer(FALSE) ## probably unnecessary
     evaltracer(FALSE)
     evaltracer(TRUE, TRUE)
+    trackr_knit_env$chunks = NULL
+    parseEval(obfu_code)
+    on.exit(parseEval(obfu_untrc), add=TRUE)
 
-    superstupidenv$chunks = NULL
-    suppressMessages(trace(knitr:::split_file, exit = quote(assign("chunks", returnValue(), envir = trackr:::superstupidenv)),
-          print = FALSE))
-    on.exit(untrace(knitr:::split_file), add = TRUE)
-
-
+      
     if("output" %in% names(list(...)))
         odir = dirname(list(...)$output)
     else
         odir = dirname(input) #getwd()
 
-    require(rmarkdown)
     starttime = Sys.time()
     if(grepl("[Rr][Mm][Dd]$", input))
         resfile = render(input = input,output_format = html_document(self_contained = FALSE, mathjax = NULL),
@@ -111,14 +116,14 @@ knit_and_record = function(input, ..., verbose = FALSE,
         
     
   
-    chunks = unlist(lapply( superstupidenv$chunks, function(x) x$input))
-    superstupidenv$chunks = NULL
+    chunks = unlist(lapply( trackr_knit_env$chunks, function(x) x$input))
+    trackr_knit_env$chunks = NULL
 
     evaltracer(FALSE)
     evaltracer(TRUE)
 
     defaultTDB(oldtdb)
-    suppressMessages(untrace(knitr:::split_file))
+    parseEval(obfu_untrc)
     on.exit(NULL)
 
     rmdfs = RmdFeatureSet(rmdfile = input, objtdb = tmptdb,
@@ -141,12 +146,6 @@ knit_and_record = function(input, ..., verbose = FALSE,
                                         verbose = verbose))
     oldtdb
         
-}
-
-.trytodothething = function(outfile, trackropts, id) {
-        
-
-    
 }
 
     

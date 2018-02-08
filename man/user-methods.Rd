@@ -6,7 +6,7 @@
 \alias{user}
 \alias{user<-,FeatureSet-method}
 \alias{user,FeatureSet-method}
-\title{Mutator method for "user" slot of ObjFeatureSet (or one of its subclasses).}
+\title{Accessors for the "user" of FeatureSet objects}
 \usage{
 user(object) <- value
 
@@ -23,6 +23,7 @@ user(object)
 }
 \value{
 A modified object of (super)class ObjFeatureSet.
-
-A character vector serving as the username associated with the plot object in the database.
+}
+\description{
+Get or set the user associated with a FeatureSet object. This should not be called directly.
 }

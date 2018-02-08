@@ -1,0 +1,10 @@
+library(trackr)
+library(knitr)
+be = JSONBackend(tempfile())
+tdb = TrackrDB(backend=be, img_dir = tempdir())
+defaultTDB(tdb)
+
+rmdfil = system.file("test_docs/knitr_test.Rmd", package = "trackr")
+knit_and_record(rmdfil)
+docs = findRecords("mtcars")
+stopifnot(ndoc(docs) == 3)

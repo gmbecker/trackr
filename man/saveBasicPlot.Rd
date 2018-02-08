@@ -4,7 +4,8 @@
 \name{saveBasicPlot}
 \alias{saveBasicPlot}
 \alias{saveBasicPlot,PlotFeatureSet-method}
-\title{Save the plot object owned by an object of class/superclass PlotFeatureSet as an image.}
+\title{Save the plot object owned by an object of class/superclass
+    PlotFeatureSet as an image.}
 \usage{
 saveBasicPlot(object, filename, ...)
 
@@ -12,13 +13,19 @@ saveBasicPlot(object, filename, ...)
   "jpeg", "jpg", "tiff", "tif", "bmp"), width = 7, height = 7, dpi = 300)
 }
 \arguments{
-\item{object}{An object of (super)class PlotFeatureSet or plot object of class ggplot or trellis.}
+\item{object}{An object of (super)class PlotFeatureSet or plot
+object of class ggplot or trellis.}
 
-\item{filename}{The full filename, including path, where the plot should be saved.}
+\item{filename}{The full filename, including path, where the plot
+should be saved.}
 
-\item{...}{Other named arguments passed on to the class-specific save method.}
+\item{...}{Other named arguments passed on to the class-specific
+save method.}
 
-\item{type}{The type of image to save. Default is "png"; should be one of "jpeg", "jpg", "tiff", "tif", "png", or "bmp". In future versions, this should be automatically determined from the filename.}
+\item{type}{The type of image to save. Default is "png"; should be
+one of "jpeg", "jpg", "tiff", "tif", "png", or "bmp". In future
+versions, this should be automatically determined from the
+filename.}
 
 \item{width}{Width of output, in inches}
 
@@ -28,6 +35,10 @@ saveBasicPlot(object, filename, ...)
 }
 \value{
 A boolean indicating success of the save operation.
+}
+\description{
+Save a plot to an image file as part of the record
+    process. This generally shouldn't need to be overwritten.
 }
 \section{Methods (by class)}{
 \itemize{

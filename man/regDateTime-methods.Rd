@@ -6,7 +6,7 @@
 \alias{regDateTime}
 \alias{regDateTime<-,FeatureSet-method}
 \alias{regDateTime,FeatureSet-method}
-\title{Mutator method for "regdate" slot of ObjFeatureSet (or one of its subclasses).}
+\title{Accessors for the registration Date/Time of FeatureSet objects}
 \usage{
 regDateTime(object) <- value
 
@@ -23,6 +23,7 @@ regDateTime(object)
 }
 \value{
 A modified object of (super)class ObjFeatureSet.
-
-A POSIXct timestamp representing the moment when the plot was registered.
+}
+\description{
+Get or set the registration time associated with a FeatureSet object. This should not be called directly.
 }

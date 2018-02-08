@@ -1,10 +1,10 @@
 #' @include Classes.R Generics.R PlotWrapper.R
 NULL
 
-#' @title Collapse a list to a comma-delimited character vector
-#' @param l A list
-#' @param with.names A boolean indicating whether the list is named. False by default.
-#' @return A comma-delimited character vector
+## ' @title Collapse a list to a comma-delimited character vector
+## ' @param l A list
+## ' @param with.names A boolean indicating whether the list is named. False by default.
+## ' @return A comma-delimited character vector
 collapse_to_str <- function(l, with.names=FALSE) {
     if (with.names) {
         l <- sapply(l, function(x) paste(names(x), x, sep = " = "),
@@ -65,26 +65,39 @@ getTopS3Class = function(x) head(class(x), 1)
 #' most of them should NOT be set directly even in customization code, they are
 #' semi-internal implementation details and are subject to change. 
 #'
-#' Arguments described as 'Do not manually set' have default values that should
-#' be used in virtually all cases. Overriding these in custom makeFeatureSet
-#' methods can lead to undefined behavior by the trackr system. 
+#' Arguments described as 'Do not manually set' have default values
+#' that should be used in virtually all cases. Overriding these in
+#' custom makeFeatureSet methods can lead to undefined behavior by the
+#' trackr system.
 #' @rdname fset_constructors
 #' @param object object to extract metadata from
-#' @param code Do not manually set
+#' @param code The code which generated the object. Do not manually
+#'     set
 #' @param codeinfo Do not manually set
-#' @param klass Do not manually set
+#' @param klass The class of the object. Do not manually set
 #' @param tags Tags to associate with the object
-#' @param user Do not manually set
-#' @param uniqueid Do not manually set. EVER.
-#' @param regdate Do not manually set
-#' @param analysispkg Do not manually set
-#' @param analysisfile Do not manually set
-#' @param rstudioproject Do not manually set 
-#' @param fsetklass The FeatureSet subclass being created. This should be
-#' overridden with custom FeatureSet subclasses
-#' @param isplot Is the 
+#' @param user The user who recorded the object. Do not manually set
+#' @param uniqueid The uniqueID for the result. Do not manually
+#'     set. EVER.
+#' @param regdate The registration date/time. Do not manually set
+#' @param analysispkg The analysis R package in which the session was
+#'     run. Do not manually set
+#' @param analysisfile The .R file code was executed from to create
+#'     the object. Do not manually set
+#' @param rstudioproject The RStudio project in which the object was
+#'     created. Do not manually set
+#' @param fsetklass The FeatureSet subclass being created. This should
+#'     be overridden with custom FeatureSet subclasses
+#' @param isplot Is the object a plot. Do not manually set.
+#' @param generatedin The uniqueID of a parent result (e.g. an RMD
+#'     report the object was generated within). Do not manually set
+#' @param clineargs The command-line arguments passed to the R session
+#'     in which the object was recorded. Do not manually set.
+#' @param resultURI An optional character value which defines a
+#'     location within a hierarchical grouping for results tracked by
+#'     trackr. E.g. \code{'/groups/Becker/HousingData/analysis3'}
 #' @param ... For ObjFeatureSet and RmdFeatureSet, unused. For Other
-#' constructors, passed to the parent constructor.
+#'     constructors, passed to the parent constructor.
 #' @return An object of a class that inherits from FeatureSet
 #' @export
 ObjFeatureSet = function(  object,
@@ -106,6 +119,8 @@ ObjFeatureSet = function(  object,
                          fsetklass = "ObjFeatureSet" ,
                          isplot= FALSE,
                          generatedin = character(),
+                         clineargs = commandArgs(),
+                         resultURI = character(),
                          ...) {
     
     tags <- unique(c(tags, tags(object), generateTags(object)))
@@ -124,7 +139,8 @@ ObjFeatureSet = function(  object,
         fsetklass = fsetklass,
         isplot = isplot,
         generatedin = generatedin,
-        sessioninfo = sessionInfo())
+        sessioninfo = sessionInfo(),
+        resultURI = resultURI)
 }
 
 #' @rdname fset_constructors
@@ -246,8 +262,16 @@ DFFeatureSet = function(object, fsetklass = "DFFeatureSet",
      
 }
 
-        
-superstupidenv = new.env()        
+
+##' @name trackr_knit_env
+##' @title Internal details
+##' @description This environment should never be manipulated or
+##'     interacted with directly by end users. It is exported only due
+##'     the vagaries of how parts of trackr are implemented.
+##' @export
+trackr_knit_env = new.env()
+
+globalVariables("tangletxt")
 
 #' @rdname fset_constructors
 #' @param rmdfile The (input) RMD file
@@ -263,6 +287,10 @@ superstupidenv = new.env()
 #' @param objrecords Do not manually set. EVER.
 #' @param objtdb The (temporary) trackerdb where individual displayed
 #'     outputs were recorded during the weaving process.
+#' @param rmdfileid Id associated with the input .Rmd file. Do not
+#'     manually set. EVER.
+#' @param figurefiles image files of plot as figures for woven
+#'     report. Do not manually set.
 RmdFeatureSet = function(rmdfile,
                          outputfile,
                          uniqueid,
@@ -270,8 +298,8 @@ RmdFeatureSet = function(rmdfile,
                          chunks,
                          numouts = length(trackr_backend(objtdb)),
                          numplots = sum(sapply(objrecords, function(x) x$isplot)),
-                         title = "", ## XXX TODO
-                         author = "", ## XXX TODO
+                         title = "", 
+                         author = "",
                          textkeywords = character(), ## XXX TODO
                          codekeywords = character(), ## XXX TODO
                          
@@ -289,14 +317,32 @@ RmdFeatureSet = function(rmdfile,
                          objrecords = findRecords(".", db = objtdb),
                          objtdb,
                          figurefiles = NA_character_,
+                         resultURI = "",
                          ...) {
-    ## the braces make it one "script node" [[1]] gets the info for that one node
+   
+    if(file.exists(rmdfile)) {
+        headermat = yaml_front_matter(rmdfile)
+    }else {
+        headermat = list()
+    }
+    if(nchar(title) == 0 && !is.null(headermat$title)) {
+        title = headermat$title
+    }
+    if(nchar(author) == 0 && !is.null(headermat$author)) {
+        author = headermat$author
+    }
+
+    if(nchar(resultURI) == 0 && !is.null(headermat$resultURI)) {
+        resultURI = headermat$resultURI
+    }
+    
     con = textConnection("tangletxt", "w", local=TRUE)
     on.exit(close(con), add=TRUE)
 
     knitr::knit(input = rmdfile, output = con, tangle=TRUE)
     close(con)
     on.exit(NULL)
+    ## the braces make it one "script node" [[1]] gets the info for that one node
     scrinfo = getInputs(readScript(txt = c("{", tangletxt, "}")))[[1]]
 
     ## XXX TODO take this out and fix it a better way someday...
@@ -326,7 +372,8 @@ RmdFeatureSet = function(rmdfile,
         fsetklass = fsetklass,
         sessioninfo = sessionInfo(),
         figurefiles = figurefiles,
-        isplot = FALSE)
+        isplot = FALSE,
+        resultURI = resultURI)
 }
                          
         
@@ -439,6 +486,7 @@ setMethod(f = "makeFeatureSet",
 
 setOldClass(c("tbl_df", "tbl", "data.frame"))
 
+#' @describeIn makeFeatureSet Construct a DFFeatureSet from a data.frame
 setMethod(f = "makeFeatureSet",
     signature = signature(object = "data.frame"),
     function(object, ...) {
@@ -632,20 +680,26 @@ setMethod(f = "generateTags", "ANY", generateDefTags)
 #     }          
 # )
 
-#' @title Export a ObjFeatureSet as list
-#' @param x A ObjFeatureSet.
-#' @param ... Other named arguments (currently unused).
-#' @return A list.
-#' @rdname as-methods
-#' @export
-##as.list.ObjFeatureSet <- function(x, ...) {
+##' @name as.list
+##' @title Convert objects to lists
+##' @description Convert objects to lists.
+##' @param x The object to convert to a list.
+##' @param ... Other named arguments (currently unused).
+##' @return A list.
+##' @rdname as-methods
+##' @method as.list FeatureSet
+##' @aliases as.list,FeatureSet-method
+##' @export
 as.list.FeatureSet <- function(x, ...) {
     out =  lapply(slotNames(x), function(nm) slot(x, nm))
     names(out) <- slotNames(x)
     out$regdate <- format(x@regdate, "%Y-%m-%d")
     out$regtime <- format(x@regdate, "%H:%M:%S")
     out$regdatetime <- format(x@regdate, "%Y-%m-%dT%H:%M:%SZ")
-    out$code <- unlist(lapply(objCode(x)@.Data, function(i) paste(deparse(i), collapse="")))
+    if(!is.character(objCode(x)))
+        out$code <- unlist(lapply(objCode(x)@.Data, function(i) paste(deparse(i), collapse="")))
+    else
+        out$code <- objCode(x)
     out$codeinfo <- lapply(codeInfo(x), as.list)
     out$codeinfo$functions = names(out$codeinfo$functions) 
 
@@ -674,12 +728,10 @@ setAs(from = "RmdFeatureSet",
     ## ret$fullcodeinfo <- sapply(ret$fullcodeinfo, unique)
     ret
 })
-#' @title Export a ScriptNodeInfo object as a list
-#' @param x A ScriptNodeInfo object.
-#' @param ... Other named arguments (currently unused).
-#' @return A list.
-#' @rdname CodeDepends-methods
-#' @export
+
+##' @rdname as-methods
+##' @export
+##' @method as.list ScriptNodeInfo
 as.list.ScriptNodeInfo <- function(x, ...) {
     ret = lapply(slotNames(x), function(i) slot(x, i))
     names(ret) = slotNames(x)
@@ -715,9 +767,9 @@ setAs(from = "ScriptNodeInfo",
                    "chunks"
                    
                    )
-#' @title Collapse particular fields of a ObjFeatureSet to delimited character vectors.
-#' @param pfs An object of (super)class ObjFeatureSet.
-#' @return A list.
+## ' @title Collapse particular fields of a ObjFeatureSet to delimited character vectors.
+## ' @param pfs An object of (super)class ObjFeatureSet.
+## ' @return A list.
 pfs_list_collapse <- function(pfs) {
     l <- as(pfs, "list")
     l <- l[names(l) %in% .elstocollapse]
@@ -759,42 +811,44 @@ pfs_list_collapse <- function(pfs) {
     l
 }
 
-## the recommended approach is to define the S3 method and 
-## supply the identical function as the definition of the S4 method.
 
-#' @title Export a ObjFeatureSet as a data.frame.
-#' @param row.names NULL or a character vector giving the row names for the data frame. Missing values are not allowed. Only applicable in conjunction with long = FALSE.
-#' @param optional Currently unused in this implementation.
-#' @param long A boolean indicating whether the data.frame should be returned in 'long' (rather than 'wide') format.
-#' @return A data.frame.
-#' @rdname as-methods
-#' @export
-as.data.frame.ObjFeatureSet <- function(x, row.names = NULL, optional = FALSE, ..., long = FALSE) {
-    df <- NULL
-    l <- pfs_list_collapse(x)
-    if(long) {
-        ## long format - this is maybe not ideal...
-        ## would eventually include plot ID as a column, as well
-        df <- data.frame(
-            id = uniqueID(x),
-            feature = names(unlist(l)), value = unlist(l))
-        rownames(df) <- row.names
-        df <- df[!is.na(df$value),]
-    } else {
-        # note that this makes everything into a string
-        # wide format
-        df <- data.frame(id = uniqueID(x),
-            t(unlist(l)), stringsAsFactors = FALSE)
-    }
-    return(df)
-}
+## ## the recommended approach is to define the S3 method and 
+## ## supply the identical function as the definition of the S4 method.
 
-setAs(from = "ObjFeatureSet", 
-    to = "data.frame", 
-    def = function(from) {
-        as.data.frame.ObjFeatureSet(from)
-    }
-)
+## #' @title Export a ObjFeatureSet as a data.frame.
+## #' @param row.names NULL or a character vector giving the row names for the data frame. Missing values are not allowed. Only applicable in conjunction with long = FALSE.
+## #' @param optional Currently unused in this implementation.
+## #' @param long A boolean indicating whether the data.frame should be returned in 'long' (rather than 'wide') format.
+## #' @return A data.frame.
+## #' @method as.data.frame ObjFeatureSet
+## #' @rdname as-methods
+## #' @export
+## as.data.frame.ObjFeatureSet <- function(x, row.names = NULL, optional = FALSE, ..., long = FALSE) {
+##     df <- NULL
+##     l <- pfs_list_collapse(x)
+##     if(long) {
+##         ## long format - this is maybe not ideal...
+##         ## would eventually include plot ID as a column, as well
+##         df <- data.frame(
+##             id = uniqueID(x),
+##             feature = names(unlist(l)), value = unlist(l))
+##         rownames(df) <- row.names
+##         df <- df[!is.na(df$value),]
+##     } else {
+##         # note that this makes everything into a string
+##         # wide format
+##         df <- data.frame(id = uniqueID(x),
+##             t(unlist(l)), stringsAsFactors = FALSE)
+##     }
+##     return(df)
+## }
+
+## setAs(from = "ObjFeatureSet", 
+##     to = "data.frame", 
+##     def = function(from) {
+##         as.data.frame.ObjFeatureSet(from)
+##     }
+## )
 
 # setMethod(f = "as.data.frame", 
 #     signature = "ObjFeatureSet", 
@@ -818,57 +872,6 @@ setAs(from = "ObjFeatureSet",
 
 ## returns T/F if plot meets criteria
 ## can be used on ObjFeatureSets that have been converted to a list or data.frame
-
-#' @rdname selectPlot-methods
-#' @param features A character vector naming the features which should be searched. All by default.
-#' @param improvise A boolean indicating whether the algorithm should automatically expand the search to all features if the search is fruitless in the specified features. True by default.
-#' @param verbose A boolean indicating whether match information should be printed. True by default.
-setMethod(f = "selectPlot",
-    signature = "ObjFeatureSet",
-    definition = function(object, terms, features = NULL, improvise = TRUE, verbose = TRUE) {
-        # slot(object, features)
-        df <- as(object, "data.frame")
-        # special case: because ggplot likes to spell color with a "u"
-        if (length(grep("color", features, ignore.case = TRUE))>0) {
-            features <- c(features, "colour")
-            message("Also checking alternative spellings of features...")
-        }
-        # if we grep NULL, it conveniently returns all columns anyway
-        features <- grep(paste(features, collapse="|"), colnames(df), 
-            ignore.case = TRUE, value = TRUE)
-        if (length(features)==0) {
-            if (improvise) {
-                message("No features matching your query could be found -- searching all features.")
-                features <- colnames(df)
-            } else {
-                # message("No features matching your query could be found.")
-                return(FALSE)
-
-                ## this is slow
-
-                # valid.resp <- FALSE
-                # while(!valid.resp) {
-                #     resp <- readline("No features matching your query could be found -- search all features? ")
-                #     valid.resp <- (resp%in%c("y", "n"))
-                # }
-                # if(resp=="n"){
-                #     return(FALSE)
-                # } else {
-                #     features <- colnames(df)
-                # }
-            }
-        }
-        search.res <- grep(paste(terms, collapse="|"), df[,features, drop=FALSE],
-            ignore.case = TRUE, value = TRUE)
-        if (verbose&(length(search.res) > 0)) {
-            message("Match(es) found:")
-            # eventually print plot ID here too
-            message(paste0("\t", names(search.res), ": ", search.res, "\n"))
-        }
-        return(length(search.res) > 0)
-    }
-)
-
 # http://stackoverflow.com/a/8142955
 flatten4 <- function(x) {
     while(any(vapply(x, is.list, logical(1)))) {
@@ -902,12 +905,21 @@ flatten5 <- function(x) {
     x$data <- NULL
     if(is(x$sessioninfo, "sessionInfo"))
         x$sessioninfo = sinfotolist(x$sessioninfo)
-  
+
+    ## flatten the extramdata catchall slot
+    if(!is.null(x$extramdata)) {
+        ## this pushes the elements of x$extramdata up one level to be
+        ## top-level list elements
+        tmp = x$extramdata
+        x$extramdata = NULL
+        x = c(x, tmp)
+    }
+    
     while(any(vapply(x, is.list, logical(1)))) {
         x <- lapply(x, function(x) if(is.list(x)) x else list(x))
         x <- unlist(x, recursive=FALSE) 
     }
-#    code.type <- sapply(x, is.function)
+    
     code.type <- sapply(x, is.code)
     if(length(which(code.type))>0) {
         x[code.type] <- lapply(x[code.type], function(y)

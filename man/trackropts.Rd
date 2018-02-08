@@ -3,11 +3,13 @@
 \docType{data}
 \name{trackropts}
 \alias{trackropts}
-\title{trackr options environment
-An environment where the default trackrdb and history tracker are stored.
-Users should not modify the contents of this environment directly.}
+\title{trackr options environment}
 \format{An object of class \code{environment} of length 3.}
 \usage{
 trackropts
+}
+\description{
+An environment where the default trackrdb and history tracker are stored.
+Users should not modify the contents of this environment directly.
 }
 \keyword{datasets}

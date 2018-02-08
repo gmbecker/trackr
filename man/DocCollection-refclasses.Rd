@@ -4,6 +4,9 @@
 \name{DocCollectionRef}
 \alias{DocCollectionRef}
 \alias{.docrefclass}
+\alias{DocCollectionRef-class}
+\alias{names<-,DocCollectionRef,ANY-method}
+\alias{ndoc,DocCollectionRef-method}
 \alias{ListBackend-class}
 \alias{listbackend}
 \alias{ListBackend}
@@ -11,8 +14,11 @@
 \usage{
 ListBackend(lst = list())
 }
+\arguments{
+\item{lst}{List of documents to populate the list backend with.}
+}
 \description{
-A reference class which carries around a DocCollection, suitable
-for use as a trackr backend.
+A reference class which carries around a
+    DocCollection, suitable for use as a trackr backend.
 }
 

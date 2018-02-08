@@ -14,5 +14,8 @@ graphSys(object)
 \item{object}{An object of (super)class PlotFeatureSet.}
 }
 \value{
-A character vector representing the originating R package of the plot object.
+A character vector representing the originating R package of the plot object, i.e. base, ggplot, or lattice.
+}
+\description{
+Retrieve the graphics system from a PlotFeatureSet object
 }

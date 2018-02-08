@@ -11,7 +11,7 @@
 \alias{titles,gTree-method}
 \alias{titles<-,PlotFeatureSet-method}
 \alias{titles,PlotFeatureSet-method}
-\title{Mutator method for "titles" slot of PlotFeatureSet (or one of its subclasses).}
+\title{Accessors for the title(s) of FeatureSet objects}
 \usage{
 titles(object) <- value
 
@@ -36,6 +36,7 @@ titles(object)
 }
 \value{
 A modified object of (super)class PlotFeatureSet.
-
-A named list of titles of the form list(main = "My title", sub = "My subtitle").
+}
+\description{
+Get or set the titles associated with a FeatureSet object. This should not be called directly.
 }

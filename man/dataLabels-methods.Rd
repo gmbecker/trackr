@@ -11,7 +11,7 @@
 \alias{dataLabels,gTree-method}
 \alias{dataLabels<-,PlotFeatureSet-method}
 \alias{dataLabels,PlotFeatureSet-method}
-\title{Mutator method for PlotFeatureSet "varlabels" slot.}
+\title{Accessors for the axis labels PlotFeatureSet objects}
 \usage{
 dataLabels(object) <- value
 
@@ -36,6 +36,7 @@ dataLabels(object)
 }
 \value{
 A modified object of (super)class PlotFeatureSet.
-
-A named list of variable labels of the form list(x = "X axis label", y = "Y axis label", ...).
+}
+\description{
+Get or set the axis label information associated with a PlotFeatureSet object. This should not be called directly.
 }

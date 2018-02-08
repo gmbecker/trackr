@@ -9,7 +9,7 @@
 \alias{parseCode,ggplot-method}
 \alias{parseCode,trellis-method}
 \alias{parseCode,ANY-method}
-\title{Parse plot creation code into a CodeDepends::Script.}
+\title{Parse result creation code}
 \usage{
 parseCode(code)
 
@@ -30,4 +30,7 @@ parseCode(code)
 }
 \value{
 A CodeDepends::Script object.
+}
+\description{
+parse code into a CodeDepends::Script
 }

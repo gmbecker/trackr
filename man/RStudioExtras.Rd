@@ -3,6 +3,7 @@
 \docType{methods}
 \name{RStudioExtras}
 \alias{RStudioExtras}
+\alias{RStudioExtras-class}
 \title{RStudioExtras class}
 \description{
 A class to contain information about the current session when

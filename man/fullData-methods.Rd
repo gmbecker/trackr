@@ -31,3 +31,6 @@ fullData(object, quiet = FALSE)
 \value{
 A list of data.frame containing the variables used in plotting.
 }
+\description{
+Get full data associated with a plot or model fit, if possible.
+}

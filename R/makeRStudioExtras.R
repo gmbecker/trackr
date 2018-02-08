@@ -1,9 +1,8 @@
 ## modifys
 
 .inRStudio = function() {
-    #requireNamespace("rstudioapi", quietly = TRUE) &&
-    # pkg not being installed also throws an error, so this works.
-    !is(tryCatch(rstudioapi::versionInfo(), error = function(x) x),
+    requireNamespace("rstudioapi", quietly = TRUE) &&
+        !is(tryCatch(rstudioapi::versionInfo(), error = function(x) x),
             "error")
     }
 

@@ -11,7 +11,7 @@
 \alias{nLayers,gTree-method}
 \alias{nLayers<-,GGplotFeatureSet-method}
 \alias{nLayers,GGplotFeatureSet-method}
-\title{Mutator method for GGplotFeatureSet "num.layers" slot.}
+\title{Accessors for the number of layers of GGplotFeatureSet objects}
 \usage{
 nLayers(object) <- value
 
@@ -36,6 +36,7 @@ nLayers(object)
 }
 \value{
 A modified object of class GGplotFeatureSet.
-
-An integer representing the number of layers in the plot.
+}
+\description{
+Get or set the number of layers associated with a GGplotFeatureSet object. This should not be called directly.
 }

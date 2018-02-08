@@ -29,3 +29,6 @@ groupInfo(object)
 \value{
 A named list of grouping information parameters.
 }
+\description{
+Get the grouping info for a plot or PlotFeatureSet.
+}

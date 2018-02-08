@@ -7,8 +7,13 @@ listRecToFeatureSet = function(lst) {
     clsdef = getClass(lst$fsetklass)
     slts = getSlots(clsdef)
     sltpres = names(slts) [ names(slts) %in% names(lst)]
+    ## "missing" values go to NA_character
     lst[sapply(lst, is.null)] = NA_character_
+    ## slots go in as characters unless they are "AsIs in which case
+    ## the values don't go in at all
+    
     lst[sltpres] = lapply(sltpres, function(x) {if(is(lst[[x]], "AsIs")) character() else lst[[x]]})
+    ## fix up time issues
     if(!is.null(lst$regdatetime) && is(lst$regdatetime, "POSIXct"))
         lst$regdate = lst$regdatetime
     else if(!is.null(lst$regdatetime))
@@ -21,9 +26,21 @@ listRecToFeatureSet = function(lst) {
 
     }
     lst$codeinfo = getInputs(parseCode(lst$code))
+
+    ## non-slot list elemenst will go into the extramdata slot which
+    ## is handled specially in both directions
+    nonslots = names(lst)[!names(lst) %in% names(slts)]
+    ## grab then clear non-slot list elements and put them into lst$extramdata
+    nonsltlist = lst[nonslots]
+    lst[nonslots] = NULL
+    lst$extramdata = nonsltlist
+
+
+    
     lst$object = NULL
     
-    
+    ## by this time, we've created the extramdata element so that gets
+    ## correctly included here
     ret = do.call(new, c(Class = lst$fsetklass,
                          lst[names(lst) %in% names(slts)]))
     objCode(ret) = paste(as.character(lst$code), collapse="\n")
@@ -38,6 +55,9 @@ norecurse = c("varnames", "varsummaries", "varclasses", "na", ## for na.rm
               "sessioninfo"
               )
 
+## we "flattened" by splitting nesting levels by ".", so we undo that here
+## we have some special cases we have to handle where recursion shouldn't
+## happen
 unflattenField = function(lst, sl, recursive=TRUE) {
     pattern = sprintf("^%s\\.", sl)
     elinds = grep(pattern, names(lst))

@@ -1,4 +1,4 @@
-.showHeader = function(object, restype = object@klass,
+.showHeader = function(object, restype = if(is(object, "ObjFeatureSet")) object@klass else "Unknown result type",
                        file = object@analysisfile) {
     cat("An", class(object), "for a", restype,
         "\nid:", uniqueID(object), 
@@ -19,7 +19,7 @@
         sep = " ")
 }
 
-setMethod("show", "ObjFeatureSet",
+setMethod("show", "FeatureSet",
           function(object) {
     .showHeader(object)
     cat("\n\n")

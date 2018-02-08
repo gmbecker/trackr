@@ -17,7 +17,7 @@ ObjFeatureSet(object, code = as.character(parseCode(object)),
   regdate = Sys.time(), analysispkg = scrape_descr(),
   analysisfile = .analysisFileOrNA(), rstudioproject = .rstudioProjOrNA(),
   fsetklass = "ObjFeatureSet", isplot = FALSE, generatedin = character(),
-  ...)
+  clineargs = commandArgs(), resultURI = character(), ...)
 
 PlotFeatureSet(object, fsetklass = "PlotFeatureSet",
   package = NA_character_, ...)
@@ -43,35 +43,50 @@ RmdFeatureSet(rmdfile, outputfile, uniqueid,
   regdate = Sys.time(), analysispkg = scrape_descr(),
   analysisfile = .analysisFileOrNA(), rstudioproject = .rstudioProjOrNA(),
   fsetklass = "RmdFeatureSet", objrecords = findRecords(".", db = objtdb),
-  objtdb, figurefiles = NA_character_, ...)
+  objtdb, figurefiles = NA_character_, resultURI = "", ...)
 }
 \arguments{
 \item{object}{object to extract metadata from}
 
-\item{code}{Do not manually set}
+\item{code}{The code which generated the object. Do not manually
+set}
 
 \item{codeinfo}{Do not manually set}
 
-\item{klass}{Do not manually set}
+\item{klass}{The class of the object. Do not manually set}
 
-\item{uniqueid}{Do not manually set. EVER.}
+\item{uniqueid}{The uniqueID for the result. Do not manually
+set. EVER.}
 
 \item{tags}{Tags to associate with the object}
 
-\item{user}{Do not manually set}
+\item{user}{The user who recorded the object. Do not manually set}
 
-\item{regdate}{Do not manually set}
+\item{regdate}{The registration date/time. Do not manually set}
 
-\item{analysispkg}{Do not manually set}
+\item{analysispkg}{The analysis R package in which the session was
+run. Do not manually set}
 
-\item{analysisfile}{Do not manually set}
+\item{analysisfile}{The .R file code was executed from to create
+the object. Do not manually set}
 
-\item{rstudioproject}{Do not manually set}
+\item{rstudioproject}{The RStudio project in which the object was
+created. Do not manually set}
 
-\item{fsetklass}{The FeatureSet subclass being created. This should be
-overridden with custom FeatureSet subclasses}
+\item{fsetklass}{The FeatureSet subclass being created. This should
+be overridden with custom FeatureSet subclasses}
 
-\item{isplot}{Is the}
+\item{isplot}{Is the object a plot. Do not manually set.}
+
+\item{generatedin}{The uniqueID of a parent result (e.g. an RMD
+report the object was generated within). Do not manually set}
+
+\item{clineargs}{The command-line arguments passed to the R session
+in which the object was recorded. Do not manually set.}
+
+\item{resultURI}{An optional character value which defines a
+location within a hierarchical grouping for results tracked by
+trackr. E.g. \code{'/groups/Becker/HousingData/analysis3'}}
 
 \item{...}{For ObjFeatureSet and RmdFeatureSet, unused. For Other
 constructors, passed to the parent constructor.}
@@ -89,6 +104,9 @@ constructors, passed to the parent constructor.}
 \item{rmdfile}{The (input) RMD file}
 
 \item{outputfile}{the path to the woven report}
+
+\item{rmdfileid}{Id associated with the input .Rmd file. Do not
+manually set. EVER.}
 
 \item{chunks}{The code and text chunks of the dynamic document}
 
@@ -110,6 +128,9 @@ constructors, passed to the parent constructor.}
 
 \item{objtdb}{The (temporary) trackerdb where individual displayed
 outputs were recorded during the weaving process.}
+
+\item{figurefiles}{image files of plot as figures for woven
+report. Do not manually set.}
 }
 \value{
 An object of a class that inherits from FeatureSet
@@ -122,7 +143,8 @@ Because the arguments listed here unavoidably map to class slots, and because
 most of them should NOT be set directly even in customization code, they are
 semi-internal implementation details and are subject to change. 
 
-Arguments described as 'Do not manually set' have default values that should
-be used in virtually all cases. Overriding these in custom makeFeatureSet
-methods can lead to undefined behavior by the trackr system.
+Arguments described as 'Do not manually set' have default values
+that should be used in virtually all cases. Overriding these in
+custom makeFeatureSet methods can lead to undefined behavior by the
+trackr system.
 }

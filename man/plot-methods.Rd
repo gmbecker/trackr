@@ -3,17 +3,23 @@
 \docType{methods}
 \name{plot,PlotFeatureSet,missing-method}
 \alias{plot,PlotFeatureSet,missing-method}
-\title{Display the plot object owned by PlotFeatureSet objects and subclasses thereof.}
+\title{Display the plot object owned by PlotFeatureSet objects and
+    subclasses thereof.}
 \usage{
 \S4method{plot}{PlotFeatureSet,missing}(x, y, ...)
 }
 \arguments{
 \item{x}{An object of (super)class PlotFeatureSet.}
 
-\item{y}{Should be left empty.}
+\item{y}{Should be left empty. Included only because it is a
+mandatory signature element.}
 
-\item{...}{Other named arguments (currently unused).}
+\item{...}{Other named arguments (currently ignored).}
 }
 \value{
 The plot object, plotted through its native print method.
+}
+\description{
+(re)draw the plot associated with a PlotFeatureSEt
+    record.
 }

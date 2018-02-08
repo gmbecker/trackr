@@ -1,3 +1,6 @@
+## copied from rsolr
+ROWNAMES <- function (x) if (length(dim(x)) != 0L) rownames(x) else names(x)
+
 setMethod("ids", "DocCollectionRef", function(x) ROWNAMES(docs(x)))
 setGeneric("ids<-", function(x, value) standardGeneric("ids<-"))
 setReplaceMethod("ids", "DocCollectionRef", function(x, value) {

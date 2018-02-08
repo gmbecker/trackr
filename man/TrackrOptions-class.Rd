@@ -4,7 +4,7 @@
 \name{TrackrOptions-class}
 \alias{TrackrOptions-class}
 \alias{TrackrOptions}
-\title{Trackr configuration optionso}
+\title{Trackr configuration options}
 \usage{
 TrackrOptions(insert_delay = 0, img_dir = "./images", img_ext = "png",
   backend_opts = list(...), ...)
@@ -18,4 +18,11 @@ TrackrOptions(insert_delay = 0, img_dir = "./images", img_ext = "png",
 
 \item{backend_opts}{list. list of options specific to the backend. Currently ignored
 by trackr machinery.}
+
+\item{\dots}{additional arguments, which are collected into a list for the default \code{backend_opts} value.}
+}
+\description{
+TrackrOptions objects dictate various behavior
+by trackr when interacting with or preparing to interact with backends. See
+individual parameters for behaviors controlled in this manner.
 }

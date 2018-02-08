@@ -1,4 +1,6 @@
-##' @import rsolr
+##' @import graphics grDevices  methods histry CodeDepends rsolr fastdigest htmltools
+##' @importFrom stats getCall nobs setNames
+##' @importFrom utils capture.output compareVersion packageVersion sessionInfo str
 NULL
 
 ## define necessary class unions
@@ -10,6 +12,32 @@ setOldClass("sessionInfo")
 
 setClassUnion("sinfoOrList", c("sessionInfo", "list"))
 
+#' @title FeatureSet (and Sub)-Classes
+#' @description Metadata inferred about R objects or dynamic documents is stored in
+#' FeatureSet objects specific. Specific types of featuresets have specific additional
+#' metadata they contain, beyond the standard metadata inferred about all results, and
+#' represented by the core FeatureSet class.
+#' @slot user character The user who submitted the result
+#' @slot regdate POSIXct The date/time the result was recorded
+#' @slot analysispkg list The R package associated with the result (because the
+#' working directory was within the package's directory structure).
+#' @slot uniqueid character The uniqueid of the result
+#' @slot tags character Additional tags associated with the result
+#' @slot analysisfile character The .R file active when there result was recorded (RStudio IDE only)
+#' @slot rstudioproject character The RStudio project active when the result was recorded (RStudio IDE only)
+#' @slot generatedin character The uniqueid of the Rmd file the result was generated in, if applicable
+#' @slot code character The code used to generate the result (by default, as captured by histry)
+#' @slot codeinfo ScriptInfo the ScriptInfo for the code
+#' @slot sessioninfo sinfoOrList The session info at the time the result was recorded
+#' @slot isplot logical Whether the result is a plot
+#' @slot fsetklass character The FeatureSet subclass for the result
+#' @slot trackrversion character The exact version of the trackr package used to record the result.
+#' @slot clineargs character The commandline arguments passed to R when starting the session the result was recorded from
+#' @slot resultURI character The URI associated with the result, see featureset constructor documentation.
+#' @slot extrametadata list Any extra metadata associated with the result.
+#' @rdname featureset-classes
+#' @exportClass FeatureSet
+#' @aliases FeatureSet-class show,FeatureSet-method
 .FeatureSet <- setClass("FeatureSet", contains="VIRTUAL",
                         slots = c(user = "character",
                                   regdate = "POSIXct",
@@ -24,27 +52,34 @@ setClassUnion("sinfoOrList", c("sessionInfo", "list"))
                                   sessioninfo = "sinfoOrList", 
                                   isplot = "logical",
                                   fsetklass = "character",
-                                  trackrversion = "character")
+                                  trackrversion = "character",
+                                  clineargs = "character",
+                                  resultURI = "character",
+                                  extramdata = "list")
                         )
 
-
+#' @rdname featureset-classes
+#' @exportClass ObjFeatureSet
+#' @slot klass character The R object class of the result
+#' @slot object ANY The object itself, or NULL if the object is not available.
+#' @aliases ObjFeatureSet-class
+#' @docType methods
 .ObjFeatureSet <- setClass("ObjFeatureSet",
                            slots = c(klass = "character",
-                                     object = "ANY"##,
-                                     ##            user = "character",
-                                     ##regdate = "POSIXct",
-                                     ##uniqueid = "character",
-                                     ##analysispkg = "list",
-                                     ##tags = "character",
-                                     ## currently only supported within RStudio
-                                     ##analysisfile = "character",
-                                     ## should be NA_character if not in RStudio
-                                     ##rstudioproject = "character"
+                                     object = "ANY"
                                      ),
                            contains = "FeatureSet")
 
 
 
+#' @rdname featureset-classes
+#' @exportClass DFFeatureSet
+#' @slot vars character The variable names for a data.frame result
+#' @slot varclasses character the variable classes for a data.frame result
+#' @slot varsummaries list summaries for
+#' @slot object ANY The object itself, or NULL if the object is not available.
+#' @aliases DFFeatureSet-class
+#' @docType methods
 .DFFeatureSet <- setClass("DFFeatureSet",
                           slots = c(vars = "character",
                                     varclasses = "character",
@@ -54,8 +89,6 @@ setClassUnion("sinfoOrList", c("sessionInfo", "list"))
                           contains = "ObjFeatureSet")
 
 
-#' @name PlotFeatureSet-class
-#' @title An S4 class called PlotFeatureSet
 #' @slot data A list of data.frames containing the variables and observations used in the plot.
 #' @slot titles Title and subtitle of the plot object; a named list of the form list(main = "My title", sub = "My subtitle").
 #' @slot varlabels Variable labels of the plot object; a named list of the form list(x = "X axis label", y = "Y axis label", groups = list(...)). Note that non-empty labels are character vectors and may contain more than one entry.
@@ -68,8 +101,9 @@ setClassUnion("sinfoOrList", c("sessionInfo", "list"))
 #' @slot tags A character vector of user-defined tags.
 #' @slot code R code to reproduce the plot, as a CodeDepends::Script object. May be empty.
 #' @slot codeinfo Information about the R code to reproduce the plot, as a CodeDepends::ScriptInfo object. May be empty.
-#' @rdname PlotFeatureSet-class
+#' @rdname featureset-classes
 #' @exportClass PlotFeatureSet
+#' @aliases PlotFeatureSet-class show,PlotFeatureSet-method
 .PlotFeatureSet <- setClass("PlotFeatureSet",
     slots = c(titles = "characterOrNULL", data = "list",
         varlabels = "list",
@@ -88,35 +122,34 @@ setClassUnion("sinfoOrList", c("sessionInfo", "list"))
     }
 )
 
-#' @name GGplotFeatureSet-class
-#' @title An S4 subclass of PlotFeatureSet with additional slots for objects of class ggplot.
-#' @slot geom A named list of parameters for geometric objects in each layer of the plot.
-#' @slot stat A named list of parameters for statistical transforms in each layer of the plot.
-#' @slot position A named list of positioning information in each layer of the plot.
+#' @slot geom A named list of parameters for geometric objects in each layer of the ggplot.
+#' @slot stat A named list of parameters for statistical transforms in each layer of the ggplot.
+#' @slot position A named list of positioning information in each layer of the ggplot.
 #' @slot num.layers An integer representing the number of layers in the plot.
-#' @rdname GGplotFeatureSet-class
+#' @rdname featureset-classes
 #' @exportClass GGplotFeatureSet
+#' @aliases GGplotFeatureSet-class show,GGplotFeatureSet-method
 .GGplotFeatureSet <- setClass("GGplotFeatureSet",
     slots = c(geom = "list", stat = "list", position = "list", num.layers = "numeric"),
     contains = "PlotFeatureSet")
 
-#' @name TrellisFeatureSet-class
-#' @title An S4 subclass of PlotFeatureSet with additional slots for objects of class trellis.
-#' @rdname TrellisFeatureSet-class
+#' @rdname featureset-classes
 #' @exportClass TrellisFeatureSet
+#' @aliases TrellisFeatureSet-class
 .TrellisFeatureSet <- setClass("TrellisFeatureSet",
     # slots = c(),
     contains = "PlotFeatureSet")
 
-#' @name GraphicsFeatureSet-class
-#' @title An S4 subclass of PlotFeatureSet with additional slots for objects of class recordedplot.
-#' @rdname GraphicsFeatureSet-class
+#' @rdname featureset-classes
 #' @exportClass GraphicsFeatureSet
+#' @aliases GraphicsFeatureSet-class
 .GraphicsFeatureSet <- setClass("GraphicsFeatureSet",
     # slots = c(),
     contains = "PlotFeatureSet")
 
-
+#' @rdname featureset-classes
+#' @exportClass TrellisFeatureSet
+#' @aliases RmdFeatureSet-class show,RmdFeatureSet-method
 .RmdFeatureSet <- setClass("RmdFeatureSet",
                            contains = "FeatureSet",
                            slots = c(chunks = "character",
@@ -138,9 +171,11 @@ setClassUnion("sinfoOrList", c("sessionInfo", "list"))
 
 
 
-
 #' @name TrackrOptions-class
-#' @title Trackr configuration optionso
+#' @description TrackrOptions objects dictate various behavior
+#' by trackr when interacting with or preparing to interact with backends. See
+#' individual parameters for behaviors controlled in this manner.
+#' @title Trackr configuration options
 #' @exportClass TrackrOptions
 
 setClass("TrackrOptions",
@@ -155,6 +190,7 @@ setClass("TrackrOptions",
 #' @param img_ext character. extension to give image files.
 #' @param backend_opts list. list of options specific to the backend. Currently ignored
 #' by trackr machinery.
+#' @param \dots additional arguments, which are collected into a list for the default \code{backend_opts} value.
 #' @export
 TrackrOptions = function(insert_delay = 0,
                             img_dir = "./images",
@@ -181,14 +217,14 @@ TrackrOptions = function(insert_delay = 0,
 #' @title Trackr database
 #' @exportClass "TrackrDB"
 #' @rdname TrackrDB-class
-
-
 setClass("TrackrDB",
          slots = list(opts = "TrackrOptions",
              backend = "ANY")
          )
 
 #' @rdname TrackrDB-class
+#' @description A TrackrDB object is a combination of a backend and a
+#' TrackrOptions object controlling trackr's behavior.
 #' @param opts TrackrOptions object.
 #' @param backend ANY. The backend to use.
 #' @param ... ignored.
@@ -202,18 +238,21 @@ TrackrDB = function(opts = TrackrOptions(...), backend = JSONBackend(), ...)
 #' @name DocCollectionRef
 #' @title Reference to a DocCollection
 #'
-#' @description A reference class which carries around a DocCollection, suitable
-#' for use as a trackr backend.
+#' @description A reference class which carries around a
+#'     DocCollection, suitable for use as a trackr backend.
 #' @docType methods
 #' @rdname DocCollection-refclasses
 #' @exportClass DocCollectionRef
+#' @aliases DocCollectionRef-class names<-,DocCollectionRef,ANY-method
+#'     ndoc,DocCollectionRef-method
 .docrefclass = setRefClass("DocCollectionRef",
             fields = list(docs = "DocCollection"))
 
 
 
 
-#' @name JSONBackend-class
+#' @name JSONBackend
+#' @description A JSON-file based backend. This is the default backend in trackr.
 #' @title JSON backend for trackr
 #' @slot data list. An in-memory list representation of the data in the db
 #' @slot file character. The file containing the db ( to read from and write to)
@@ -222,7 +261,8 @@ TrackrDB = function(opts = TrackrOptions(...), backend = JSONBackend(), ...)
 #' semantics
 #' @docType methods
 #' @exportClass JSONBackend
-
+#' @aliases JSONBackend-class
+#' @rdname JSONBackend
 
 jsonbackend = setRefClass("JSONBackend",
                             contains = "DocCollectionRef",
@@ -239,11 +279,13 @@ jsonbackend = setRefClass("JSONBackend",
 #' @name JSONBackend
 #' @title JSON backend contstructor
 #' @param file character. The json "database" to use as a trackr backend
+#' @param data A list of records to pre-populate the backend with.
 #' @return A JSONBackend object, for use in creating a TrackrDB object.
 #' @note This function should generally not be called directly by end-users.
 #' See instead \code{\link{jsonTDB}}
 #' @export
 #' @importFrom RJSONIO fromJSON
+#' @rdname JSONBackend
 
 JSONBackend = function(file = normalizePath("./trackr_db_data.json"), data = list()) {
     if(file.exists(file)) {
@@ -267,6 +309,7 @@ JSONBackend = function(file = normalizePath("./trackr_db_data.json"), data = lis
 #' working inside the RStudio IDE. 
 #' @docType methods
 #' @exportClass RStudioExtras
+#' @aliases RStudioExtras-class
 setClass("RStudioExtras",
          representation(file = "character",
                         project = "character"),
@@ -282,6 +325,7 @@ setClass("RStudioExtras",
 #' @aliases ListBackend-class
 listbackend = setRefClass("ListBackend", contains="DocCollectionRef")
 #' @rdname DocCollection-refclasses
+#' @param lst List of documents to populate the list backend with.
 #' @export
 #' @aliases ListBackend
 ListBackend = function(lst = list()) {

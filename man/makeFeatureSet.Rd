@@ -11,6 +11,7 @@
 \alias{makeFeatureSet,call-method}
 \alias{makeFeatureSet,FeatureSet-method}
 \alias{makeFeatureSet,ANY-method}
+\alias{makeFeatureSet,data.frame-method}
 \title{Construct an ObjFeatureSet.}
 \usage{
 makeFeatureSet(object, ...)
@@ -30,14 +31,26 @@ makeFeatureSet(object, ...)
 \S4method{makeFeatureSet}{FeatureSet}(object, ...)
 
 \S4method{makeFeatureSet}{ANY}(object, ...)
+
+\S4method{makeFeatureSet}{data.frame}(object, ...)
 }
 \arguments{
-\item{object}{The plot to summarize via metadata in an ObjFeatureSet (or subclass)}
+\item{object}{The plot to summarize via metadata in an
+ObjFeatureSet (or subclass)}
 
-\item{...}{Other named arguments that become slots in the new PlotFeatureSet.}
+\item{...}{Other named arguments that become slots in the new
+PlotFeatureSet.}
 }
 \value{
-PlotFeatureSet S4 object containing a ObjFeatureSet object and extracted plot features
+PlotFeatureSet S4 object containing a ObjFeatureSet object
+    and extracted plot features
+}
+\description{
+The generic function for transforming an R object into the
+appropriate subclass of FeatureSet. This includes most introspection-based
+metadata extraction from the object. Metadata extraction can be customized
+at the package/R sesion level for specific classes of objects by
+defining methods for this generic.
 }
 \section{Methods (by class)}{
 \itemize{
@@ -56,6 +69,8 @@ PlotFeatureSet S4 object containing a ObjFeatureSet object and extracted plot fe
 \item \code{FeatureSet}: No-op if we already have a ObjFeatureSet
 
 \item \code{ANY}: Catch-all for attempted construction of a ObjFeatureSet from an object not of class ggplot or trellis.
+
+\item \code{data.frame}: Construct a DFFeatureSet from a data.frame
 }}
 
 \examples{
@@ -64,7 +79,9 @@ pg <- ggplot(mtcars, aes(wt, mpg)) + geom_point()
 pfs <- makeFeatureSet(pg)
 
 library(lattice)
-pl <- barchart(Class ~ Freq | Sex + Age, data = as.data.frame(Titanic), groups = Survived, stack = TRUE, layout = c(4, 1), auto.key = list(title = "Survived", columns = 2))
+pl <- barchart(Class ~ Freq | Sex + Age, data = as.data.frame(Titanic),
+               groups = Survived, stack = TRUE, layout = c(4, 1),
+               auto.key = list(title = "Survived", columns = 2))
 pfs <- makeFeatureSet(pl)
 
 dffs <- makeFeatureSet(as.data.frame(Titanic))

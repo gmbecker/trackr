@@ -29,3 +29,6 @@ annotationText(object)
 \value{
 A character vector of text annotations appearing on the plot.
 }
+\description{
+Get the text annotations for a plot object.
+}

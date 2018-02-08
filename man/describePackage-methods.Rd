@@ -14,5 +14,11 @@ describePackage(object)
 \item{object}{An object of (super)class ObjFeatureSet.}
 }
 \value{
-A list holding the name, title, and description of any packages with description files on the current path.
+A list holding the name, title, and description of any
+    packages with description files on the current path.
+}
+\description{
+The analysis package, if any, that was 'in use' (i.e.,
+    that contained the working directory that was active) when the
+    result was recorded.
 }

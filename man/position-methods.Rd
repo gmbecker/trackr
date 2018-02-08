@@ -11,7 +11,7 @@
 \alias{position,gTree-method}
 \alias{position<-,GGplotFeatureSet-method}
 \alias{position,GGplotFeatureSet-method}
-\title{Mutator method for GGplotFeatureSet "position" slot.}
+\title{Accessors for the position of GGplotFeatureSet objects}
 \usage{
 position(object) <- value
 
@@ -36,6 +36,7 @@ position(object)
 }
 \value{
 A modified object of class GGplotFeatureSet.
-
-A named list of positioning information in each layer of the plot.
+}
+\description{
+Get or set the position associated with a GGplotFeatureSet object. This should not be called directly.
 }

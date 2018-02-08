@@ -1,26 +1,30 @@
 
 #' @name record
+#' @description These functions define the high-level, user-facing trackr API. 
 #' @details These functions allow end-users to interact with
 #' trackr databases. Each function does what its name suggests.
 #' @title Primary high-level API functions for Trackr Databases
 #' @param object ANY. A PlotFeatureSet (or plot object coercible to one) to be
 #' added. Or (for rmPlot) the unique ID of an object in the database to remove.
 #' @param db TrackrDB. The database
+#' @param resultURI A URI which can be used to define a grouping/hierarchy of results recorded via trackr. Currently unused by trackr itself except as additional metadata to search across. Defaults to an empty string. 
 #' @param code ANY. Code/evaluation history to be associated with \code{object}
 #' @param force logical. Overwrite any existing entry matching \code{object}.
 #' (default: FALSE)
 #' @param verbose logical. Should extra informative messages be displayed (
 #' default: FALSE)
+#' @param symorpos The symbol or position corresponding to \code{object} in \code{code}. For normal usage this will not be required.
 #' @rdname main-api
 #' @export
 
-record = function(object, db = defaultTDB(), code = histry::histry(), force = FALSE,
+record = function(object, db = defaultTDB(), resultURI = "", 
+                  code = histry::histry(), force = FALSE,
                    verbose = FALSE, symorpos = NULL) {
 
     if(!is.null(code)) {
         if(is.null(symorpos))
             symorpos = substitute(object)
-
+        
         if(is(code, "VirtHistoryTracker"))
             code = code$exprs
         if(is.code(code))
@@ -32,7 +36,7 @@ record = function(object, db = defaultTDB(), code = histry::histry(), force = FA
                 else
                     paste(x, collapse="\n")
             }, character(1))
-
+        
         if(!is.null(code) && length(code) > 0 && any(nzchar(code))) {
             codescr = readScript(txt = code)
             codeinfo = getInputs(codescr)
@@ -47,8 +51,8 @@ record = function(object, db = defaultTDB(), code = histry::histry(), force = FA
     } else {
         code = ""
     }
-        
-    pfs = makeFeatureSet(object, code = code)
+    
+    pfs = makeFeatureSet(object, code = code, resultURI = resultURI)
     exst = trackr_lookup(pfs, target = db, exist = TRUE) # generic
     if(force || !exst) {
         id = uniqueID(pfs)

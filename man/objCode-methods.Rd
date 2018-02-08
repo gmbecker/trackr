@@ -6,7 +6,7 @@
 \alias{objCode}
 \alias{objCode<-,FeatureSet-method}
 \alias{objCode,FeatureSet-method}
-\title{Mutator method for "code" slot of PlotFeatureSet (or one of its subclasses).}
+\title{Accessors for the code of FeatureSet objects}
 \usage{
 objCode(object) <- value
 
@@ -23,6 +23,7 @@ objCode(object)
 }
 \value{
 A modified object of (super)class PlotFeatureSet.
-
-A CodeDepends::Script object
+}
+\description{
+Get or set the code associated with a FeatureSet object. This should not be called directly.
 }

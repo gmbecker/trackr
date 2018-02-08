@@ -4,39 +4,41 @@ NULL
 # ggplot and gg are S3 classes - must switch them over before sending to S4 method
 # borrowed from ggsubplot:
 
-#' @title ggplot S4 class
+#' @title ggplot S4 classes
+#' @description formal S4 classes for S3 classes defined in other packages.
 #' @name ggplot-class
-#' @aliases ggplot
+#' @aliases ggplot-class
+#' @rdname oldclasses
 #' @exportClass ggplot
 setOldClass(c("ggplot", "list"))
 
-#' @title gg S4 class
-#' @name gg-class
-#' @aliases gg
+#' @name gg
+#' @rdname oldclasses
+#' @aliases gg-class
 #' @exportClass gg
 setOldClass(c("gg", "ggplot"))
 
 # trellis is S3 class - must switch over before sending to S4 method
 
-#' @title trellis S4 class
-#' @name trellis-class
-#' @aliases trellis
+#' @name trellis
+#' @rdname oldclasses
+#' @aliases trellis-class
 #' @exportClass trellis
 setOldClass("trellis")
 
 # gTree is S3 class - must switch over before sending to S4 method?
 
-#' @title gTree S4 class
-#' @name gTree-class
-#' @aliases gTree
+#' @name gTree
+#' @rdname oldclasses
+#' @aliases gTree-class
 #' @exportClass gTree
 setOldClass("gTree")
 
 
-#' @importFrom fastdigest fastdigest
-#' @title Create an 16 character "SpookyHashV2" hash of an R object.
-#' @param x An R object
-#' @return An character vector with a prefix and 16 character hash of \code{x}
+## ' @importFrom fastdigest fastdigest
+## ' @title Create an 16 character "SpookyHashV2" hash of an R object.
+## ' @param x An R object
+## ' @return An character vector with a prefix and 16 character hash of \code{x}
 gen_hash_id <- function(x) {
     # need to exclude regdate from hashing.
     # this is not ideal, but does the trick.
@@ -47,10 +49,12 @@ gen_hash_id <- function(x) {
 
 ## Implementation of show method for PlotFeatureSet class
 
-#' @title Display an object of class/superclass PlotFeatureSet
-#' @rdname show-methods
-#' @param object An object of (super)class PlotFeatureSet.
-#' @return NULL
+## doc hook is elsewhere
+## ' @title Display an object of class/superclass PlotFeatureSet
+## ' @description show a PlotFeatureSEt
+## ' @rdname show-methods
+## ' @param object An object of (super)class PlotFeatureSet.
+## ' @return NULL
 #' @export
 setMethod(f = "show",
     signature = "PlotFeatureSet",
@@ -74,6 +78,7 @@ prettyPrint <- function(pw.el){
 ## Implementation of summary method for PlotFeatureSet class
 
 #' @title Summarize an object of class/superclass PlotFeatureSet
+#' @description Summary methods for PlotFeatureSet objects
 #' @rdname summary-methods
 #' @param object An object of (super)class PlotFeatureSet.
 #' @return NULL
@@ -114,6 +119,7 @@ setMethod(f = "summary",
 ## Implementation of plot method for PlotFeatureSet class
 
 #' @title Print method for an object of class gTree.
+#' @description print a gTree object.
 #' @param x An object of class gTree.
 #' @param ... Other named arguments (currently unused).
 #' @rdname print-methods
@@ -123,11 +129,15 @@ print.gTree <- function(x, ...) {
     grid::grid.draw(x)
 }
 
-#' @title Display the plot object owned by PlotFeatureSet objects and subclasses thereof.
+#' @title Display the plot object owned by PlotFeatureSet objects and
+#'     subclasses thereof.
+#' @description (re)draw the plot associated with a PlotFeatureSEt
+#'     record.
 #' @rdname plot-methods
 #' @param x An object of (super)class PlotFeatureSet.
-#' @param y Should be left empty.
-#' @param ... Other named arguments (currently unused).
+#' @param y Should be left empty. Included only because it is a
+#'     mandatory signature element.
+#' @param ... Other named arguments (currently ignored).
 #' @return The plot object, plotted through its native print method.
 #' @importFrom graphics plot
 #' @method plot PlotFeatureSet
@@ -139,9 +149,9 @@ setMethod(f = "plot",
     }
 )
 
-#' @title Internal utility function to warn the user that a requested feature is not yet implemented.
-#' @param reason An optional character vector describing the feature.
-#' @return NULL
+## ' @title Internal utility function to warn the user that a requested feature is not yet implemented.
+## ' @param reason An optional character vector describing the feature.
+## ' @return NULL
 not_implemented <- function(reason = NULL) {
     ## warning(paste("Functionality not yet implemented",
     ##     reason, sep=": "),
@@ -1176,7 +1186,7 @@ setMethod(f = "geomObject",
 setMethod(f = "geomObject",
           signature = "ggplot",
           definition = function(object) {
-    suppressWarnings(require(proto, quietly=TRUE))
+    suppressWarnings(requireNamespace("proto", quietly=TRUE))
     
     ## access to geom name thanks to http://stackoverflow.com/questions/13457562/
     ## if original geom order does not matter, could sort these before collapsing

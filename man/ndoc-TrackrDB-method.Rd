@@ -3,9 +3,7 @@
 \docType{methods}
 \name{ndoc,TrackrDB-method}
 \alias{ndoc,TrackrDB-method}
-\alias{ndoc-method,TrackrDB}
-\title{Number of docs in a TrackrDB
-Query the backend for the number of docs it contains}
+\title{Number of docs in a TrackrDB}
 \usage{
 \S4method{ndoc}{TrackrDB}(x, ...)
 }
@@ -13,4 +11,7 @@ Query the backend for the number of docs it contains}
 \item{x}{TrackrDB.}
 
 \item{...}{not used.}
+}
+\description{
+Query the backend for the number of docs it contains
 }

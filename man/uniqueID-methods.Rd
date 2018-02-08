@@ -4,9 +4,10 @@
 \name{uniqueID<-}
 \alias{uniqueID<-}
 \alias{uniqueID}
+\alias{uniqueID,ANY-method}
 \alias{uniqueID,FeatureSet-method}
 \alias{uniqueID<-,FeatureSet-method}
-\title{Mutator method for "uniqueid" slot of ObjFeatureSet (or one of its subclasses).}
+\title{Accessor methods for "uniqueid" of FeatureSet objects}
 \usage{
 uniqueID(object) <- value
 
@@ -23,6 +24,7 @@ uniqueID(object)
 }
 \value{
 A modified object of (super)class ObjFeatureSet.
-
-A character vector serving as the unique ID of the plot object in the database.
+}
+\description{
+Get or set the uniqueID field of a FeatureSet. This should not be called directly by end users.
 }

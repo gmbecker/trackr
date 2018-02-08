@@ -50,13 +50,13 @@ setMethod("make_image_files", "RmdFeatureSet",
     if(!dir.exists(img.save.dir))
         dir.create(img.save.dir, recursive=TRUE)
     ret = NULL
-    if(require("RSelenium")) {
+    if(requireNamespace("RSelenium")) {
         
     ## if(!require("RSelenium"))
     ##     ret = callNextMethod() ## this will hit FeatureSet, ie the default.
     ## else {
         ## can't figure out how to get phantomjs screenshot to respect window size...
-        ret = tryCatch({suppressMessages(rs <- rsDriver(browser = "chrome", geckover=NULL, check=FALSE)) ##"phantomjs"))
+        ret = tryCatch({suppressMessages(rs <- RSelenium::rsDriver(browser = "chrome", geckover=NULL, check=FALSE)) ##"phantomjs"))
             on.exit(rs$server$stop(), add = TRUE)
             
             cl = rs[["client"]]

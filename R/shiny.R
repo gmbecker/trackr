@@ -1,10 +1,3 @@
-# setGeneric(".toHTML", function(obj, ...) standardGeneric(".toHTML"))
-# setMethod(".toHTML", "RecordrArtifact", function(obj, ...) stop("not implemented yet"))
-##' Create HTML representation of record
-##' @import htmltools
-
-##<a href="#test1Content" class="group-cbox1 inline" title="Lorem ipsum 1">
-##   <img alt="" src="http://placehold.it/128x128/" class="shadow"></a>
 
 
 setGeneric("thumbnailHTML", function(rec, imgurlfun, tdb = defaultTDB()) standardGeneric("thumbnailHTML"),
@@ -36,9 +29,10 @@ setMethod("thumbnailHTML", "DFFeatureSet", function(rec, imgurlfun,
                               tags$td("nobs"), tags$td(nobs(rec))),
                           tags$tr(
                               tags$td("first columns"),
-                              tags$td(paste(head(varnamesrec), 5),
+                              tags$td(paste(head(varnames(rec), 5),
                                             collapse="\n"))
                           )
+                      )
            )
 })
 
@@ -71,6 +65,7 @@ setMethod("thumbnailHTML", "FeatureSet",
 ##            tags$div(class = "thumbnail",
 ##                     tags$iframe()
 ## })
+
 
 ifnotnull = function(x) if(length(x) >0) x else NA
 
@@ -118,19 +113,19 @@ setMethod("detailHTML", "FeatureSet",
   
 })
 
-setMethod("detailHTML", "DFFeatureSet",
-          function(rec, imgurlfun, tdb = defaultVDTB()) {
-    htags = htmltools::tags
-    addAppendChildren(htmltools::htags$table,
-                      c(list(htags$th(htags$td("Variable"), htags$td("summary"))),
-                        mapply(function(nm, sm) {
-                            htags$tr(htags$td(nm), htags$td(sm))
-                        }, nm = varnames(rec), sm = varsumdputs(rec),
-                        SIMPLIFY=FALSE))
-                      )
+## setMethod("detailHTML", "DFFeatureSet",
+##           function(rec, imgurlfun, tdb = defaultVDTB()) {
+##     htags = htmltools::tags
+##     addAppendChildren(htmltools::htags$table,
+##                       c(list(htags$th(htags$td("Variable"), htags$td("summary"))),
+##                         mapply(function(nm, sm) {
+##                             htags$tr(htags$td(nm), htags$td(sm))
+##                         }, nm = varnames(rec), sm = varsumdputs(rec),
+##                         SIMPLIFY=FALSE))
+##                       )
     
 
-})
+## })
 
 
 
@@ -197,21 +192,20 @@ $(".inline").colorbox({inline:true, width:"736px"});
 #                 
 
 
-##' RStudio addin/Shiny app for artifact discovery
+##' @title RStudio addin/Shiny app for artifact discovery
 ##'
-##' This function initiates a shiny server which  allows users
+##' @description This function initiates a shiny server which  allows users
 ##' to search a trackr database and view the results. It can
 ##' be used as a stand-alone Shiny application or from within the
 ##' RStudio IDE as an addin
 ##'
+##' @name trackrAddin
 ##' @param tdb The database to search. Defaults to the current default database
 ##' @import miniUI
 ##' @import shiny
 ##' @import htmltools
 ##' @export
 trackrAddin = function(tdb = defaultTDB()) {
-  if(!require(miniUI) || !require("shiny") || !require(htmltools)) 
-    stop("The miniUI, htmltools, and shiny packages are required to run the addin/shiny app")
   
   ui <- miniPage(
                htmltools::tags$style(type = "text/css",
@@ -227,8 +221,8 @@ trackrAddin = function(tdb = defaultTDB()) {
       htmlOutput("results")
     )
   )
-  
-  
+    
+    
   server <- function(input, output, session) {
 
       if(!file.exists("./images")) {

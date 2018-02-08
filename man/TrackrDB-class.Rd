@@ -15,3 +15,7 @@ TrackrDB(opts = TrackrOptions(...), backend = JSONBackend(), ...)
 
 \item{...}{ignored.}
 }
+\description{
+A TrackrDB object is a combination of a backend and a
+TrackrOptions object controlling trackr's behavior.
+}

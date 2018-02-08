@@ -11,3 +11,6 @@
 
 \item{...}{Other named arguments (currently unused).}
 }
+\description{
+print a gTree object.
+}

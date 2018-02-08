@@ -2,11 +2,15 @@
 % Please edit documentation in R/autotrack.R
 \name{defaultTDB}
 \alias{defaultTDB}
-\title{default TRACKRDB}
+\title{default TrackrDB}
 \usage{
 defaultTDB(trackrdb)
 }
 \arguments{
 \item{trackrdb}{TrackrDB. The TrackrDB to which objects will be recorded
 by default. If missing, the current default is returned.}
+}
+\description{
+Get or set the default TrackrDB in use (ie the one that is
+used when `record` is used with no trackrdb specified.
 }

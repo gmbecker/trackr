@@ -6,8 +6,8 @@
 \alias{findRecords}
 \title{Primary high-level API functions for Trackr Databases}
 \usage{
-record(object, db = defaultTDB(), code = histry::histry(), force = FALSE,
-  verbose = FALSE, symorpos = NULL)
+record(object, db = defaultTDB(), resultURI = "", code = histry::histry(),
+  force = FALSE, verbose = FALSE, symorpos = NULL)
 
 rmRecord(object, db = defaultTDB(), verbose = FALSE)
 
@@ -20,6 +20,8 @@ added. Or (for rmPlot) the unique ID of an object in the database to remove.}
 
 \item{db}{TrackrDB. The database}
 
+\item{resultURI}{A URI which can be used to define a grouping/hierarchy of results recorded via trackr. Currently unused by trackr itself except as additional metadata to search across. Defaults to an empty string.}
+
 \item{code}{ANY. Code/evaluation history to be associated with \code{object}}
 
 \item{force}{logical. Overwrite any existing entry matching \code{object}.
@@ -27,6 +29,8 @@ added. Or (for rmPlot) the unique ID of an object in the database to remove.}
 
 \item{verbose}{logical. Should extra informative messages be displayed (
 default: FALSE)}
+
+\item{symorpos}{The symbol or position corresponding to \code{object} in \code{code}. For normal usage this will not be required.}
 
 \item{pattern}{character. A regular expression to match against the text in \code{fields}}
 
@@ -37,6 +41,9 @@ include all fields.}
 "id" - id of matching documents (default), "list" - A list containing the
 matching documents represnted as R lists, and "backend" - a backend specific
 representation of the set of matching documents}
+}
+\description{
+These functions define the high-level, user-facing trackr API.
 }
 \details{
 These functions allow end-users to interact with

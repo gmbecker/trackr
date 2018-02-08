@@ -11,7 +11,7 @@
 \alias{geomObject,gTree-method}
 \alias{geomObject<-,GGplotFeatureSet-method}
 \alias{geomObject,GGplotFeatureSet-method}
-\title{Mutator method for GGplotFeatureSet "geom" slot.}
+\title{Accessors for the geom of GGplotFeatureSet objects}
 \usage{
 geomObject(object) <- value
 
@@ -36,6 +36,7 @@ geomObject(object)
 }
 \value{
 A modified object of class GGplotFeatureSet.
-
-A named list of parameters for geometric objects in each layer of the plot.
+}
+\description{
+Get or set the geom associated with a GGplotFeatureSet object. This should not be called directly.
 }

@@ -15,6 +15,8 @@ accepts it}
 
 \item{verbose}{passed to (multiple) \code{record} calls for report and its
 outputs}
+
+\item{tmptdb}{A TrackrDB in which to temporarily record results which are printed within the dynamic document. Generally this should not need to be changed, as it is only used to collect the records so they can be associated with the result for the whole document (in the defaultTDB).}
 }
 \description{
 This function wraps knitr's \code{knit} function in

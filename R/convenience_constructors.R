@@ -1,12 +1,13 @@
 
 #' @title Convenience constructors for specific trackr  backends
+#' @description Convenience constructors for JSON and Solr-based trackr backends.
 #' @rdname conv_constr
 #' @param file character. The json file to use
 #' @param opts TrackrOptions. The options for the DB
 #' @param img_dir character. The directory plot images should be
 #' saved into. Passed to default construction of \code{opts}. Defaults to
 #' \code{<directory of file>/images}. ignored if \code{opts} is specified explicitly.
-#' @param \dots{} ANY. Used to construct \code{opts}. Ignored if
+#' @param \dots ANY. Used to construct \code{opts}. Ignored if
 #' \code{opts} is specified explicitly.
 #' @return A TrackrDB object
 #' @export

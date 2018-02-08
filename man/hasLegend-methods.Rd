@@ -29,3 +29,6 @@ hasLegend(object)
 \value{
 A boolean indicating whether or not a legend is displayed in the plot.
 }
+\description{
+Get whether or not a plot or PlotFeatureSet.
+}

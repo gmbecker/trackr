@@ -15,7 +15,7 @@
 \alias{tags,trellis-method}
 \alias{tags,gTree-method}
 \alias{tags,ANY-method}
-\title{Mutator method for PlotFeatureSet "tags" slot.}
+\title{Accessors for the tags of FeatureSet objects}
 \usage{
 tags(object) <- value
 
@@ -45,7 +45,7 @@ tags(object)
 \S4method{tags}{ANY}(object)
 }
 \arguments{
-\item{object}{An object of (super)class PlotFeatureSet or a plot object of class ggplot or trellis.}
+\item{object}{An object of (super)class FeatureSet}
 
 \item{value}{A character vector of tags.}
 
@@ -57,6 +57,7 @@ tags(object)
 A modified object of (super)class PlotFeatureSet.
 
 A modified object of (super)class PlotFeatureSet.
-
-A character vector of user-defined tags.
+}
+\description{
+Get or set the tags associated with a FeatureSet object. This should not be called directly.
 }

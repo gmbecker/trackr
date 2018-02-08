@@ -29,3 +29,6 @@ nObs(object)
 \value{
 An integer representing the number of observations in the plotted data.
 }
+\description{
+Number of observations plotted in a plot or associated PlotFeatureSet.
+}

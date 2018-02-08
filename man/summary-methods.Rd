@@ -10,3 +10,6 @@
 \arguments{
 \item{object}{An object of (super)class PlotFeatureSet.}
 }
+\description{
+Summary methods for PlotFeatureSet objects
+}

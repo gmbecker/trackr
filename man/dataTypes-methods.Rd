@@ -29,3 +29,6 @@ dataTypes(object)
 \value{
 A named list of variable types of the form list(x = "numeric", y = "factor", ...).
 }
+\description{
+Get the variable types from a plot feature set
+}
