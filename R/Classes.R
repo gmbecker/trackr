@@ -1,4 +1,6 @@
-##' @import graphics grDevices  methods histry CodeDepends rsolr fastdigest htmltools
+##' @import lattice  methods histry CodeDepends rsolr fastdigest htmltools
+##' @importFrom graphics par plot.new plot.window text
+##' @importFrom grDevices dev.off png pdf
 ##' @importFrom stats getCall nobs setNames
 ##' @importFrom utils capture.output compareVersion packageVersion sessionInfo str
 NULL
@@ -197,11 +199,9 @@ TrackrOptions = function(insert_delay = 0,
                             img_ext = "png",
                             backend_opts = list(...),
                          ...) {
-    if(!file.exists(img_dir))
-        dir.create(img_dir, recursive=TRUE)
     new("TrackrOptions",
         insert_delay = insert_delay,
-        img_dir = normalizePath(img_dir),
+        img_dir = normalizePath(img_dir, mustWork=FALSE),
         img_ext = img_ext,
         backend_opts = backend_opts)
 }

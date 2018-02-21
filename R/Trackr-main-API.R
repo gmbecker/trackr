@@ -15,6 +15,20 @@
 #' default: FALSE)
 #' @param symorpos The symbol or position corresponding to \code{object} in \code{code}. For normal usage this will not be required.
 #' @rdname main-api
+#' @examples
+#' prevtdb = defaultTDB()
+#' defaultTDB(listTDB())
+#' mt = mtcars
+#' record(mt)
+#'
+#' res = findRecords("mtcars")
+#' stopifnot(length(res) ==1)
+#' rmRecord(mt)
+#'
+#' res = findRecords("mtcars")
+#' stopifnot(length(res) == 0)
+#' defaultTDB(prevtdb)
+#' 
 #' @export
 
 record = function(object, db = defaultTDB(), resultURI = "", 

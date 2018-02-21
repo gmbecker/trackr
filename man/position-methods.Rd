@@ -40,3 +40,9 @@ A modified object of class GGplotFeatureSet.
 \description{
 Get or set the position associated with a GGplotFeatureSet object. This should not be called directly.
 }
+\examples{
+library(ggplot2)
+plt = qplot(mtcars$mpg, mtcars$cyl)
+fs = makeFeatureSet(plt)
+position(fs)
+}

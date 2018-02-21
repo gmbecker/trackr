@@ -1,8 +1,8 @@
 Package: trackr
 Type: Package
 Title: Semantic Annotation and Discoverability System for R-Based Artifacts
-Version: 0.7.0
-Date: 2015-07-01
+Version: 0.7.4
+Date: 2018-02-11
 Authors@R: c(
     person("Gabriel", "Becker", role = c("aut", "cre"),
         email = "becker.gabriel@gene.com"),
@@ -17,7 +17,7 @@ Description: Automatically annotates R-based artifacts
 	     interrogating such artifacts.
 License: Artistic-2.0
 Depends:
-    histry (>= 0.0.2.2)
+    histry (>= 0.1.1)
 Imports:
     fastdigest,
     ggplot2,

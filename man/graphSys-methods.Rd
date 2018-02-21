@@ -19,3 +19,9 @@ A character vector representing the originating R package of the plot object, i.
 \description{
 Retrieve the graphics system from a PlotFeatureSet object
 }
+\examples{
+library(ggplot2)
+plt = qplot(mtcars$mpg, mtcars$cyl)
+fs = makeFeatureSet(plt)
+graphSys(fs)
+}

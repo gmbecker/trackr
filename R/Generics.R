@@ -320,6 +320,9 @@ setGeneric(name = "uniqueID", valueClass = "character",
 
 #' @name user
 #' @rdname user-methods
+#' @examples
+#' fs = makeFeatureSet(mtcars)
+#' user(fs)
 #' @export
 setGeneric(name = "user", valueClass = "character", 
     def = function(object) {
@@ -329,6 +332,9 @@ setGeneric(name = "user", valueClass = "character",
 
 #' @name regDateTime
 #' @rdname regDateTime-methods
+#' @examples
+#' fs = makeFeatureSet(mtcars)
+#' regDateTime(fs)
 #' @export
 setGeneric(name = "regDateTime",
     def = function(object) {
@@ -342,6 +348,11 @@ setGeneric(name = "regDateTime",
 #' @param object An object of (super)class PlotFeatureSet.
 #' @return A character vector representing the originating R package of the plot object, i.e. base, ggplot, or lattice.
 #' @rdname graphSys-methods
+#' @examples
+#' library(ggplot2)
+#' plt = qplot(mtcars$mpg, mtcars$cyl)
+#' fs = makeFeatureSet(plt)
+#' graphSys(fs)
 #' @export
 setGeneric(name = "graphSys",
     def = function(object) {
@@ -358,6 +369,9 @@ setGeneric(name = "graphSys",
 #' @return A list holding the name, title, and description of any
 #'     packages with description files on the current path.
 #' @rdname describePackage-methods
+#' @examples
+#' fs = makeFeatureSet(mtcars)
+#' describePackage(fs)
 #' @export
 setGeneric(name = "describePackage",
     def = function(object) {
@@ -367,6 +381,11 @@ setGeneric(name = "describePackage",
 
 #' @name titles
 #' @rdname titles-methods
+#' @examples
+#' library(ggplot2)
+#' plt = qplot(mtcars$mpg, mtcars$cyl)
+#' fs = makeFeatureSet(plt)
+#' titles(fs)
 #' @export
 setGeneric(name = "titles",
     def = function(object) {
@@ -376,6 +395,11 @@ setGeneric(name = "titles",
 
 #' @name objCode
 #' @rdname objCode-methods
+#' @examples
+#' library(ggplot2)
+#' plt = qplot(mtcars$mpg, mtcars$cyl)
+#' fs = makeFeatureSet(plt)
+#' objCode(fs)
 #' @export
 setGeneric(name = "objCode",
     def = function(object) {
@@ -385,6 +409,9 @@ setGeneric(name = "objCode",
 
 #' @name codeInfo
 #' @rdname codeInfo-methods
+#' @examples
+#' fs = makeFeatureSet(mtcars)
+#' codeInfo(fs)
 #' @export
 setGeneric(name = "codeInfo",
     def = function(object) {
@@ -399,6 +426,11 @@ setGeneric(name = "codeInfo",
 #' @param quiet Should warnings about plotted data be supressed?
 #' @return A list of data.frame containing the variables used in plotting.
 #' @rdname fullData-methods
+#' @examples
+#' library(ggplot2)
+#' plt = qplot(mtcars$mpg, mtcars$cyl)
+#' fs = makeFeatureSet(plt)
+#' fullData(fs)
 #' @export
 setGeneric(name = "fullData",
     def = function(object, quiet = FALSE) {
@@ -408,6 +440,11 @@ setGeneric(name = "fullData",
 
 #' @name dataLabels
 #' @rdname dataLabels-methods
+#' @examples
+#' library(ggplot2)
+#' plt = qplot(mtcars$mpg, mtcars$cyl)
+#' fs = makeFeatureSet(plt)
+#' dataLabels(fs)
 #' @export
 setGeneric(name = "dataLabels",
     def = function(object) {
@@ -432,6 +469,12 @@ setGeneric(name = "dataNames",
 #' @param object An object of class PlotFeatureSet, GGplotFeatureSet, TrellisFeatureSet, ggplot, or trellis.
 #' @return A named list of variable types of the form list(x = "numeric", y = "factor", ...).
 #' @rdname dataTypes-methods
+#' @examples
+#' library(ggplot2)
+#' plt = qplot(mtcars$mpg, mtcars$cyl)
+#' fs = makeFeatureSet(plt)
+#' dataTypes(fs)
+#' 
 #' @export
 setGeneric(name = "dataTypes",
     def = function(object) {
@@ -445,6 +488,11 @@ setGeneric(name = "dataTypes",
 #' @param object An object of class  PlotFeatureSet, GGplotFeatureSet, TrellisFeatureSet, ggplot, or trellis.
 #' @return A character vector of text annotations appearing on the plot.
 #' @rdname annotationText-methods
+#' @examples
+#' library(ggplot2)
+#' plt = qplot(mtcars$mpg, mtcars$cyl)
+#' fs = makeFeatureSet(plt)
+#' annotationText(fs)
 #' @export
 setGeneric(name = "annotationText",
     def = function(object) {
@@ -454,6 +502,11 @@ setGeneric(name = "annotationText",
 
 #' @name geomObject
 #' @rdname geomObject-methods
+#' @examples
+#' library(ggplot2)
+#' plt = qplot(mtcars$mpg, mtcars$cyl)
+#' fs = makeFeatureSet(plt)
+#' geomObject(fs)
 #' @export
 setGeneric(name = "geomObject",
     def = function(object) {
@@ -463,6 +516,11 @@ setGeneric(name = "geomObject",
 
 #' @name statTransform
 #' @rdname statTransform-methods
+#' @examples
+#' library(ggplot2)
+#' plt = qplot(mtcars$mpg, mtcars$cyl)
+#' fs = makeFeatureSet(plt)
+#' statTransform(fs)
 #' @export
 setGeneric(name = "statTransform",
     def = function(object) {
@@ -476,6 +534,11 @@ setGeneric(name = "statTransform",
 #' @param object An object of class  PlotFeatureSet, GGplotFeatureSet, TrellisFeatureSet, ggplot, or trellis.
 #' @return A named list of grouping information parameters.
 #' @rdname groupInfo-methods
+#' @examples
+#' library(ggplot2)
+#' plt = qplot(mtcars$mpg, mtcars$cyl)
+#' fs = makeFeatureSet(plt)
+#' groupInfo(fs)
 #' @export
 setGeneric(name = "groupInfo",
     def = function(object) {
@@ -485,6 +548,11 @@ setGeneric(name = "groupInfo",
 
 #' @name nLayers
 #' @rdname nLayers-methods
+#' @examples
+#' library(ggplot2)
+#' plt = qplot(mtcars$mpg, mtcars$cyl)
+#' fs = makeFeatureSet(plt)
+#' nLayers(fs)
 #' @export
 setGeneric(name = "nLayers",
     def = function(object) {
@@ -495,6 +563,11 @@ setGeneric(name = "nLayers",
 
 #' @name position
 #' @rdname position-methods
+#' @examples
+#' library(ggplot2)
+#' plt = qplot(mtcars$mpg, mtcars$cyl)
+#' fs = makeFeatureSet(plt)
+#' position(fs)
 #' @export
 setGeneric(name = "position",
     def = function(object) {
@@ -508,6 +581,11 @@ setGeneric(name = "position",
 #' @param object An object of class  PlotFeatureSet, GGplotFeatureSet, TrellisFeatureSet, ggplot, or trellis.
 #' @return A character vector describing the coordinate system employed in the plot.
 #' @rdname coordSystem-methods
+#' @examples
+#' library(ggplot2)
+#' plt = qplot(mtcars$mpg, mtcars$cyl)
+#' fs = makeFeatureSet(plt)
+#' coordSystem(fs)
 #' @export
 setGeneric(name = "coordSystem",
     def = function(object) {
@@ -521,6 +599,11 @@ setGeneric(name = "coordSystem",
 #' @param object An object of class PlotFeatureSet, GGplotFeatureSet, TrellisFeatureSet, ggplot, or trellis.
 #' @return A boolean indicating whether or not a legend is displayed in the plot.
 #' @rdname hasLegend-methods
+#' @examples
+#' library(ggplot2)
+#' plt = qplot(mtcars$mpg, mtcars$cyl)
+#' fs = makeFeatureSet(plt)
+#' hasLegend(fs)
 #' @export
 setGeneric(name = "hasLegend",
     def = function(object) {
@@ -534,6 +617,11 @@ setGeneric(name = "hasLegend",
 #' @param object An object of class PlotFeatureSet, GGplotFeatureSet, TrellisFeatureSet, ggplot, or trellis.
 #' @return An integer representing the number of observations in the plotted data.
 #' @rdname nObs-methods
+#' @examples
+#' library(ggplot2)
+#' plt = qplot(mtcars$mpg, mtcars$cyl)
+#' fs = makeFeatureSet(plt)
+#' nObs(fs)
 #' @export
 setGeneric(name = "nObs",
     def = function(object) {
@@ -543,6 +631,11 @@ setGeneric(name = "nObs",
 
 #' @name tags
 #' @rdname tags-methods
+#' @examples
+#' library(ggplot2)
+#' plt = qplot(mtcars$mpg, mtcars$cyl)
+#' fs = makeFeatureSet(plt)
+#' tags(fs)
 #' @export
 setGeneric(name = "tags",
     def = function(object) {
@@ -559,7 +652,7 @@ setGeneric(name = "tags",
 #'
 #' @description This page describes the API which must be implimented by all Trackr backends
 #' Any class with methods for these generic can be used in the \code{backend}
-#' slot of a \code{TrackrDB} object.
+#' slot of a \code{TrackrDB} object. These functions should not be called directly by an end-user.
 #'
 #' @details Methods should be written to be dispatched on \code{target}, and, where appropriate
 #' on code{object}/code{doc}
@@ -697,6 +790,8 @@ setGeneric("trackr_search", function(pattern, target, opts,
 #' @return A character vector of tags to associate with \code{object}
 #'     during the recording process
 #' @docType methods
+#' @examples
+#' generateTags(mtcars) #character(0)
 #' @export
 #' @aliases generateTags,ANY-method
 setGeneric("generateTags", function(object) standardGeneric("generateTags"))

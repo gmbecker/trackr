@@ -22,3 +22,7 @@ The analysis package, if any, that was 'in use' (i.e.,
     that contained the working directory that was active) when the
     result was recorded.
 }
+\examples{
+fs = makeFeatureSet(mtcars)
+describePackage(fs)
+}

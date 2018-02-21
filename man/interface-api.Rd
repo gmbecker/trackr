@@ -91,7 +91,7 @@ For \code{prep_for_backend}, \code{object}, representend in
 \description{
 This page describes the API which must be implimented by all Trackr backends
 Any class with methods for these generic can be used in the \code{backend}
-slot of a \code{TrackrDB} object.
+slot of a \code{TrackrDB} object. These functions should not be called directly by an end-user.
 }
 \details{
 Methods should be written to be dispatched on \code{target}, and, where appropriate

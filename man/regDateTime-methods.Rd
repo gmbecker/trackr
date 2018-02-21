@@ -27,3 +27,7 @@ A modified object of (super)class ObjFeatureSet.
 \description{
 Get or set the registration time associated with a FeatureSet object. This should not be called directly.
 }
+\examples{
+fs = makeFeatureSet(mtcars)
+regDateTime(fs)
+}

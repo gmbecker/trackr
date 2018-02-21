@@ -384,7 +384,16 @@ setMethod("trackr_backend<-", "TrackrDB",
 setMethod("trackr_options", "TrackrDB", function(db) db@opts)
 
 setMethod("img_dir", "TrackrDB", function(db) img_dir(trackr_options(db)))
-setMethod("img_dir", "TrackrOptions", function(db) db@img_dir)
+setMethod("img_dir", "TrackrOptions", function(db) {
+
+    dr = db@img_dir
+    if(!file.exists(dr)) {
+        message("Creating image directory at ", dr)
+        dir.create(dr, recursive=TRUE)
+    }
+    dr
+    
+})
 
 
 setMethod("img_ext", "TrackrDB", function(db) img_ext(trackr_options(db)))

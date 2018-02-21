@@ -32,3 +32,9 @@ A named list of grouping information parameters.
 \description{
 Get the grouping info for a plot or PlotFeatureSet.
 }
+\examples{
+library(ggplot2)
+plt = qplot(mtcars$mpg, mtcars$cyl)
+fs = makeFeatureSet(plt)
+groupInfo(fs)
+}

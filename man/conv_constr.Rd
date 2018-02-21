@@ -3,12 +3,15 @@
 \name{jsonTDB}
 \alias{jsonTDB}
 \alias{solrTDB}
+\alias{listTDB}
 \title{Convenience constructors for specific trackr  backends}
 \usage{
 jsonTDB(file = "~/.trackr/objdb.json", opts = TrackrOptions(img_dir =
   img_dir, ...), img_dir = file.path(dirname(file), "images"), ...)
 
 solrTDB(core, requestHandler = "search", opts = TrackrOptions(...), ...)
+
+listTDB(data = list(), opts = TrackrOptions(...), ...)
 }
 \arguments{
 \item{file}{character. The json file to use}
@@ -25,10 +28,17 @@ saved into. Passed to default construction of \code{opts}. Defaults to
 \item{core}{character. The URI for the solr core to use}
 
 \item{requestHandler}{character. Passed to \code{SolrList} constructor}
+
+\item{data}{list. Data the ListBackend should be prepopulated with.}
 }
 \value{
 A TrackrDB object
 }
 \description{
 Convenience constructors for JSON and Solr-based trackr backends.
+}
+\examples{
+tdb = jsonTDB(tempfile())
+
+tdb2 = listTDB()
 }

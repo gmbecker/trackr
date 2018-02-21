@@ -32,3 +32,10 @@ A named list of variable types of the form list(x = "numeric", y = "factor", ...
 \description{
 Get the variable types from a plot feature set
 }
+\examples{
+library(ggplot2)
+plt = qplot(mtcars$mpg, mtcars$cyl)
+fs = makeFeatureSet(plt)
+dataTypes(fs)
+
+}

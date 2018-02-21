@@ -10,19 +10,15 @@
 #' @param \dots ANY. Used to construct \code{opts}. Ignored if
 #' \code{opts} is specified explicitly.
 #' @return A TrackrDB object
+#' @examples
+#' tdb = jsonTDB(tempfile())
+#'
+#' tdb2 = listTDB()
 #' @export
 jsonTDB = function(file = "~/.trackr/objdb.json",
                     opts = TrackrOptions(img_dir = img_dir, ...),
                     img_dir = file.path(dirname(file), "images"),
                     ...) {
-    if(!file.exists(img_dir(opts))) {
-        message("Creating image directory at ", img_dir(opts))
-        dir.create(img_dir(opts), recursive=TRUE)
-    }
-    if(!file.exists(dirname(file))) {
-        message("Creating directory for JSON file backend at ", dirname(file))
-        dir.create(dirname(file))
-    }
     backend = JSONBackend(file)
     TrackrDB(opts = opts, backend = backend)
 }
@@ -39,4 +35,10 @@ solrTDB = function(core, requestHandler = "search", opts = TrackrOptions(...),
     
 
 
-    
+#'@rdname conv_constr
+#' @param data list. Data the ListBackend should be prepopulated with.
+#' @export
+listTDB = function(data = list(), opts = TrackrOptions(...), ...) {
+    backend = ListBackend(lst = data)
+    TrackrDB(opts = opts, backend = backend)
+}

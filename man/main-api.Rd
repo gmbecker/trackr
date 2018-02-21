@@ -49,3 +49,18 @@ These functions define the high-level, user-facing trackr API.
 These functions allow end-users to interact with
 trackr databases. Each function does what its name suggests.
 }
+\examples{
+prevtdb = defaultTDB()
+defaultTDB(listTDB())
+mt = mtcars
+record(mt)
+
+res = findRecords("mtcars")
+stopifnot(length(res) ==1)
+rmRecord(mt)
+
+res = findRecords("mtcars")
+stopifnot(length(res) == 0)
+defaultTDB(prevtdb)
+
+}

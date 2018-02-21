@@ -32,3 +32,9 @@ A character vector of text annotations appearing on the plot.
 \description{
 Get the text annotations for a plot object.
 }
+\examples{
+library(ggplot2)
+plt = qplot(mtcars$mpg, mtcars$cyl)
+fs = makeFeatureSet(plt)
+annotationText(fs)
+}

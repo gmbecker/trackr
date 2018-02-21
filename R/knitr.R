@@ -31,11 +31,6 @@ recplothook = function(x, opts, ...) {
 }
 
 
-obfu_code = paste0("suppressMessages(trace(knitr::", ":split_file, exit = quote(assign('chunks', returnValue(), envir = trackr_knit_env)), print = FALSE))")
-
-obfu_untrc =  paste0("suppressMessages(untrace(knitr::", ":split_file))")
-
-parseEval = function(txt) eval(parse(text=txt))
 
 ##' @title Knit and record an Rmd, Rnw, etc file
 ##'
@@ -66,8 +61,10 @@ knit_and_record = function(input, ..., verbose = FALSE,
     evaltracer(FALSE)
     evaltracer(TRUE, TRUE)
     trackr_knit_env$chunks = NULL
-    parseEval(obfu_code)
-    on.exit(parseEval(obfu_untrc), add=TRUE)
+    suppressMessages(trace("split_file", where = asNamespace("knitr"),
+                           exit = quote(assign('chunks', returnValue(), envir = trackr_knit_env)),
+                           print = FALSE))
+    on.exit(suppressMessages(untrace("split_file", where = asNamespace("knitr"))), add=TRUE)
 
       
     if("output" %in% names(list(...)))
@@ -123,7 +120,7 @@ knit_and_record = function(input, ..., verbose = FALSE,
     evaltracer(TRUE)
 
     defaultTDB(oldtdb)
-    parseEval(obfu_untrc)
+    suppressMessages(untrace("split_file", where = asNamespace("knitr")))
     on.exit(NULL)
 
     rmdfs = RmdFeatureSet(rmdfile = input, objtdb = tmptdb,

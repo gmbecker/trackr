@@ -34,3 +34,9 @@ A list of data.frame containing the variables used in plotting.
 \description{
 Get full data associated with a plot or model fit, if possible.
 }
+\examples{
+library(ggplot2)
+plt = qplot(mtcars$mpg, mtcars$cyl)
+fs = makeFeatureSet(plt)
+fullData(fs)
+}

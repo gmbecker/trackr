@@ -34,3 +34,6 @@ The upsides of this mechanism is that it is easier to use
     specifically. The values will be included in the metadata
     generally though, so non-field-specific queries will work.
 }
+\examples{
+generateTags(mtcars) #character(0)
+}

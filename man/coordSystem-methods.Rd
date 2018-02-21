@@ -32,3 +32,9 @@ A character vector describing the coordinate system employed in the plot.
 \description{
 Get the coordinate system for a plot or PlotFeatureSet.
 }
+\examples{
+library(ggplot2)
+plt = qplot(mtcars$mpg, mtcars$cyl)
+fs = makeFeatureSet(plt)
+coordSystem(fs)
+}

@@ -27,3 +27,9 @@ A modified object of (super)class PlotFeatureSet.
 \description{
 Get or set the code associated with a FeatureSet object. This should not be called directly.
 }
+\examples{
+library(ggplot2)
+plt = qplot(mtcars$mpg, mtcars$cyl)
+fs = makeFeatureSet(plt)
+objCode(fs)
+}

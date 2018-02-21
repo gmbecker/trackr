@@ -32,3 +32,9 @@ A boolean indicating whether or not a legend is displayed in the plot.
 \description{
 Get whether or not a plot or PlotFeatureSet.
 }
+\examples{
+library(ggplot2)
+plt = qplot(mtcars$mpg, mtcars$cyl)
+fs = makeFeatureSet(plt)
+hasLegend(fs)
+}

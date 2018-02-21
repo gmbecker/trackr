@@ -229,6 +229,11 @@ setMethod("trackr_write", c("ANY"),
 
 setMethod("trackr_write", c("JSONBackend"),
           function(target, opts, verbose) {
+    if(!file.exists(dirname(target$file))) {
+        message("Creating directory for JSON file backend at ", dirname(target$file))
+        dir.create(dirname(target$file))
+    }
+
     cat(toJSON(as(docs(target), "list")), file = target$file)
     target
 })
