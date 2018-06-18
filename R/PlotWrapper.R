@@ -982,26 +982,17 @@ setMethod(f = "dataNames",
 setMethod(f = "dataNames",
     signature = "ggplot",
     definition = function(object) {
-        data.names <- NULL
-        if (length(object$mapping) > 0) {
-            data.names <- as.character(object$mapping)
-        } else { ## sometimes mappings are in layers
-            mps = lapply(object$layers, function(x) x$mapping)
-            mps = mps[sapply(mps, function(x) length(x) > 0)]
-            if(length(mps) ==0)
-                warning("No mappings found")
-            else
-                data.names <- as.character(mps[[1]])
-
-        }
+        data.names <- .ggplotMappingVars(object)
+        
         data.names <- as.list(data.names)
 
-        # wrap
-        data.names$panel <- names(object$facet$facets)
-        if (is.null(data.names$panel)) {
-            # grid
-            data.names$panel <- c(names(object$facet$rows), names(object$facet$cols))
-        }
+        data.names$panel <- .ggplotFacetVars(object)
+        ## # wrap
+        ## data.names$panel <- names(object$facet$facets)
+        ## if (is.null(data.names$panel)) {
+        ##     # grid
+        ##     data.names$panel <- c(names(object$facet$rows), names(object$facet$cols))
+        ## }
 
         # c(data.names, panel = paste(panel.names, collapse=", "))
         prep.labels(data.names)

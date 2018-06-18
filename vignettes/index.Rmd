@@ -20,11 +20,29 @@ knitr::opts_chunk$set(
 ```
 # Introduction - Towards Discoverability
 
-Results are most impactful when they are reproducible, understandable, and *discoverable*; Analysts cannot incorporate a finding into their understanding of a particular dataset or question unless they know that result exists. This can be difficult within the status quo, where results are often sent directly to collaborators on a particular project, and then (hopefully) archived - often in a location and manner specific to the analyst who generated them.
+Results are most impactful when they are reproducible, understandable,
+and *discoverable*; Analysts cannot incorporate a finding into their
+understanding of a particular dataset or question unless they know
+that result exists. This can be difficult within the status quo, where
+results are often sent directly to collaborators on a particular
+project, and then (hopefully) archived - often in a location and
+manner specific to the analyst who generated them.
 
-Results are *discoverable* on the other hand, when there is a reasonable mechanism by which anyone with appropriate access permissions can discover the existance of - and locate - them. The searching party might be a new collaborator getting up to speed on a project, a scientist working in the same space and trying to determine what has already been done, or even the analyst themselves looking for a result generated months or years previous.
+Results are *discoverable* on the other hand, when there is a
+reasonable mechanism by which anyone with appropriate access
+permissions can discover the existance of - and locate - them. The
+searching party might be a new collaborator getting up to speed on a
+project, a scientist working in the same space and trying to determine
+what has already been done, or even the analyst themselves looking for
+a result generated months or years previous.
 
-The ```trackr``` package seeks to improve the discoverability of results by both recording the existence of (and in some cases object representing) R-based results in a customizable database, and annotating those rescords with automatically inferred metadata about those results. These annotations power the ability to search for and find records of particular results, or classes thereof, whether or not the seeker knew of them beforehand.
+The ```trackr``` package seeks to improve the discoverability of
+results by both recording the existence of (and in some cases object
+representing) R-based results in a customizable database, and
+annotating those rescords with automatically inferred metadata about
+those results. These annotations power the ability to search for and
+find records of particular results, or classes thereof, whether or not
+the seeker knew of them beforehand.
 
 # Dependency installation check
 
@@ -57,8 +75,11 @@ defaultTDB(tdb)
 ## Create some example plots
 
 
-Here we create a number of plots - ggplot2, lattice, and base - which we will
-use throughout the demonstration. The details of these plots themselves is not improtant, but we use many different datasets and plotting methodologies in order to illustrate the different avenues for discoverability enabled by trackr's automatic annotations.
+Here we create a number of plots - ggplot2, lattice, and base - which
+we will use throughout the demonstration. The details of these plots
+themselves is not important, but we use many different datasets and
+plotting methodologies in order to illustrate the different avenues
+for discoverability enabled by trackr's automatic annotations.
 
 ```{r}
 
