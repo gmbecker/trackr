@@ -17,7 +17,8 @@ ObjFeatureSet(object, code = as.character(parseCode(object)),
   regdate = Sys.time(), analysispkg = scrape_descr(),
   analysisfile = .analysisFileOrNA(), rstudioproject = .rstudioProjOrNA(),
   fsetklass = "ObjFeatureSet", isplot = FALSE, generatedin = character(),
-  clineargs = commandArgs(), resultURI = character(), ...)
+  clineargs = commandArgs(), resultURI = character(),
+  provtable = ProvStoreDF(), ...)
 
 PlotFeatureSet(object, fsetklass = "PlotFeatureSet",
   package = NA_character_, ...)

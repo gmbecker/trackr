@@ -34,6 +34,7 @@ listRecToFeatureSet = function(lst) {
     nonsltlist = lst[nonslots]
     lst[nonslots] = NULL
     lst$extramdata = nonsltlist
+    lst$provtable = hydrateProvTable(lst$provtable)
 
 
     
@@ -49,7 +50,20 @@ listRecToFeatureSet = function(lst) {
 }
 
 
+hydrateProvTable = function(json) {
+    df = fromJSON(json)
+    if(!is.data.frame(df))
+        df = as.data.frame(df, stringsAsFactors = FALSE)
+    
 
+    prefix = gsub("^([^:]+):.*", "\\1", df$outputvarhash[1])
+    df$outputvarhash = gsub("^[^:]+:", "", df$outputvarhash)
+    ## this should work fine even for ""
+    
+    df$inputvarhash = gsub("^[^:]+:", "", df$inputvarhash)
+    new("ProvStoreDF", hashprefix = prefix, provdata = df)
+}
+    
 norecurse = c("varnames", "varsummaries", "varclasses", "na", ## for na.rm
               "codeinfo", "fullcodeinfo", "outputids", "chunks",
               "sessioninfo"

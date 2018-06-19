@@ -1,3 +1,4 @@
+#' @import roprov
 
 #' @name record
 #' @description These functions define the high-level, user-facing trackr API. 
@@ -32,15 +33,18 @@
 #' @export
 
 record = function(object, db = defaultTDB(), resultURI = "", 
-                  code = histry::histry(), force = FALSE,
+                  code = histry::histry_tracker(), force = FALSE,
                    verbose = FALSE, symorpos = NULL) {
 
+    provtable = roprov::ProvStoreDF()
     if(!is.null(code)) {
         if(is.null(symorpos))
             symorpos = substitute(object)
         
-        if(is(code, "VirtHistoryTracker"))
-            code = code$exprs
+        if(is(code, "VirtHistoryTracker")) {
+            provtable = histryProvDF(code)
+            code = exprs(code)
+        }
         if(is.code(code))
             code = deparse(code, control = NULL)
         else if (is(code, "list"))
@@ -66,7 +70,7 @@ record = function(object, db = defaultTDB(), resultURI = "",
         code = ""
     }
     
-    pfs = makeFeatureSet(object, code = code, resultURI = resultURI)
+    pfs = makeFeatureSet(object, code = code, resultURI = resultURI, provtable = provtable)
     exst = trackr_lookup(pfs, target = db, exist = TRUE) # generic
     if(force || !exst) {
         id = uniqueID(pfs)

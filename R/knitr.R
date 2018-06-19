@@ -17,8 +17,8 @@ recplothook = function(x, opts, ...) {
         ## lifted from knitr:::knit_handlers (knitr:::utils.R) 
         rfun = function(x, ...) {
             res = withVisible(knitr::knit_print(x, ...))
-                                        # indicate the htmlwidget result with a special class so we can attach
-                                        # the figure caption to it later in wrap.knit_asis
+            ## indicate the htmlwidget result with a special class so we can attach
+            ## the figure caption to it later in wrap.knit_asis
             if (inherits(x, 'htmlwidget'))
                 class(res$value) = c(class(res$value), 'knit_asis_htmlwidget')
             if (res$visible) res$value else invisible(res$value)
@@ -41,31 +41,52 @@ recplothook = function(x, opts, ...) {
 ##' This means that many records will generally be added to the trackr db for
 ##' a single call to this function.
 ##'
-##' @param input The input argument exactly as knitr's \code{knit} function
-##' accepts it
+##' @param input The input argument exactly as knitr's \code{knit}
+##'     function accepts it
 ##' @param ... Passed directly to \code{knit}
-##' @param verbose passed to (multiple) \code{record} calls for report and its
-##' outputs
-##' @param tmptdb A TrackrDB in which to temporarily record results which are printed within the dynamic document. Generally this should not need to be changed, as it is only used to collect the records so they can be associated with the result for the whole document (in the defaultTDB).
-##' @note as with all knitr support in the histry and trackr packages, manually
-##' tracing certain functions within the knitr and evaluate packages will break
-##' this function.
+##' @param verbose passed to (multiple) \code{record} calls for report
+##'     and its outputs
+##' @param tmptdb A TrackrDB in which to temporarily record results
+##'     which are printed within the dynamic document. Generally this
+##'     should not need to be changed, as it is only used to collect
+##'     the records so they can be associated with the result for the
+##'     whole document (in the defaultTDB).
+##' @note as with all knitr support in the histry and trackr packages,
+##'     manually tracing certain functions within the knitr and
+##'     evaluate packages will break this function.
 ##' @import rmarkdown
 ##' @export
 knit_and_record = function(input, ..., verbose = FALSE,
-                           tmptdb = TrackrDB(backend= ListBackend(), img_dir = img_dir(defaultTDB()))) {
+                           tmptdb = TrackrDB(backend= ListBackend(),
+                                             img_dir = img_dir(defaultTDB())),
+                           recvars = NULL) {
     oldtdb = defaultTDB()
     on.exit(defaultTDB(oldtdb))
     defaultTDB(tmptdb)
     ## knitrtracer(FALSE) ## probably unnecessary
     evaltracer(FALSE)
-    evaltracer(TRUE, TRUE)
+    headermat = yaml_front_matter(input)
+    if(is.null(recvars) && "record" %in% names(headermat) &&
+       !identical("all", headermat$record))
+        recvars = unlist(strsplit(headermat$record, " "))
+    
+
+    if(is.null(recvars))
+        evaltracer(TRUE, record = TRUE)
+    else
+        evaltracer(TRUE, record = FALSE)
+    con = textConnection("tangletxt", "w", local=TRUE)
+    on.exit(close(con), add=TRUE)
+    
+    knitr::knit(input = input, output = con, tangle=TRUE)
     trackr_knit_env$chunks = NULL
     suppressMessages(trace("split_file", where = asNamespace("knitr"),
                            exit = quote(assign('chunks', returnValue(), envir = trackr_knit_env)),
                            print = FALSE))
     on.exit(suppressMessages(untrace("split_file", where = asNamespace("knitr"))), add=TRUE)
 
+
+    evalenv = new.env()
       
     if("output" %in% names(list(...)))
         odir = dirname(list(...)$output)
@@ -74,20 +95,27 @@ knit_and_record = function(input, ..., verbose = FALSE,
 
     starttime = Sys.time()
     if(grepl("[Rr][Mm][Dd]$", input))
-        resfile = render(input = input,output_format = html_document(self_contained = FALSE, mathjax = NULL),
-                         run_pandoc = TRUE, ...)
+        resfile = render(input = input,
+                         output_format = html_document(self_contained = FALSE,
+                                                       mathjax = NULL),
+                         run_pandoc = TRUE, envir = evalenv, ...)
     else if (grepl("[Rr][Nn][Ww]$", input)) {
         resfile = render(input = input,  output_format = "pdf_document",
-                         run_pandoc=TRUE, ...)
+                         run_pandoc=TRUE, envir = evalenv, ...)
     }
+    
     endtime = Sys.time()
+
+   
+    
     filenamestub = gsub("(.*)\\.R..$", "\\1", basename(input))
     figpath = file.path(odir, paste0(filenamestub, "_files"))
     figs = character()
 
     if(file.exists(file.path(odir, "figure"))) {
         dir.create(file.path(figpath, "figure-html"))
-        file.copy(list.files(file.path(odir, "figure"), full.names=TRUE), file.path(figpath, "figure-html"))
+        file.copy(list.files(file.path(odir, "figure"), full.names=TRUE),
+                  file.path(figpath, "figure-html"))
     }
     if(file.exists(figpath))
         figs = list.files(figpath, recursive=TRUE)
@@ -119,8 +147,14 @@ knit_and_record = function(input, ..., verbose = FALSE,
     evaltracer(FALSE)
     evaltracer(TRUE)
 
+    if(!is.null(recvars)) {
+        lapply(recvars, function(nm) { record(get(nm, envir = evalenv), code = histropts()$knitrHistory, symorpos = nm)})
+    } #otherwise recording has already happened.
+    
+    ## turn on the real backend and clean up the onexit stuff
     defaultTDB(oldtdb)
     suppressMessages(untrace("split_file", where = asNamespace("knitr")))
+    close(con) #from on.exit(close(con)) when grabbing tangle text
     on.exit(NULL)
 
     rmdfs = RmdFeatureSet(rmdfile = input, objtdb = tmptdb,
@@ -129,13 +163,13 @@ knit_and_record = function(input, ..., verbose = FALSE,
                           figurefiles = figs)
     imgpat = paste0("(", paste(rmdfs@outputids, collapse="|"), ")")
     imgfiles = list.files(img_dir(tmptdb), pattern = imgpat, full.names = TRUE)
-    print(imgfiles)
     stopifnot(length(imgfiles) == 3 * length(rmdfs@outputids))
     file.copy(imgfiles, file.path(img_dir(oldtdb), basename(imgfiles)))
     objfsets = lapply(docs(trackr_backend(tmptdb)), function(x) {
         fs = listRecToFeatureSet(x)
         fs@generatedin = uniqueID(rmdfs)
         fs@regdate = rmdfs@regdate
+        ret = fs
         fs})
     record(rmdfs, code =NULL, verbose = verbose)
     lapply(objfsets, function(x) record(x, code = objCode(x),
@@ -144,5 +178,3 @@ knit_and_record = function(input, ..., verbose = FALSE,
     oldtdb
         
 }
-
-    

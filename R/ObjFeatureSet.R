@@ -121,6 +121,7 @@ ObjFeatureSet = function(  object,
                          generatedin = character(),
                          clineargs = commandArgs(),
                          resultURI = character(),
+                         provtable = ProvStoreDF(),
                          ...) {
     
     tags <- unique(c(tags, tags(object), generateTags(object)))
@@ -140,7 +141,8 @@ ObjFeatureSet = function(  object,
         isplot = isplot,
         generatedin = generatedin,
         sessioninfo = sessionInfo(),
-        resultURI = resultURI)
+        resultURI = resultURI,
+        provtable = provtable)
 }
 
 #' @rdname fset_constructors
@@ -905,6 +907,20 @@ flatten5 <- function(x) {
     x$data <- NULL
     if(is(x$sessioninfo, "sessionInfo"))
         x$sessioninfo = sinfotolist(x$sessioninfo)
+    
+    if(is(x$provtable, "ProvStoreDF") &&
+       nrow(provdata(x$provtable)) > 0) {
+        prv = x$provtable
+        df = provdata(prv)
+        df$outputvarhash = paste0(hashprefix(prv), ":", df$outputvarhash)
+        inds = nzchar(df$inputvarhash)
+        df$inputvarhash[inds] = paste0(hashprefix(prv), ":", df$inputvarhash[inds])
+        x$provtable = toJSON(df)
+    } else {
+        warning("got a provtable field I don't understand. NULLing it.")
+        x$provtable = NULL
+    }
+        
 
     ## flatten the extramdata catchall slot
     if(!is.null(x$extramdata)) {

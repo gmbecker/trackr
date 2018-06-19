@@ -1,4 +1,4 @@
-##' @import lattice  methods histry CodeDepends rsolr fastdigest htmltools
+##' @import lattice  methods histry CodeDepends rsolr fastdigest htmltools roprov
 ##' @importFrom graphics par plot.new plot.window text
 ##' @importFrom grDevices dev.off png pdf
 ##' @importFrom stats getCall nobs setNames
@@ -57,7 +57,8 @@ setClassUnion("sinfoOrList", c("sessionInfo", "list"))
                                   trackrversion = "character",
                                   clineargs = "character",
                                   resultURI = "character",
-                                  extramdata = "list")
+                                  extramdata = "list",
+                                  provtable = "ProvStoreDF")
                         )
 
 #' @rdname featureset-classes

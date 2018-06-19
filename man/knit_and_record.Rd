@@ -5,18 +5,22 @@
 \title{Knit and record an Rmd, Rnw, etc file}
 \usage{
 knit_and_record(input, ..., verbose = FALSE, tmptdb = TrackrDB(backend =
-  ListBackend(), img_dir = img_dir(defaultTDB())))
+  ListBackend(), img_dir = img_dir(defaultTDB())), recvars = NULL)
 }
 \arguments{
-\item{input}{The input argument exactly as knitr's \code{knit} function
-accepts it}
+\item{input}{The input argument exactly as knitr's \code{knit}
+function accepts it}
 
 \item{...}{Passed directly to \code{knit}}
 
-\item{verbose}{passed to (multiple) \code{record} calls for report and its
-outputs}
+\item{verbose}{passed to (multiple) \code{record} calls for report
+and its outputs}
 
-\item{tmptdb}{A TrackrDB in which to temporarily record results which are printed within the dynamic document. Generally this should not need to be changed, as it is only used to collect the records so they can be associated with the result for the whole document (in the defaultTDB).}
+\item{tmptdb}{A TrackrDB in which to temporarily record results
+which are printed within the dynamic document. Generally this
+should not need to be changed, as it is only used to collect
+the records so they can be associated with the result for the
+whole document (in the defaultTDB).}
 }
 \description{
 This function wraps knitr's \code{knit} function in
@@ -27,7 +31,7 @@ This means that many records will generally be added to the trackr db for
 a single call to this function.
 }
 \note{
-as with all knitr support in the histry and trackr packages, manually
-tracing certain functions within the knitr and evaluate packages will break
-this function.
+as with all knitr support in the histry and trackr packages,
+    manually tracing certain functions within the knitr and
+    evaluate packages will break this function.
 }
