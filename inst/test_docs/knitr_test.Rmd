@@ -16,7 +16,7 @@ How about these plots? horsepower is an interesting thing to study
 ```{r plot}
 library(ggplot2)
 
-p = qplot(hp, wt, data = mtcars)
+p = qplot(mtcars$wt, mtcars$hp)
 p
 ```
 

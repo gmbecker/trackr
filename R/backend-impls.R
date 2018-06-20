@@ -50,30 +50,25 @@ setMethod("make_image_files", "RmdFeatureSet",
     if(!dir.exists(img.save.dir))
         dir.create(img.save.dir, recursive=TRUE)
     ret = NULL
-    if(requireNamespace("RSelenium")) {
-        
-    ## if(!require("RSelenium"))
-    ##     ret = callNextMethod() ## this will hit FeatureSet, ie the default.
-    ## else {
-        ## can't figure out how to get phantomjs screenshot to respect window size...
-        ret = tryCatch({suppressMessages(rs <- RSelenium::rsDriver(browser = "chrome", geckover=NULL, check=FALSE)) ##"phantomjs"))
-            on.exit(rs$server$stop(), add = TRUE)
+    ## if(requireNamespace("RSelenium")) {
+    ##     ret = tryCatch({suppressMessages(rs <- RSelenium::rsDriver(browser = "chrome", geckover=NULL, check=FALSE)) ##"phantomjs"))
+    ##         on.exit(rs$server$stop(), add = TRUE)
             
-            cl = rs[["client"]]
-            cl$setWindowSize(480L, 640L)         
-            cl$navigate(paste0("file://", normalizePath(object@outfile)))
+    ##         cl = rs[["client"]]
+    ##         cl$setWindowSize(480L, 640L)         
+    ##         cl$navigate(paste0("file://", normalizePath(object@outfile)))
             
-            fil = file.path(img.save.dir, paste0(uniqueID(object), c("_thumb.",".", "_feed."), img.ext))
-            cl$screenshot(file = fil[1])
-            ## RSelenium doesn't appeart to allow you to control the size of screenshots, so we
-            ## will have to hope that blacklight can shrink the full size image itself.
-            cl$close()
-            file.copy(fil[1], fil[2], overwrite = TRUE)
-            file.copy(fil[1], fil[3], overwrite = TRUE)
+    ##         fil = file.path(img.save.dir, paste0(uniqueID(object), c("_thumb.",".", "_feed."), img.ext))
+    ##         cl$screenshot(file = fil[1])
+    ##         ## RSelenium doesn't appeart to allow you to control the size of screenshots, so we
+    ##         ## will have to hope that blacklight can shrink the full size image itself.
+    ##         cl$close()
+    ##         file.copy(fil[1], fil[2], overwrite = TRUE)
+    ##         file.copy(fil[1], fil[3], overwrite = TRUE)
             
-            list(preview.path = basename(fil[1]), image.path = basename(fil[2]))},
-            error = function(e) NULL)
-    }
+    ##         list(preview.path = basename(fil[1]), image.path = basename(fil[2]))},
+    ##         error = function(e) NULL)
+    ## }
     if(is.null(ret))
         ##this will hit featurset, ie the default and always work
         ret = callNextMethod() 
