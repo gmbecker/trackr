@@ -1,3 +1,4 @@
+#' @importFrom rlang quo_name
 ggplot_2.0 = function(strict = FALSE) {
     curvers = as.character(packageVersion("ggplot2"))
     res = compareVersion(curvers, "2.0.0") >=0

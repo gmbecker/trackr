@@ -6,10 +6,12 @@ vignette: >
   %\VignetteIndexEntry{Using recordr with knitr}
   %\VignetteEngine{knitr::rmarkdown}
   \usepackage[utf8]{inputenc}
+study: 12345
+important: "Hi Nolan! It's me, trackr!"
 ---
 
 
-I'm testing knitr_and_record. Can it find this fancy phrase?
+I'm testing knitr_and_record. Can it find this Fancy Phrase?
 
 How about these plots? horsepower is an interesting thing to study
 
@@ -21,7 +23,7 @@ p
 ```
 
 
-more text
+more text here again
 
 ```{r lm}
 

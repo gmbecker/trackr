@@ -89,6 +89,9 @@ in which the object was recorded. Do not manually set.}
 location within a hierarchical grouping for results tracked by
 trackr. E.g. \code{'/groups/Becker/HousingData/analysis3'}}
 
+\item{provtable}{A ProvStoreDF object containing "value lineage"
+provenance information}
+
 \item{...}{For ObjFeatureSet and RmdFeatureSet, unused. For Other
 constructors, passed to the parent constructor.}
 

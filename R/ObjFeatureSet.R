@@ -96,6 +96,8 @@ getTopS3Class = function(x) head(class(x), 1)
 #' @param resultURI An optional character value which defines a
 #'     location within a hierarchical grouping for results tracked by
 #'     trackr. E.g. \code{'/groups/Becker/HousingData/analysis3'}
+#' @param provtable A ProvStoreDF object containing "value lineage"
+#'     provenance information
 #' @param ... For ObjFeatureSet and RmdFeatureSet, unused. For Other
 #'     constructors, passed to the parent constructor.
 #' @return An object of a class that inherits from FeatureSet
@@ -329,14 +331,27 @@ RmdFeatureSet = function(rmdfile,
     }
     if(nchar(title) == 0 && !is.null(headermat$title)) {
         title = headermat$title
+
     }
     if(nchar(author) == 0 && !is.null(headermat$author)) {
         author = headermat$author
+
     }
 
     if(nchar(resultURI) == 0 && !is.null(headermat$resultURI)) {
         resultURI = headermat$resultURI
+
     }
+    # we already used these don't want them showing up twice
+    headermat$title = NULL
+    headermat$author = NULL
+    headermat$resultURI = NULL
+    headermat$record = NULL
+    ## we just don't care about these ones
+    headermat$output = NULL
+    headermat$vignette = NULL
+    
+    
     
     con = textConnection("tangletxt", "w", local=TRUE)
     on.exit(close(con), add=TRUE)
@@ -375,7 +390,8 @@ RmdFeatureSet = function(rmdfile,
         sessioninfo = sessionInfo(),
         figurefiles = figurefiles,
         isplot = FALSE,
-        resultURI = resultURI)
+        resultURI = resultURI,
+        extramdata = headermat)
 }
                          
         
