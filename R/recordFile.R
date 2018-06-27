@@ -22,7 +22,7 @@ recordFiles = function(object, ingestfun = NULL, db = defaultTDB, resultURI = ""
     paths = object
     if(length(object) > 1) {
         tmpfil = tempfile(fileext = ".zip")
-        zip(tpmfil, object)
+        zip(tmpfil, object)
         object = tmpfil
     } else if (file.info(object)$isdir) {
         paths = list.files(object, recursive = TRUE, full.names = TRUE)

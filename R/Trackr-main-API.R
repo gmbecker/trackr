@@ -39,8 +39,8 @@
 #' stopifnot(length(res) == 0)
 #' 
 #'
-#' f = function(paths) readLines(path)
-#' fil = system.file("test_docs", "knitr_test.Rmd")
+#' f = function(paths) readLines(paths)
+#' fil = system.file("test_docs", "knitr_test.Rmd", package = "trackr")
 #' recordFiles(fil, ingestfun = f)
 #'
 #' res= findRecords("test_docs")

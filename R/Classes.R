@@ -2,7 +2,7 @@
 ##' @importFrom graphics par plot.new plot.window text
 ##' @importFrom grDevices dev.off png pdf
 ##' @importFrom stats getCall nobs setNames
-##' @importFrom utils capture.output compareVersion packageVersion sessionInfo str
+##' @importFrom utils capture.output compareVersion packageVersion sessionInfo str zip
 NULL
 
 ## define necessary class unions

@@ -7,4 +7,4 @@ defaultTDB(tdb)
 rmdfil = system.file("test_docs/knitr_test.Rmd", package = "trackr")
 knit_and_record(rmdfil)
 docs = findRecords("mtcars")
-stopifnot(ndoc(docs) == 3)
+stopifnot(ndoc(docs) == 2) ## recvars is 'fit' so that plus report
