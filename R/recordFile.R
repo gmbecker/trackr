@@ -14,7 +14,7 @@ fileHash = function(fil) {
 ##'     a directory, the files will be zipped up into a single file
 ##'     which will be recorded.
 ##' @export
-recordFiles = function(object, ingestfun = NULL, db = defaultTDB, resultURI = "",
+recordFiles = function(object, ingestfun = NULL, db = defaultTDB(), resultURI = "",
                       code = histry_tracker(), force = FALSE,
                       verbose = FALSE, symorpos = NULL) {
     ##this will error if any of the file(s) don't exist
