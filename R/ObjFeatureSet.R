@@ -394,7 +394,49 @@ RmdFeatureSet = function(rmdfile,
         extramdata = headermat)
 }
                          
-        
+
+RawFileFeatureSet = function( object,
+                         code = character(),
+                         codeinfo = CodeDepends::getInputs(parseCode(code)),
+                         uniqueid = fileHash(object),
+                         ## XXX IDifficult to ensure tags(object) and
+                         ## generateTags(object) always included without
+                         ## overriding/duplicating when I Call this to
+                         ## resucitate a  feature set out of a db record
+                         ## Hopefully the unique call below does it.
+                         tags = character(),
+                         user = unname(Sys.info()["user"]),
+                         regdate = Sys.time(),
+                         analysispkg = scrape_descr(),
+                         analysisfile = .analysisFileOrNA(),
+                         rstudioproject = .rstudioProjOrNA(),
+                         fsetklass = "RawFileFeatureSet" ,
+                         isplot= FALSE,
+                         generatedin = character(),
+                         clineargs = commandArgs(),
+                         resultURI = character(),
+                         provtable = ProvStoreDF(),
+                         ...) {
+    
+    tags <- unique(c(tags, tags(object), generateTags(object)))
+    new("RawFileFeatureSet",
+        path = object,
+        code = code,
+        codeinfo = codeinfo,
+        uniqueid = uniqueid,
+        tags = tags,
+        user = user,
+        regdate = regdate,
+        analysispkg = analysispkg,
+        analysisfile = analysisfile,
+        rstudioproject = rstudioproject,
+        fsetklass = fsetklass,
+        isplot = isplot,
+        generatedin = generatedin,
+        sessioninfo = sessionInfo(),
+        resultURI = resultURI,
+        provtable = provtable)
+}
 
 
 

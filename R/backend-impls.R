@@ -18,8 +18,9 @@ setMethod("make_image_files", "PlotFeatureSet",
 
     img.save.dir = img_dir(opts)
     img.ext = img_ext(opts)
-
-    id = uniqueID(object)
+   
+    ## make sure the paths don't have a bunch of :s in them
+    id =  gsub(":", "_", uniqueID(object))
     
     if(!dir.exists(img.save.dir))
         dir.create(img.save.dir, recursive=TRUE)
