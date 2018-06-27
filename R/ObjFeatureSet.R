@@ -395,7 +395,8 @@ RmdFeatureSet = function(rmdfile,
 }
                          
 
-RawFileFeatureSet = function( object,
+RawFilesFeatureSet = function( object,
+                             origfiles = object,
                          code = character(),
                          codeinfo = CodeDepends::getInputs(parseCode(code)),
                          uniqueid = fileHash(object),
@@ -419,8 +420,9 @@ RawFileFeatureSet = function( object,
                          ...) {
     
     tags <- unique(c(tags, tags(object), generateTags(object)))
-    new("RawFileFeatureSet",
+    new("RawFilesFeatureSet",
         path = object,
+        origfiles = origfiles,
         code = code,
         codeinfo = codeinfo,
         uniqueid = uniqueid,

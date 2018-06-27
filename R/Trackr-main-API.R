@@ -1,20 +1,29 @@
 #' @import roprov
 
 #' @name record
-#' @description These functions define the high-level, user-facing trackr API. 
-#' @details These functions allow end-users to interact with
-#' trackr databases. Each function does what its name suggests.
+#' @description These functions define the high-level, user-facing
+#'     trackr API.
+#' @details These functions allow end-users to interact with trackr
+#'     databases. Each function does what its name suggests.
 #' @title Primary high-level API functions for Trackr Databases
-#' @param object ANY. A PlotFeatureSet (or plot object coercible to one) to be
-#' added. Or (for rmPlot) the unique ID of an object in the database to remove.
+#' @param object ANY. An object to record. Or (for recordFiles) a
+#'     vector of one or more files to record or the path of a single
+#'     directory whose contents will be recorded. Or (for rmPlot) the
+#'     unique ID of an object in the database to remove.
 #' @param db TrackrDB. The database
-#' @param resultURI A URI which can be used to define a grouping/hierarchy of results recorded via trackr. Currently unused by trackr itself except as additional metadata to search across. Defaults to an empty string. 
-#' @param code ANY. Code/evaluation history to be associated with \code{object}
-#' @param force logical. Overwrite any existing entry matching \code{object}.
-#' (default: FALSE)
-#' @param verbose logical. Should extra informative messages be displayed (
-#' default: FALSE)
-#' @param symorpos The symbol or position corresponding to \code{object} in \code{code}. For normal usage this will not be required.
+#' @param resultURI A URI which can be used to define a
+#'     grouping/hierarchy of results recorded via trackr. Currently
+#'     unused by trackr itself except as additional metadata to search
+#'     across. Defaults to an empty string.
+#' @param code ANY. Code/evaluation history to be associated with
+#'     \code{object}
+#' @param force logical. Overwrite any existing entry matching
+#'     \code{object}.  (default: FALSE)
+#' @param verbose logical. Should extra informative messages be
+#'     displayed ( default: FALSE)
+#' @param symorpos The symbol or position corresponding to
+#'     \code{object} in \code{code}. For normal usage this will not be
+#'     required.
 #' @rdname main-api
 #' @examples
 #' prevtdb = defaultTDB()
@@ -28,8 +37,15 @@
 #'
 #' res = findRecords("mtcars")
 #' stopifnot(length(res) == 0)
-#' defaultTDB(prevtdb)
 #' 
+#'
+#' f = function(paths) readLines(path)
+#' fil = system.file("test_docs", "knitr_test.Rmd")
+#' recordFiles(fil, ingestfun = f)
+#'
+#' res= findRecords("test_docs")
+#' stopifnot(length(res) == 2)
+#' defaultTDB(prevtdb)
 #' @export
 
 record = function(object, db = defaultTDB(), resultURI = "", 
@@ -57,7 +73,7 @@ record = function(object, db = defaultTDB(), resultURI = "",
         
         if(!is.null(code) && length(code) > 0 && any(nzchar(code))) {
             codescr = readScript(txt = code)
-            codeinfo = getInputs(codescr)
+            codeinfo = getInputs(codescr, inputCollector(checkLibrarySymbols = TRUE))
             if(is.code(symorpos))
                 symorpos = deparse(symorpos)
             codethread = getDependsThread(symorpos, codeinfo)

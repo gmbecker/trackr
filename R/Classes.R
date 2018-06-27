@@ -92,9 +92,10 @@ setClassUnion("sinfoOrList", c("sessionInfo", "list"))
                                     nobs = "numeric"),
                           contains = "ObjFeatureSet")
 
-.RawFileFeatureSet <-  setClass("RawFileFeatureSet",
+.RawFilesFeatureSet <-  setClass("RawFilesFeatureSet",
                                 contains = "FeatureSet",
-                                slots = c(path = "character"))
+                                slots = c(path = "character",
+                                          origfiles = "character"))
 
 #' @slot data A list of data.frames containing the variables and observations used in the plot.
 #' @slot titles Title and subtitle of the plot object; a named list of the form list(main = "My title", sub = "My subtitle").
