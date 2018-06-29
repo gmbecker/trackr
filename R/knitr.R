@@ -188,8 +188,8 @@ knit_and_record = function(input, ..., verbose = FALSE,
                                                   symorpos = length(code),
                                                   verbose = verbose,
                                                   dryrun = dryrun))
-    if(dryrun)
-        c(res1, reslots)
+    if(dryrun) {
+        c(list(res1), reslots)
     else 
         oldtdb
 }
