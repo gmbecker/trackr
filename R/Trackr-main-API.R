@@ -24,6 +24,10 @@
 #' @param symorpos The symbol or position corresponding to
 #'     \code{object} in \code{code}. For normal usage this will not be
 #'     required.
+#' @param dryrun logical. Should a "dry run" be performed. If true,
+#'     the \code{insert_record} and \code{trackr_write} steps of the
+#'     record process are \emph{not} run, and the result of
+#'     \code{prep_for_backend} is immediately returned.
 #' @rdname main-api
 #' @examples
 #' prevtdb = defaultTDB()
@@ -50,8 +54,12 @@
 
 record = function(object, db = defaultTDB(), resultURI = "", 
                   code = histry::histry_tracker(), force = FALSE,
-                   verbose = FALSE, symorpos = NULL) {
-
+                  verbose = FALSE, symorpos = NULL,
+                  dryrun = FALSE) {
+    
+    if(verbose && dryrun)
+        message("Performing dry run for submission. No records will be written to the backend.")
+    
     provtable = roprov::ProvStoreDF()
     if(!is.null(code)) {
         if(is.null(symorpos))
@@ -88,11 +96,19 @@ record = function(object, db = defaultTDB(), resultURI = "",
     
     pfs = makeFeatureSet(object, code = code, resultURI = resultURI, provtable = provtable)
     exst = trackr_lookup(pfs, target = db, exist = TRUE) # generic
-    if(force || !exst) {
+    if(verbose) {
+        if(exst)
+            message("Existing record found for this object, id: ", uniqueID(pfs))
+        else
+            message("No existing record found for id ", uniqueID(pfs))
+    }
+    if(force || !exst || dryrun) {
         id = uniqueID(pfs)
         doc = prep_for_backend(pfs, target = db, verbose = verbose) #generic
+        if(dryrun)
+            return(doc)
         db = insert_record( object = doc, id = id, target = db, #generic
-                         verbose = verbose)
+                           verbose = verbose)
         db = trackr_write(target = db) #generic
     }
     invisible(db)

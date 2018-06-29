@@ -9,16 +9,16 @@
 \usage{
 record(object, db = defaultTDB(), resultURI = "",
   code = histry::histry_tracker(), force = FALSE, verbose = FALSE,
-  symorpos = NULL)
+  symorpos = NULL, dryrun = FALSE)
 
 rmRecord(object, db = defaultTDB(), verbose = FALSE)
 
 findRecords(pattern, db = defaultTDB(), fields = NULL,
   ret_type = c("doclist", "id", "backend"), verbose = FALSE)
 
-recordFiles(object, ingestfun = NULL, db = defaultTDB, resultURI = "",
+recordFiles(object, ingestfun = NULL, db = defaultTDB(), resultURI = "",
   code = histry_tracker(), force = FALSE, verbose = FALSE,
-  symorpos = NULL)
+  symorpos = NULL, dryrun = FALSE)
 }
 \arguments{
 \item{object}{ANY. An object to record. Or (for recordFiles) a
@@ -45,6 +45,11 @@ displayed ( default: FALSE)}
 \item{symorpos}{The symbol or position corresponding to
 \code{object} in \code{code}. For normal usage this will not be
 required.}
+
+\item{dryrun}{logical. Should a "dry run" be performed. If true,
+the \code{insert_record} and \code{trackr_write} steps of the
+record process are \emph{not} run, and the result of
+\code{prep_for_backend} is immediately returned.}
 
 \item{pattern}{character. A regular expression to match against the text in \code{fields}}
 

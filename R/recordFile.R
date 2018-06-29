@@ -16,19 +16,17 @@ fileHash = function(fil) {
 ##' @export
 recordFiles = function(object, ingestfun = NULL, db = defaultTDB(), resultURI = "",
                       code = histry_tracker(), force = FALSE,
-                      verbose = FALSE, symorpos = NULL) {
+                      verbose = FALSE, symorpos = NULL,
+                      dryrun = FALSE) {
     ##this will error if any of the file(s) don't exist
     object = normalizePath(object, mustWork = TRUE)
     paths = object
-    if(length(object) > 1) {
-        tmpfil = tempfile(fileext = ".zip")
-        zip(tmpfil, object)
-        object = tmpfil
-    } else if (file.info(object)$isdir) {
+
+    tmpfil = file.path(tempdir(), "rawfiles.zip")
+    zip(tmpfil, object)
+    object = tmpfil
+    if (length(paths) == 1 && file.info(paths)$isdir) {
         paths = list.files(object, recursive = TRUE, full.names = TRUE)
-        tmpfil = tempfile(fileext = ".zip")
-        zip(tmpfil, paths)
-        object = tmpfil
     }
     tmpdb= TrackrDB(backend= ListBackend(),
                     img_dir = img_dir(defaultTDB()))
@@ -49,8 +47,13 @@ recordFiles = function(object, ingestfun = NULL, db = defaultTDB(), resultURI = 
         resfs = listRecToFeatureSet(findRecords("*:*", db = tmpdb)[[1]])
         resfs@derivedFromFileID = uniqueID(rawfilefs)
         resfs@derivedFromFilePath = object
-        record(resfs, code = code, symorpos = ".objinmem")
+        res1 = record(resfs, code = code, symorpos = ".objinmem", verbose = verbose,
+               dryrun = dryrun)
     }
-    record(rawfilefs, code = "")
+    res2 = record(rawfilefs, code = "", verbose = verbose, dryrun = dryrun)
+    if(dryrun)
+        list(res1, res2)
+    else
+        res2 ## this will be the trackr if dryrun is false...
   
 }

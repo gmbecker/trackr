@@ -97,8 +97,8 @@ setMethod("make_image_files", "ObjFeatureSet",
     
     if(!dir.exists(img.save.dir))
         dir.create(img.save.dir, recursive=TRUE)
-    
-    paths = file.path(img.save.dir, paste0(uniqueID(object), c("_thumb.", ".","_feed."), img.ext))
+    id = gsub(":", "_", uniqueID(object))
+    paths = file.path(img.save.dir, paste0(id, c("_thumb.", ".","_feed."), img.ext))
     png(paths[1], width = 250, height = 250, units = "px")
     draw_text_icon(object = object)
     dev.off()
@@ -117,8 +117,8 @@ setMethod("make_image_files", "FeatureSet",
     
     if(!dir.exists(img.save.dir))
         dir.create(img.save.dir, recursive=TRUE)
-    
-    paths = file.path(img.save.dir, paste0(uniqueID(object), c("_thumb.", ".","_feed."), img.ext))
+    id = gsub(":", "_", uniqueID(object))
+    paths = file.path(img.save.dir, paste0(id, c("_thumb.", ".","_feed."), img.ext))
 
     file.copy(system.file("images/Rlogo.png", package = "trackr"), paths[1])
     file.copy(system.file("images/Rlogo.png", package = "trackr"), paths[2])
