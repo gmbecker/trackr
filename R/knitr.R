@@ -30,7 +30,7 @@ recplothook = function(x, opts, ...) {
     }
 }
 
-
+idPath = function(x) gsub(":", "_", x)
 
 ##' @title Knit and record an Rmd, Rnw, etc file
 ##'
@@ -172,7 +172,7 @@ knit_and_record = function(input, ..., verbose = FALSE,
                           uniqueid = uniqueid,
                           outputfile = resfile, chunks = chunks,
                           figurefiles = figs)
-    imgpat = paste0("(", paste(rmdfs@outputids, collapse="|"), ")")
+    imgpat = paste0("(", paste(idPath(rmdfs@outputids), collapse="|"), ")")
     imgfiles = list.files(img_dir(tmptdb), pattern = imgpat, full.names = TRUE)
     stopifnot(length(imgfiles) == 3 * length(rmdfs@outputids))
     file.copy(imgfiles, file.path(img_dir(oldtdb), basename(imgfiles)))
