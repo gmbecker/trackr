@@ -180,6 +180,7 @@ knit_and_record = function(input, ..., verbose = FALSE,
         fs = listRecToFeatureSet(x)
         fs@generatedin = uniqueID(rmdfs)
         fs@regdate = rmdfs@regdate
+        fs@extramdata = c(fs@extramdata, .cleanHeader(headermat))
         ret = fs
         fs})
     res1 = record(rmdfs, code =NULL, verbose = verbose, dryrun = dryrun)

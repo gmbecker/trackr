@@ -277,6 +277,18 @@ trackr_knit_env = new.env()
 
 globalVariables("tangletxt")
 
+
+.cleanHeader = function(headermat) {
+    headermat$title = NULL
+    headermat$author = NULL
+    headermat$resultURI = NULL
+    headermat$recvars = NULL
+    ## we just don't care about these ones
+    headermat$output = NULL
+    headermat$vignette = NULL
+    headermat
+}
+
 #' @rdname fset_constructors
 #' @param rmdfile The (input) RMD file
 #' @param outputfile the path to the woven report
@@ -342,14 +354,16 @@ RmdFeatureSet = function(rmdfile,
         resultURI = headermat$resultURI
 
     }
-    # we already used these don't want them showing up twice
-    headermat$title = NULL
-    headermat$author = NULL
-    headermat$resultURI = NULL
-    headermat$record = NULL
-    ## we just don't care about these ones
-    headermat$output = NULL
-    headermat$vignette = NULL
+    ## we already used these don't want them showing up twice
+    headermat = .cleanHeader(headermat)
+    
+    ## headermat$title = NULL
+    ## headermat$author = NULL
+    ## headermat$resultURI = NULL
+    ## headermat$record = NULL
+    ## ## we just don't care about these ones
+    ## headermat$output = NULL
+    ## headermat$vignette = NULL
     
     
     
