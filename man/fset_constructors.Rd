@@ -37,7 +37,7 @@ DFFeatureSet(object, fsetklass = "DFFeatureSet", vars = names(object),
 RmdFeatureSet(rmdfile, outputfile, uniqueid,
   rmdfileid = gen_hash_id(readLines(rmdfile)), chunks,
   numouts = length(trackr_backend(objtdb)),
-  numplots = sum(sapply(objrecords, function(x) x$isplot)), title = "",
+  numplots = sum(sapply(objrecords, function(x) x$isplot)), titles = "",
   author = "", textkeywords = character(), codekeywords = character(),
   outputids = sapply(objrecords, function(x) x$uniqueid, USE.NAMES = FALSE),
   tags = character(), user = unname(Sys.info()["user"]),
@@ -118,8 +118,6 @@ manually set. EVER.}
 
 \item{numplots}{Do not manually set}
 
-\item{title}{Do not manually set}
-
 \item{author}{Do not manually set}
 
 \item{textkeywords}{Keywords extracted from the text}
@@ -135,6 +133,8 @@ outputs were recorded during the weaving process.}
 
 \item{figurefiles}{image files of plot as figures for woven
 report. Do not manually set.}
+
+\item{title}{Do not manually set}
 }
 \value{
 An object of a class that inherits from FeatureSet

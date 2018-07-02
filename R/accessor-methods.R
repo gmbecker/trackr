@@ -180,7 +180,7 @@ setMethod(f = "editTags",
 
 #' @rdname titles-methods
 setMethod(f = "titles",
-    signature = "PlotFeatureSet",
+    signature = "FeatureSet",
     definition = function(object) {
         object@titles
     }

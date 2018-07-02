@@ -37,6 +37,7 @@ setClassUnion("sinfoOrList", c("sessionInfo", "list"))
 #' @slot clineargs character The commandline arguments passed to R when starting the session the result was recorded from
 #' @slot resultURI character The URI associated with the result, see featureset constructor documentation.
 #' @slot extrametadata list Any extra metadata associated with the result.
+#' @slot titles Title and subtitle of the plot object; a named list of the form list(main = "My title", sub = "My subtitle").
 #' @rdname featureset-classes
 #' @exportClass FeatureSet
 #' @aliases FeatureSet-class show,FeatureSet-method
@@ -58,7 +59,8 @@ setClassUnion("sinfoOrList", c("sessionInfo", "list"))
                                   clineargs = "character",
                                   resultURI = "character",
                                   extramdata = "list",
-                                  provtable = "ProvStoreDF")
+                                  provtable = "ProvStoreDF",
+                                  titles = "characterOrNULL")
                         )
 
 #' @rdname featureset-classes
@@ -98,7 +100,6 @@ setClassUnion("sinfoOrList", c("sessionInfo", "list"))
                                           origfiles = "character"))
 
 #' @slot data A list of data.frames containing the variables and observations used in the plot.
-#' @slot titles Title and subtitle of the plot object; a named list of the form list(main = "My title", sub = "My subtitle").
 #' @slot varlabels Variable labels of the plot object; a named list of the form list(x = "X axis label", y = "Y axis label", groups = list(...)). Note that non-empty labels are character vectors and may contain more than one entry.
 #' @slot annotation.text Annotation text of the plot object.
 #' @slot vartypes Variable types of the plot object; a named list of the form list(x = "numeric", y = "factor", ...).
@@ -113,7 +114,7 @@ setClassUnion("sinfoOrList", c("sessionInfo", "list"))
 #' @exportClass PlotFeatureSet
 #' @aliases PlotFeatureSet-class show,PlotFeatureSet-method
 .PlotFeatureSet <- setClass("PlotFeatureSet",
-    slots = c(titles = "characterOrNULL", data = "list",
+                            slots = c(data = "list",
         varlabels = "list",
         annotationtext = "characterOrNULL",
         vartypes = "list", 

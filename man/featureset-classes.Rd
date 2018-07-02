@@ -67,6 +67,8 @@ working directory was within the package's directory structure).}
 
 \item{\code{extrametadata}}{list Any extra metadata associated with the result.}
 
+\item{\code{titles}}{Title and subtitle of the plot object; a named list of the form list(main = "My title", sub = "My subtitle").}
+
 \item{\code{klass}}{character The R object class of the result}
 
 \item{\code{object}}{ANY The object itself, or NULL if the object is not available.}
@@ -80,8 +82,6 @@ working directory was within the package's directory structure).}
 \item{\code{object}}{ANY The object itself, or NULL if the object is not available.}
 
 \item{\code{data}}{A list of data.frames containing the variables and observations used in the plot.}
-
-\item{\code{titles}}{Title and subtitle of the plot object; a named list of the form list(main = "My title", sub = "My subtitle").}
 
 \item{\code{varlabels}}{Variable labels of the plot object; a named list of the form list(x = "X axis label", y = "Y axis label", groups = list(...)). Note that non-empty labels are character vectors and may contain more than one entry.}
 

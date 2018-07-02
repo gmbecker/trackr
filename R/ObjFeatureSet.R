@@ -314,7 +314,7 @@ RmdFeatureSet = function(rmdfile,
                          chunks,
                          numouts = length(trackr_backend(objtdb)),
                          numplots = sum(sapply(objrecords, function(x) x$isplot)),
-                         title = "", 
+                         titles = "", 
                          author = "",
                          textkeywords = character(), ## XXX TODO
                          codekeywords = character(), ## XXX TODO
@@ -341,8 +341,8 @@ RmdFeatureSet = function(rmdfile,
     }else {
         headermat = list()
     }
-    if(nchar(title) == 0 && !is.null(headermat$title)) {
-        title = headermat$title
+    if(nchar(titles) == 0 && !is.null(headermat$title)) {
+        titles = headermat$title
 
     }
     if(nchar(author) == 0 && !is.null(headermat$author)) {
@@ -386,7 +386,7 @@ RmdFeatureSet = function(rmdfile,
         uniqueid = uniqueid, ##gen_hash_id(readLines(rmdfile)),
         rmdfileid = rmdfileid,
         chunks = chunks, numouts = numouts, numplots = numplots,
-        title = title, author = author, textkeywords = textkeywords,
+        titles = titles, author = author, textkeywords = textkeywords,
         codekeywords = codekeywords,
         inputfiles = scrinfo@files,
         outputids= outputids,
