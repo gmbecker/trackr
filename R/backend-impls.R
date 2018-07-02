@@ -164,6 +164,26 @@ setMethod("prep_for_backend", c("FeatureSet", "ANY"),
     doc
 })
 
+savefile = function(object, opts) {
+
+    dir = img_dir(opts)
+    file.path(dir, paste0(idPath(uniqueID(object)), ".rds"))
+}
+
+
+setMethod("prep_for_backend", c("ObjFeatureSet", "ANY"),
+          function(object, target, opts = trackr_options(target), verbose = FALSE) {
+    doc = callNextMethod() ## FeatureSet
+
+    if(!is.null(object@object) && !file.exists(savefile(object, opts))) {
+        saveRDS(object@object, file = savefile(object, opts))
+    }
+    doc
+    
+
+})
+          
+
 
 ## Funnel to the character (id) method
 setMethod("trackr_lookup", c(object = "ANY", target = "ANY"),
