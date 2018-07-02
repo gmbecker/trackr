@@ -10,7 +10,14 @@ setMethod("prep_for_backend", c("FeatureSet", "TrackrDB"),
 
 
 
-
+##' Make image files for a featureset
+##' @param object A FeatureSet object
+##' @param opts Options
+##' @return A named list with two entries: preview.path, and
+##'     image.path. These should be paths to (now) existing iamge
+##'     fiels for thumbnail and main display, respectively
+##' 
+##' @export
 setGeneric("make_image_files", function(object, opts) standardGeneric("make_image_files"))
 setMethod("make_image_files", "PlotFeatureSet",
           function(object, opts) {
