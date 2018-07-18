@@ -63,7 +63,8 @@ Get or set the tags associated with a FeatureSet object. This should not be call
 }
 \examples{
 library(ggplot2)
-plt = qplot(mtcars$mpg, mtcars$cyl)
+mt = datasets::mtcars
+plt = qplot(mt$mpg, mt$cyl)
 fs = makeFeatureSet(plt)
 tags(fs)
 }

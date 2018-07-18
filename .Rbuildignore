@@ -1,3 +1,4 @@
 ^\.travis\.yml$
 ^.*~$
+^[^/]+\.R$
 inst/test_docs/.*_files/.*

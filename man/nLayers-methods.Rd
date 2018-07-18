@@ -42,7 +42,8 @@ Get or set the number of layers associated with a GGplotFeatureSet object. This 
 }
 \examples{
 library(ggplot2)
-plt = qplot(mtcars$mpg, mtcars$cyl)
+mt = datasets::mtcars
+plt = qplot(mt$mpg, mt$cyl)
 fs = makeFeatureSet(plt)
 nLayers(fs)
 }

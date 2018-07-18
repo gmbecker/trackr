@@ -36,7 +36,8 @@ Get full data associated with a plot or model fit, if possible.
 }
 \examples{
 library(ggplot2)
-plt = qplot(mtcars$mpg, mtcars$cyl)
+mt = datasets::mtcars
+plt = qplot(mt$mpg, mt$cyl)
 fs = makeFeatureSet(plt)
 fullData(fs)
 }

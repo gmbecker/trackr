@@ -23,6 +23,7 @@ The analysis package, if any, that was 'in use' (i.e.,
     result was recorded.
 }
 \examples{
-fs = makeFeatureSet(mtcars)
+mt = datasets::mtcars
+fs = makeFeatureSet(mt)
 describePackage(fs)
 }

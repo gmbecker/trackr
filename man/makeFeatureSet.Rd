@@ -75,16 +75,18 @@ defining methods for this generic.
 
 \examples{
 library(ggplot2)
-pg <- ggplot(mtcars, aes(wt, mpg)) + geom_point()
+mt = datasets::mtcars
+pg <- ggplot(mt, aes(wt, mpg)) + geom_point()
 pfs <- makeFeatureSet(pg)
 
 library(lattice)
-pl <- barchart(Class ~ Freq | Sex + Age, data = as.data.frame(Titanic),
+titan <- datasets::Titanic
+pl <- barchart(Class ~ Freq | Sex + Age, data = as.data.frame(titan),
                groups = Survived, stack = TRUE, layout = c(4, 1),
                auto.key = list(title = "Survived", columns = 2))
 pfs <- makeFeatureSet(pl)
 
-dffs <- makeFeatureSet(as.data.frame(Titanic))
+dffs <- makeFeatureSet(as.data.frame(titan))
 
 \dontrun{
 plot(1:10, 1:10)

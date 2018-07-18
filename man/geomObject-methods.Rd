@@ -42,7 +42,8 @@ Get or set the geom associated with a GGplotFeatureSet object. This should not b
 }
 \examples{
 library(ggplot2)
-plt = qplot(mtcars$mpg, mtcars$cyl)
+mt = datasets::mtcars
+plt = qplot(mt$mpg, mt$cyl)
 fs = makeFeatureSet(plt)
 geomObject(fs)
 }

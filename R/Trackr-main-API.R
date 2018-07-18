@@ -32,7 +32,7 @@
 #' @examples
 #' prevtdb = defaultTDB()
 #' defaultTDB(listTDB())
-#' mt = mtcars
+#' mt = datasets::mtcars
 #' record(mt)
 #'
 #' res = findRecords("mtcars")

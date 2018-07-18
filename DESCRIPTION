@@ -1,8 +1,8 @@
 Package: trackr
 Type: Package
 Title: Semantic Annotation and Discoverability System for R-Based Artifacts
-Version: 0.9.1
-Date: 2018-02-11
+Version: 0.9.3.1
+Date: 2018-07-17
 Authors@R: c(
     person("Gabriel", "Becker", role = c("aut", "cre"),
         email = "becker.gabriel@gene.com"),

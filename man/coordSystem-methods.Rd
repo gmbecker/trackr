@@ -34,7 +34,8 @@ Get the coordinate system for a plot or PlotFeatureSet.
 }
 \examples{
 library(ggplot2)
-plt = qplot(mtcars$mpg, mtcars$cyl)
+mt = datasets::mtcars
+plt = qplot(mt$mpg, mt$cyl)
 fs = makeFeatureSet(plt)
 coordSystem(fs)
 }

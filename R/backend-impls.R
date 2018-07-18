@@ -16,9 +16,13 @@ setMethod("prep_for_backend", c("FeatureSet", "TrackrDB"),
 ##' @return A named list with two entries: preview.path, and
 ##'     image.path. These should be paths to (now) existing iamge
 ##'     fiels for thumbnail and main display, respectively
-##' 
+##' @docType methods
 ##' @export
+##' @rdname make_image_files
 setGeneric("make_image_files", function(object, opts) standardGeneric("make_image_files"))
+##' @export
+##' @rdname make_image_files
+##' @aliases make_image_files,PlotFeatureSet-method
 setMethod("make_image_files", "PlotFeatureSet",
           function(object, opts) {
     
@@ -48,6 +52,10 @@ setMethod("make_image_files", "PlotFeatureSet",
         
     list(preview.path = basename(thumbpath), image.path = basename(mainpath))
 })
+
+##' @export
+##' @rdname make_image_files
+##' @aliases make_image_files,RmdFeatureSet-method
 
 setMethod("make_image_files", "RmdFeatureSet",
           function(object, opts) {
@@ -90,12 +98,16 @@ draw_text_icon = function(object, kl = object@klass) {
     plot.window(xlim = c(0,1), ylim = c(0,1))
     old = par(mar = c(0.1, 0.1, 0.1, 0.1))
     on.exit(par(old))
+    
     text(abrevClass(kl), x = .45, y = .45, cex = 11,
-         family = "Helvetica", pos = 3, adj = c(.5, .5), offset = 0)
+         family = "sans", pos = 3, adj = c(.5, .5), offset = 0)
     text(kl[1], x = .45, y = .05, cex = 1.5,
-         family = "Helvetica", pos = 3, adj = c(.5, .5), offset = 0)
+         family = "sans", pos = 3, adj = c(.5, .5), offset = 0)
 }
 
+##' @export
+##' @rdname make_image_files
+##' @aliases make_image_files,ObjFeatureSet-method
 setMethod("make_image_files", "ObjFeatureSet",
           function(object, opts) {
     img.save.dir = img_dir(opts)
@@ -115,7 +127,9 @@ setMethod("make_image_files", "ObjFeatureSet",
     list(preview.path = basename(paths[1]), image.path = basename(paths[2]))
 })
 
-
+##' @export
+##' @rdname make_image_files
+##' @aliases make_image_files,FeatureSet-method
 setMethod("make_image_files", "FeatureSet",
           function(object, opts) {
     img.save.dir = img_dir(opts)
@@ -127,12 +141,15 @@ setMethod("make_image_files", "FeatureSet",
     id = gsub(":", "_", uniqueID(object))
     paths = file.path(img.save.dir, paste0(id, c("_thumb.", ".","_feed."), img.ext))
 
-    file.copy(system.file("images/Rlogo.png", package = "trackr"), paths[1])
-    file.copy(system.file("images/Rlogo.png", package = "trackr"), paths[2])
-    file.copy(system.file("images/Rlogo.png", package = "trackr"), paths[3])
+    file.copy(system.file("images", "Rlogo.png", package = "trackr"), paths[1])
+    file.copy(system.file("images", "Rlogo.png", package = "trackr"), paths[2])
+    file.copy(system.file("images", "Rlogo.png", package = "trackr"), paths[3])
     list(preview.path = basename(paths[1]), image.path = basename(paths[2]))
 })
 
+##' @export
+##' @rdname make_image_files
+##' @aliases make_image_files,ANY-method
 setMethod("make_image_files", "ANY",
           function(object, opts) stop("make_image_files called on a non FeatureSet object. This shouldn't happen, please contact the package maintainer."))
     

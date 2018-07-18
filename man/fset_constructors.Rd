@@ -118,6 +118,8 @@ manually set. EVER.}
 
 \item{numplots}{Do not manually set}
 
+\item{titles}{Do not manually set}
+
 \item{author}{Do not manually set}
 
 \item{textkeywords}{Keywords extracted from the text}
@@ -133,8 +135,6 @@ outputs were recorded during the weaving process.}
 
 \item{figurefiles}{image files of plot as figures for woven
 report. Do not manually set.}
-
-\item{title}{Do not manually set}
 }
 \value{
 An object of a class that inherits from FeatureSet

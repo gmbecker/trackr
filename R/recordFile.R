@@ -34,12 +34,12 @@ recordFiles = function(object, ingestfun = NULL, db = defaultTDB(), resultURI = 
     funname = deparse(substitute(ingestfun))
     rawfilefs = RawFilesFeatureSet(object, origfiles = paths)
     if(!is.null(ingestfun)) {
-        newcode = parse(text = paste0(".objinmem = ", funname, "( '", object, "' )"))
+        newcode = substitute(.objinmem <- f(a), list(f = as.symbol(funname), a = object))
         env = parent.frame()
         resobj = eval(newcode, envir = env)
         ## newcode is an expression, we need a call object to match what
         ## histry normally captures, thus the [[1]]
-        code$addInfo(newcode[[1]], class(resobj), hash = fastdigest(resobj))
+        code$addInfo(newcode, class(resobj), hash = fastdigest(resobj))
         record(resobj, code = code, db = tmpdb,
                resultURI = if(nzchar(resultURI)) paste0(resultURI, "/robject") else "",
                symorpos = ".objinmem")

@@ -21,16 +21,18 @@ NULL
 #' @export
 #' @examples
 #' library(ggplot2)
-#' pg <- ggplot(mtcars, aes(wt, mpg)) + geom_point()
+#' mt = datasets::mtcars
+#' pg <- ggplot(mt, aes(wt, mpg)) + geom_point()
 #' pfs <- makeFeatureSet(pg)
 #'
 #' library(lattice)
-#' pl <- barchart(Class ~ Freq | Sex + Age, data = as.data.frame(Titanic),
+#' titan <- datasets::Titanic
+#' pl <- barchart(Class ~ Freq | Sex + Age, data = as.data.frame(titan),
 #'                groups = Survived, stack = TRUE, layout = c(4, 1),
 #'                auto.key = list(title = "Survived", columns = 2))
 #' pfs <- makeFeatureSet(pl)
 #'
-#' dffs <- makeFeatureSet(as.data.frame(Titanic))
+#' dffs <- makeFeatureSet(as.data.frame(titan))
 #'
 #'\dontrun{
 #' plot(1:10, 1:10)
@@ -321,7 +323,8 @@ setGeneric(name = "uniqueID", valueClass = "character",
 #' @name user
 #' @rdname user-methods
 #' @examples
-#' fs = makeFeatureSet(mtcars)
+#' mt = datasets::mtcars
+#' fs = makeFeatureSet(mt)
 #' user(fs)
 #' @export
 setGeneric(name = "user", valueClass = "character", 
@@ -333,7 +336,8 @@ setGeneric(name = "user", valueClass = "character",
 #' @name regDateTime
 #' @rdname regDateTime-methods
 #' @examples
-#' fs = makeFeatureSet(mtcars)
+#' mt = datasets::mtcars
+#' fs = makeFeatureSet(mt)
 #' regDateTime(fs)
 #' @export
 setGeneric(name = "regDateTime",
@@ -350,7 +354,8 @@ setGeneric(name = "regDateTime",
 #' @rdname graphSys-methods
 #' @examples
 #' library(ggplot2)
-#' plt = qplot(mtcars$mpg, mtcars$cyl)
+#' mt = datasets::mtcars
+#' plt = qplot(mt$mpg, mt$cyl)
 #' fs = makeFeatureSet(plt)
 #' graphSys(fs)
 #' @export
@@ -370,7 +375,8 @@ setGeneric(name = "graphSys",
 #'     packages with description files on the current path.
 #' @rdname describePackage-methods
 #' @examples
-#' fs = makeFeatureSet(mtcars)
+#' mt = datasets::mtcars
+#' fs = makeFeatureSet(mt)
 #' describePackage(fs)
 #' @export
 setGeneric(name = "describePackage",
@@ -383,7 +389,8 @@ setGeneric(name = "describePackage",
 #' @rdname titles-methods
 #' @examples
 #' library(ggplot2)
-#' plt = qplot(mtcars$mpg, mtcars$cyl)
+#' mt = datasets::mtcars
+#' plt = qplot(mt$mpg, mt$cyl)
 #' fs = makeFeatureSet(plt)
 #' titles(fs)
 #' @export
@@ -397,7 +404,8 @@ setGeneric(name = "titles",
 #' @rdname objCode-methods
 #' @examples
 #' library(ggplot2)
-#' plt = qplot(mtcars$mpg, mtcars$cyl)
+#' mt = datasets::mtcars
+#' plt = qplot(mt$mpg, mt$cyl)
 #' fs = makeFeatureSet(plt)
 #' objCode(fs)
 #' @export
@@ -410,7 +418,8 @@ setGeneric(name = "objCode",
 #' @name codeInfo
 #' @rdname codeInfo-methods
 #' @examples
-#' fs = makeFeatureSet(mtcars)
+#' mt = datasets::mtcars
+#' fs = makeFeatureSet(mt)
 #' codeInfo(fs)
 #' @export
 setGeneric(name = "codeInfo",
@@ -428,7 +437,8 @@ setGeneric(name = "codeInfo",
 #' @rdname fullData-methods
 #' @examples
 #' library(ggplot2)
-#' plt = qplot(mtcars$mpg, mtcars$cyl)
+#' mt = datasets::mtcars
+#' plt = qplot(mt$mpg, mt$cyl)
 #' fs = makeFeatureSet(plt)
 #' fullData(fs)
 #' @export
@@ -442,7 +452,8 @@ setGeneric(name = "fullData",
 #' @rdname dataLabels-methods
 #' @examples
 #' library(ggplot2)
-#' plt = qplot(mtcars$mpg, mtcars$cyl)
+#' mt = datasets::mtcars
+#' plt = qplot(mt$mpg, mt$cyl)
 #' fs = makeFeatureSet(plt)
 #' dataLabels(fs)
 #' @export
@@ -465,13 +476,17 @@ setGeneric(name = "dataNames",
 
 #' @name dataTypes
 #' @description Get the variable types from a plot feature set
-#' @title Accessor method for the variable types (slot "vartypes") of the plot object.
-#' @param object An object of class PlotFeatureSet, GGplotFeatureSet, TrellisFeatureSet, ggplot, or trellis.
-#' @return A named list of variable types of the form list(x = "numeric", y = "factor", ...).
+#' @title Accessor method for the variable types (slot "vartypes") of
+#'     the plot object.
+#' @param object An object of class PlotFeatureSet, GGplotFeatureSet,
+#'     TrellisFeatureSet, ggplot, or trellis.
+#' @return A named list of variable types of the form list(x =
+#'     "numeric", y = "factor", ...).
 #' @rdname dataTypes-methods
 #' @examples
 #' library(ggplot2)
-#' plt = qplot(mtcars$mpg, mtcars$cyl)
+#' mt = datasets::mtcars
+#' plt = qplot(mt$mpg, mt$cyl)
 #' fs = makeFeatureSet(plt)
 #' dataTypes(fs)
 #' 
@@ -490,7 +505,8 @@ setGeneric(name = "dataTypes",
 #' @rdname annotationText-methods
 #' @examples
 #' library(ggplot2)
-#' plt = qplot(mtcars$mpg, mtcars$cyl)
+#' mt = datasets::mtcars
+#' plt = qplot(mt$mpg, mt$cyl)
 #' fs = makeFeatureSet(plt)
 #' annotationText(fs)
 #' @export
@@ -504,7 +520,8 @@ setGeneric(name = "annotationText",
 #' @rdname geomObject-methods
 #' @examples
 #' library(ggplot2)
-#' plt = qplot(mtcars$mpg, mtcars$cyl)
+#' mt = datasets::mtcars
+#' plt = qplot(mt$mpg, mt$cyl)
 #' fs = makeFeatureSet(plt)
 #' geomObject(fs)
 #' @export
@@ -518,7 +535,8 @@ setGeneric(name = "geomObject",
 #' @rdname statTransform-methods
 #' @examples
 #' library(ggplot2)
-#' plt = qplot(mtcars$mpg, mtcars$cyl)
+#' mt = datasets::mtcars
+#' plt = qplot(mt$mpg, mt$cyl)
 #' fs = makeFeatureSet(plt)
 #' statTransform(fs)
 #' @export
@@ -536,7 +554,8 @@ setGeneric(name = "statTransform",
 #' @rdname groupInfo-methods
 #' @examples
 #' library(ggplot2)
-#' plt = qplot(mtcars$mpg, mtcars$cyl)
+#' mt = datasets::mtcars
+#' plt = qplot(mt$mpg, mt$cyl)
 #' fs = makeFeatureSet(plt)
 #' groupInfo(fs)
 #' @export
@@ -550,7 +569,8 @@ setGeneric(name = "groupInfo",
 #' @rdname nLayers-methods
 #' @examples
 #' library(ggplot2)
-#' plt = qplot(mtcars$mpg, mtcars$cyl)
+#' mt = datasets::mtcars
+#' plt = qplot(mt$mpg, mt$cyl)
 #' fs = makeFeatureSet(plt)
 #' nLayers(fs)
 #' @export
@@ -565,7 +585,8 @@ setGeneric(name = "nLayers",
 #' @rdname position-methods
 #' @examples
 #' library(ggplot2)
-#' plt = qplot(mtcars$mpg, mtcars$cyl)
+#' mt = datasets::mtcars
+#' plt = qplot(mt$mpg, mt$cyl)
 #' fs = makeFeatureSet(plt)
 #' position(fs)
 #' @export
@@ -583,7 +604,8 @@ setGeneric(name = "position",
 #' @rdname coordSystem-methods
 #' @examples
 #' library(ggplot2)
-#' plt = qplot(mtcars$mpg, mtcars$cyl)
+#' mt = datasets::mtcars
+#' plt = qplot(mt$mpg, mt$cyl)
 #' fs = makeFeatureSet(plt)
 #' coordSystem(fs)
 #' @export
@@ -601,7 +623,8 @@ setGeneric(name = "coordSystem",
 #' @rdname hasLegend-methods
 #' @examples
 #' library(ggplot2)
-#' plt = qplot(mtcars$mpg, mtcars$cyl)
+#' mt = datasets::mtcars
+#' plt = qplot(mt$mpg, mt$cyl)
 #' fs = makeFeatureSet(plt)
 #' hasLegend(fs)
 #' @export
@@ -619,7 +642,8 @@ setGeneric(name = "hasLegend",
 #' @rdname nObs-methods
 #' @examples
 #' library(ggplot2)
-#' plt = qplot(mtcars$mpg, mtcars$cyl)
+#' mt = datasets::mtcars
+#' plt = qplot(mt$mpg, mt$cyl)
 #' fs = makeFeatureSet(plt)
 #' nObs(fs)
 #' @export
@@ -633,7 +657,8 @@ setGeneric(name = "nObs",
 #' @rdname tags-methods
 #' @examples
 #' library(ggplot2)
-#' plt = qplot(mtcars$mpg, mtcars$cyl)
+#' mt = datasets::mtcars
+#' plt = qplot(mt$mpg, mt$cyl)
 #' fs = makeFeatureSet(plt)
 #' tags(fs)
 #' @export
@@ -713,6 +738,7 @@ setGeneric("insert_record", function(object, id, target, opts, verbose = FALSE)
 #'     \code{backend} expects.
 #' @export
 #' @aliases prep_for_backend,FeatureSet,ANY-method
+#'     prep_for_backend,ObjFeatureSet,ANY-method
 #'     prep_for_backend,FeatureSet,TrackrDB-method
 setGeneric("prep_for_backend", function(object, target, opts,
                                      verbose = FALSE)

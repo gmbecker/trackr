@@ -14,6 +14,7 @@
 \alias{insert_record,TrackrDB-method}
 \alias{prep_for_backend}
 \alias{prep_for_backend,FeatureSet,ANY-method}
+\alias{prep_for_backend,ObjFeatureSet,ANY-method}
 \alias{prep_for_backend,FeatureSet,TrackrDB-method}
 \alias{remove_record}
 \alias{remove_record,ANY,TrackrDB-method}

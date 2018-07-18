@@ -82,7 +82,7 @@ When more than one file is passed to
 \examples{
 prevtdb = defaultTDB()
 defaultTDB(listTDB())
-mt = mtcars
+mt = datasets::mtcars
 record(mt)
 
 res = findRecords("mtcars")

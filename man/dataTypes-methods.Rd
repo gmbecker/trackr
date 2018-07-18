@@ -9,7 +9,8 @@
 \alias{dataTypes,trellis-method}
 \alias{dataTypes,gTree-method}
 \alias{dataTypes,PlotFeatureSet-method}
-\title{Accessor method for the variable types (slot "vartypes") of the plot object.}
+\title{Accessor method for the variable types (slot "vartypes") of
+    the plot object.}
 \usage{
 dataTypes(object)
 
@@ -24,17 +25,20 @@ dataTypes(object)
 \S4method{dataTypes}{PlotFeatureSet}(object)
 }
 \arguments{
-\item{object}{An object of class PlotFeatureSet, GGplotFeatureSet, TrellisFeatureSet, ggplot, or trellis.}
+\item{object}{An object of class PlotFeatureSet, GGplotFeatureSet,
+TrellisFeatureSet, ggplot, or trellis.}
 }
 \value{
-A named list of variable types of the form list(x = "numeric", y = "factor", ...).
+A named list of variable types of the form list(x =
+    "numeric", y = "factor", ...).
 }
 \description{
 Get the variable types from a plot feature set
 }
 \examples{
 library(ggplot2)
-plt = qplot(mtcars$mpg, mtcars$cyl)
+mt = datasets::mtcars
+plt = qplot(mt$mpg, mt$cyl)
 fs = makeFeatureSet(plt)
 dataTypes(fs)
 

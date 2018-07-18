@@ -34,7 +34,8 @@ Number of observations plotted in a plot or associated PlotFeatureSet.
 }
 \examples{
 library(ggplot2)
-plt = qplot(mtcars$mpg, mtcars$cyl)
+mt = datasets::mtcars
+plt = qplot(mt$mpg, mt$cyl)
 fs = makeFeatureSet(plt)
 nObs(fs)
 }

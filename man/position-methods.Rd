@@ -42,7 +42,8 @@ Get or set the position associated with a GGplotFeatureSet object. This should n
 }
 \examples{
 library(ggplot2)
-plt = qplot(mtcars$mpg, mtcars$cyl)
+mt = datasets::mtcars
+plt = qplot(mt$mpg, mt$cyl)
 fs = makeFeatureSet(plt)
 position(fs)
 }

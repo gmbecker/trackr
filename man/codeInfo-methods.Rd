@@ -28,6 +28,7 @@ A modified object of (super)class PlotFeatureSet.
 Get or set the analysis information for the code associated with a FeatureSet object. This should not be called directly.
 }
 \examples{
-fs = makeFeatureSet(mtcars)
+mt = datasets::mtcars
+fs = makeFeatureSet(mt)
 codeInfo(fs)
 }

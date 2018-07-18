@@ -42,7 +42,8 @@ Get or set the stat transform(s)  associated with a GGplotFeatureSet object. Thi
 }
 \examples{
 library(ggplot2)
-plt = qplot(mtcars$mpg, mtcars$cyl)
+mt = datasets::mtcars
+plt = qplot(mt$mpg, mt$cyl)
 fs = makeFeatureSet(plt)
 statTransform(fs)
 }

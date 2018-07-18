@@ -295,7 +295,7 @@ globalVariables("tangletxt")
 #' @param chunks The code and text chunks of the dynamic document
 #' @param numouts Do not manually set
 #' @param numplots Do not manually set
-#' @param title Do not manually set
+#' @param titles Do not manually set
 #' @param author Do not manually set
 #' @param textkeywords Keywords extracted from the text
 #' @param codekeywords Keywords extracted from the code
