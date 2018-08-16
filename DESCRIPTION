@@ -1,7 +1,7 @@
 Package: trackr
 Type: Package
 Title: Semantic Annotation and Discoverability System for R-Based Artifacts
-Version: 0.9.3.1
+Version: 0.9.6
 Date: 2018-07-17
 Authors@R: c(
     person("Gabriel", "Becker", role = c("aut", "cre"),
@@ -31,7 +31,7 @@ Imports:
     miniUI,
     shiny,
     rmarkdown,
-    roprov (>= 0.0.3),
+    roprov (>= 0.1.1),
     rlang
 Suggests:
     proto,

@@ -26,11 +26,12 @@ pgdlabels = list(x = "gcsescore", y = "count", group = list(panel = "score"))
 
 ## this test needs to be re-enabled as soon as I put in the workaround for the ggplot2 bug
 stopifnot(#identical(trackr:::dataNames(pg), pgdnames),
-          identical(dim(fullData(pg)[[1]]), c(31022L, 2L)),
-          identical(names(fullData(pg)[[1]]), c("gcsescore", "score")),
-          identical(dataTypes(pg), pgdtypes),
-          ## currently failing for ggplot2 2.3 due to extraneous "weight" label
-          identical(dataLabels(pg), pgdlabels))
+    identical(dim(fullData(pg)[[1]]), c(31022L, 2L)),
+    identical(names(fullData(pg)[[1]]), c("gcsescore", "score")),
+    identical(dataTypes(pg), pgdtypes),
+    ## currently failing for ggplot2 2.3 due to extraneous "weight" label
+    identical(dataLabels(pg), pgdlabels)
+    )
 
 
 set.seed(620)

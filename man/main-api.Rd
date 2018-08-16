@@ -92,12 +92,12 @@ rmRecord(mt)
 res = findRecords("mtcars")
 stopifnot(length(res) == 0)
 
-
+\dontrun{
 f = function(paths) readLines(paths)
 fil = system.file("test_docs", "knitr_test.Rmd", package = "trackr")
 recordFiles(fil, ingestfun = f)
 
 res= findRecords("test_docs")
-stopifnot(length(res) == 2)
+}
 defaultTDB(prevtdb)
 }

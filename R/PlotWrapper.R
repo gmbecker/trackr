@@ -663,9 +663,16 @@ setMethod(f = "dataLabels",
         # return everything that's set, except the title
         # x, y, 
         # alpha, colour/color, fill, shape/linetype, size, facet
-        data.labs <- unlist(object$labels[setdiff(names(object$labels), "title")])
-        empty.labs <- which(data.labs=="NA")
-        if (length(empty.labs)>0) {
+    data.labs <- unlist(object$labels[setdiff(names(object$labels),
+                                              c("title", "subtitle"))])
+    ##work around for bug in ggplot
+    ## XXX this may break for a weird corner case where data lives in
+    ## multiple places and they are using the 'weight' column from a secondary
+    ## dataset as an actual grouping variable somehow.
+    if("weight" %in% data.labs && !"weight" %in% names(object$data))
+        data.labs = data.labs[-which(data.labs == "weight")]
+    empty.labs <- which(data.labs=="NA")
+    if (length(empty.labs)>0) {
             data.labs <- data.labs[-empty.labs]
         }
         data.labs <- prep.labels(as.list(data.labs))
@@ -689,13 +696,13 @@ setMethod(f = "dataLabels",
             }
             data.labs.scales <- prep.labels(as.list(data.labs.scales))
         }
-
-        data.labs <- append.labels(data.labs, data.labs.scales)
-        if (!is.null(groupInfo(object)$panel$vars)) {
-            data.labs$group$panel <- union(data.labs$group$panel, groupInfo(object)$panel$vars)
-        }
-
-        append.labels(data.labs, dataNames(object))
+    
+    data.labs <- append.labels(data.labs, data.labs.scales)
+    if (!is.null(groupInfo(object)$panel$vars)) {
+        data.labs$group$panel <- union(data.labs$group$panel, groupInfo(object)$panel$vars)
+    }
+    
+    append.labels(data.labs, dataNames(object))
     }
 )
 
