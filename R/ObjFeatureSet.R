@@ -560,7 +560,8 @@ setMethod(f = "makeFeatureSet",
     }
 )
 
-setOldClass(c("tbl_df", "tbl", "data.frame"))
+
+##setOldClass(c("tbl_df", "tbl", "data.frame"))
 
 #' @describeIn makeFeatureSet Construct a DFFeatureSet from a data.frame
 setMethod(f = "makeFeatureSet",

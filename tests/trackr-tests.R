@@ -19,5 +19,10 @@ fil = system.file("test_docs", "knitr_test.Rmd", package = "trackr")
 recordFiles(fil, ingestfun = f, verbose = TRUE)
 
 res= findRecords("test_docs")
-stopifnot(length(res) == 2, # it doesn't find the "fit" record because not directly associated iwth test_docs
+stopifnot(length(res) == 1, # it doesn't find anything from the Rmd because the copy disassociates with original path
           length(findRecords("*")) == 4)
+
+## for now just ensure that it works
+library(switchr)
+man = manifestFromRecord(res[[1]])
+stopifnot(all(!is.na(manifest_df(man)$type)))

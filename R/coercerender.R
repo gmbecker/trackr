@@ -99,3 +99,27 @@ unflattenField = function(lst, sl, recursive=TRUE) {
     lst
 }
 
+##' @title Generate a (switchr) Seed Manifest from a Record
+##' @description Extracts the session info information within the
+##'     record and uses it to generate a switchr manifest which can be
+##'     used to reinstall exact versions of the R packages associated
+##'     with the result
+##' @param lst The record in the form of a list (eg an element of the
+##'     list returned by findRecords
+##' @return A switchr SessionManifest object
+##' @export
+manifestFromRecord = function(lst) {
+    if(!requireNamespace("switchr"))
+        stop("Unable to generate package manifest without the switchr package")
+
+    stopifnot(is(lst, "list"),
+              all(c("sessioninfo.otherPkgs",
+                    "sessioninfo.loadedOnly") %in%
+                  names(lst))
+              )
+    pkgs = c(lst$sessioninfo.otherPkgs, lst$sessioninfo.loadedOnly)
+    pkgswvers = as.data.frame(do.call(rbind, strsplit(pkgs, ":")),
+                              stringsAsFactors = FALSE)
+    names(pkgswvers) = c("name", "version")
+    switchr::makeSeedMan(pkgswvers)
+}

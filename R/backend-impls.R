@@ -467,31 +467,35 @@ setMethod("trackr_search", c("character", "DocCollectionRef"),
 })
 
 
-setMethod("trackr_search", c("character", "DocCollection"),
-          function(pattern, target, opts, fields = NULL, ret_type = c("doclist", "id", "backend"),
-                   verbose = TRUE) {
-    if(is.null(fields))
-        fields = fieldNames(target)
+.ignorefields = c("provtable")
+## setMethod("trackr_search", c("character", "DocCollection"),
+##           function(pattern, target, opts, fields = NULL, ret_type = c("doclist", "id", "backend"),
+##                    verbose = TRUE) {
+##     if(is.null(fields)) {
+##         ## provtable has too much stuff in it, drives spurious hits
+##         fields = setdiff(fieldNames(target), .ignorefields)
+##     }
+##     res = .grepl_helper(pattern, target[,fields[1]])
+##     for(f in fields[-1]) 
+##         res = res | .grepl_helper(pattern, target[,f])
     
-    res = .grepl_helper(pattern, target[,fields[1]])
-    for(f in fields[-1]) 
-        res = res | .grepl_helper(pattern, target[,f])
-    
-    inds = which(res) # this drops NAs
-    ret = target[inds]
-    switch(ret_type,
-           id = ids(ret),
-           doclist = as(ret, "DocList"),
-           df = as(ret, "data.frame"),
-           backend = stop("No backend-specific return type implemented for this backend."))
-})
+##     inds = which(res) # this drops NAs
+##     ret = target[inds]
+##     switch(ret_type,
+##            id = ids(ret),
+##            doclist = as(ret, "DocList"),
+##            df = as(ret, "data.frame"),
+##            backend = stop("No backend-specific return type implemented for this backend."))
+## })
 
 
 setMethod("trackr_search", c("character", "DocCollection"),
           function(pattern, target, opts, fields = NULL, ret_type = c("doclist", "id", "backend"),
                    verbose = TRUE) {
-    if(is.null(fields))
-        fields = fieldNames(target)
+      if(is.null(fields)) {
+        ## provtable has too much stuff in it, drives spurious hits
+        fields = setdiff(fieldNames(target), .ignorefields)
+    }
     
     res = .grepl_helper(pattern, target[,fields[1]])
     for(f in fields[-1]) 

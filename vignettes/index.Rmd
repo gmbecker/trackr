@@ -345,6 +345,34 @@ gallery
 
 We can see above that in our set of example plots, gcsescore is is looked at primarily in terms of its distribution conditional on a particular value for ```score```.
 
+
+## Recreating the package cohort for a result
+
+With the suggested ```switchr``` package installed, we can create a
+```SessionManifest``` from a record (as returned by ```findRecords```)
+by calling the ```manifestFromRecord``` function:
+
+```{r, makemanifest}
+library(switchr)
+man = manifestFromRecord(diamres[[1]])
+man
+```
+
+We could then use this manifest to recreate the environment (up to R package versions) used to create the result (NOT RUN)
+
+```{r, eval = FALSE}
+
+
+nm = gsub(":", "_", diamres[[1]]$id)
+switchTo(nm, seed = man)
+
+## OR
+
+install_packages(man)
+```
+
+
+
 # Integrating with Blacklight via rsolr
 
 Note that the following examples assume that a solr instance is installed as a part of a blacklight instance (at `~/Downloads/trackr_blacklightapp`), is properly configured and is running/awaiting input with a core named `figdb.`
