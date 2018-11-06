@@ -1,7 +1,7 @@
 Package: trackr
 Type: Package
 Title: Semantic Annotation and Discoverability System for R-Based Artifacts
-Version: 0.10.3
+Version: 0.10.4
 Date: 2018-08-24
 Authors@R: c(
     person("Gabriel", "Becker", role = c("aut", "cre"),
@@ -9,7 +9,7 @@ Authors@R: c(
     person("Sara", "Moore", role = c("aut"),
         email = "moore.sara@gene.com"))
 Copyright: Genentech, Inc.
-Maintainer: Gabriel Becker <becker.gabriel@gene.com>
+Maintainer: Gabriel Becker <gabembecker@gmail.com>
 Description: Automatically annotates R-based artifacts
 	     with relevant descriptive and provenance-related
     	     and provides a backend-agnostic storage and
