@@ -31,7 +31,7 @@
 #' @rdname main-api
 #' @examples
 #' prevtdb = defaultTDB()
-#' defaultTDB(listTDB())
+#' defaultTDB(listTDB(img_dir = tempdir()))
 #' mt = datasets::mtcars
 #' record(mt)
 #'
