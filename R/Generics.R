@@ -8,8 +8,8 @@ NULL
 #' appropriate subclass of FeatureSet. This includes most introspection-based
 #' metadata extraction from the object. Metadata extraction can be customized
 #' at the package/R sesion level for specific classes of objects by
-#' defining methods for this generic. 
-#' 
+#' defining methods for this generic.
+#'
 #' @title Construct an ObjFeatureSet.
 #' @param object The plot to summarize via metadata in an
 #'     ObjFeatureSet (or subclass)
@@ -39,7 +39,7 @@ NULL
 #' pb <- recordPlot()
 #' pfs <- makeFeatureSet(pb)
 #'}
-setGeneric(name = "makeFeatureSet", 
+setGeneric(name = "makeFeatureSet",
     def = function(object, ...) {
         standardGeneric("makeFeatureSet")
     }
@@ -284,9 +284,8 @@ setGeneric(name = "position<-",
 #' @title Accessors for the tags of FeatureSet objects
 #' @description Get or set the tags associated with a FeatureSet object. This should not be called directly.
 #' @title Mutator method for PlotFeatureSet "tags" slot.
-#' @param object An object of (super)class FeatureSet 
+#' @param object An object of (super)class FeatureSet
 #' @param value A character vector of tags.
-#' @param ... Additional named arguments.
 #' @return A modified object of (super)class PlotFeatureSet.
 #' @rdname tags-methods
 #' @export
@@ -314,7 +313,7 @@ setGeneric(name = "editTags",
 #' @rdname uniqueID-methods
 #' @export
 #' @aliases uniqueID,ANY-method
-setGeneric(name = "uniqueID", valueClass = "character", 
+setGeneric(name = "uniqueID", valueClass = "character",
     def = function(object) {
         standardGeneric("uniqueID")
     }
@@ -327,7 +326,7 @@ setGeneric(name = "uniqueID", valueClass = "character",
 #' fs = makeFeatureSet(mt)
 #' user(fs)
 #' @export
-setGeneric(name = "user", valueClass = "character", 
+setGeneric(name = "user", valueClass = "character",
     def = function(object) {
         standardGeneric("user")
     }
@@ -489,7 +488,7 @@ setGeneric(name = "dataNames",
 #' plt = qplot(mt$mpg, mt$cyl)
 #' fs = makeFeatureSet(plt)
 #' dataTypes(fs)
-#' 
+#'
 #' @export
 setGeneric(name = "dataTypes",
     def = function(object) {
@@ -686,7 +685,7 @@ setGeneric(name = "tags",
 #' \code{target} argument. That is, they should return an object of
 #' the same class as was passed to \code{target}, which reflect the
 #' requested change to the backend state.
-#' 
+#'
 #' @param object ANY. The object to lookup, add, remove, etc.
 #' @param target ANY. The backend of the TrackrDB instance.
 #' @param opts TrackrOptions. The trackr-level options. Typically
@@ -705,7 +704,7 @@ setGeneric(name = "tags",
 #'     trackr_lookup,character,ANY-method
 #'     trackr_lookup,character,DocCollectionRef-method
 #'     trackr_lookup,character,TrackrDB-method
-setGeneric("trackr_lookup", function(object, target, opts, 
+setGeneric("trackr_lookup", function(object, target, opts,
                                  exist = FALSE) standardGeneric("trackr_lookup"))
 
 #' @name insert_record
@@ -786,7 +785,7 @@ setGeneric("trackr_write", function(target, opts, verbose = FALSE) standardGener
 #'     trackr_search,character,DocCollectionRef-method
 #'     trackr_search,character,SolrList-method
 #'     trackr_search,character,TrackrDB-method
-setGeneric("trackr_search", function(pattern, target, opts, 
+setGeneric("trackr_search", function(pattern, target, opts,
                                fields = NULL,
                                ret_type = c("doclist", "id", "backend"),
                                verbose = TRUE)

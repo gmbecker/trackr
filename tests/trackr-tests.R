@@ -25,8 +25,9 @@ stopifnot(length(res) == 1, # it doesn't find anything from the Rmd because the 
 
 ## for now just ensure that it works
 library(switchr)
-if(any(grepl("bioc", defaultRepos(), ignore.case = TRUE)) &&
-   !anyNA(defaultRepos())) { #on some systems bioc repos not available. this will fail.
+drepos <- tryCatch(defaultRepos(), error = function(e) NA_character_)
+if(any(grepl("bioc", drepos, ignore.case = TRUE)) &&
+   !anyNA(drepos)) { #on some systems bioc repos not available. this will fail.
     man = manifestFromRecord(res[[1]])
     stopifnot(all(!is.na(manifest_df(man)$type)))
 }

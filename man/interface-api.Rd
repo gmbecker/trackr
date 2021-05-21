@@ -42,8 +42,14 @@ remove_record(object, target, opts, verbose = FALSE)
 
 trackr_write(target, opts, verbose = FALSE)
 
-trackr_search(pattern, target, opts, fields = NULL, ret_type = c("doclist",
-  "id", "backend"), verbose = TRUE)
+trackr_search(
+  pattern,
+  target,
+  opts,
+  fields = NULL,
+  ret_type = c("doclist", "id", "backend"),
+  verbose = TRUE
+)
 }
 \arguments{
 \item{object}{ANY. The object to lookup, add, remove, etc.}

@@ -7,18 +7,38 @@
 \alias{recordFiles}
 \title{Primary high-level API functions for Trackr Databases}
 \usage{
-record(object, db = defaultTDB(), resultURI = "",
-  code = histry::histry_tracker(), force = FALSE, verbose = FALSE,
-  symorpos = NULL, dryrun = FALSE)
+record(
+  object,
+  db = defaultTDB(),
+  resultURI = "",
+  code = histry::histry_tracker(),
+  force = FALSE,
+  verbose = FALSE,
+  symorpos = NULL,
+  dryrun = FALSE
+)
 
 rmRecord(object, db = defaultTDB(), verbose = FALSE)
 
-findRecords(pattern, db = defaultTDB(), fields = NULL,
-  ret_type = c("doclist", "id", "backend"), verbose = FALSE)
+findRecords(
+  pattern,
+  db = defaultTDB(),
+  fields = NULL,
+  ret_type = c("doclist", "id", "backend"),
+  verbose = FALSE
+)
 
-recordFiles(object, ingestfun = NULL, db = defaultTDB(), resultURI = "",
-  code = histry_tracker(), force = FALSE, verbose = FALSE,
-  symorpos = NULL, dryrun = FALSE)
+recordFiles(
+  object,
+  ingestfun = NULL,
+  db = defaultTDB(),
+  resultURI = "",
+  code = histry_tracker(),
+  force = FALSE,
+  verbose = FALSE,
+  symorpos = NULL,
+  dryrun = FALSE
+)
 }
 \arguments{
 \item{object}{ANY. An object to record. Or (for recordFiles) a

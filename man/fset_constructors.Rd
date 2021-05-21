@@ -10,18 +10,33 @@
 \alias{RmdFeatureSet}
 \title{FeatureSet contstructors}
 \usage{
-ObjFeatureSet(object, code = as.character(parseCode(object)),
+ObjFeatureSet(
+  object,
+  code = as.character(parseCode(object)),
   codeinfo = CodeDepends::getInputs(parseCode(code)),
-  klass = getTopS3Class(object), uniqueid = gen_hash_id(object),
-  tags = character(), user = unname(Sys.info()["user"]),
-  regdate = Sys.time(), analysispkg = scrape_descr(),
-  analysisfile = .analysisFileOrNA(), rstudioproject = .rstudioProjOrNA(),
-  fsetklass = "ObjFeatureSet", isplot = FALSE, generatedin = character(),
-  clineargs = commandArgs(), resultURI = character(),
-  provtable = ProvStoreDF(), ...)
+  klass = getTopS3Class(object),
+  uniqueid = gen_hash_id(object),
+  tags = character(),
+  user = unname(Sys.info()["user"]),
+  regdate = Sys.time(),
+  analysispkg = scrape_descr(),
+  analysisfile = .analysisFileOrNA(),
+  rstudioproject = .rstudioProjOrNA(),
+  fsetklass = "ObjFeatureSet",
+  isplot = FALSE,
+  generatedin = character(),
+  clineargs = commandArgs(),
+  resultURI = character(),
+  provtable = ProvStoreDF(),
+  ...
+)
 
-PlotFeatureSet(object, fsetklass = "PlotFeatureSet",
-  package = NA_character_, ...)
+PlotFeatureSet(
+  object,
+  fsetklass = "PlotFeatureSet",
+  package = NA_character_,
+  ...
+)
 
 GGplotFeatureSet(object, fsetklass = "GGplotFeatureSet", ...)
 
@@ -29,22 +44,42 @@ TrellisFeatureSet(object, fsetklass = "TrellisFeatureSet", ...)
 
 GraphicsFeatureSet(object, fsetklass = "GraphicsFeatureSet", ...)
 
-DFFeatureSet(object, fsetklass = "DFFeatureSet", vars = names(object),
+DFFeatureSet(
+  object,
+  fsetklass = "DFFeatureSet",
+  vars = names(object),
   varclasses = .makeClassesTab(object),
-  varsummaries = structure(lapply(object, .makeSummaryTable), names =
-  names(object)), nobs = nrow(object), ...)
+  varsummaries = structure(lapply(object, .makeSummaryTable), names = names(object)),
+  nobs = nrow(object),
+  ...
+)
 
-RmdFeatureSet(rmdfile, outputfile, uniqueid,
-  rmdfileid = gen_hash_id(readLines(rmdfile)), chunks,
+RmdFeatureSet(
+  rmdfile,
+  outputfile,
+  uniqueid,
+  rmdfileid = gen_hash_id(readLines(rmdfile)),
+  chunks,
   numouts = length(trackr_backend(objtdb)),
-  numplots = sum(sapply(objrecords, function(x) x$isplot)), titles = "",
-  author = "", textkeywords = character(), codekeywords = character(),
+  numplots = sum(sapply(objrecords, function(x) x$isplot)),
+  titles = "",
+  author = "",
+  textkeywords = character(),
+  codekeywords = character(),
   outputids = sapply(objrecords, function(x) x$uniqueid, USE.NAMES = FALSE),
-  tags = character(), user = unname(Sys.info()["user"]),
-  regdate = Sys.time(), analysispkg = scrape_descr(),
-  analysisfile = .analysisFileOrNA(), rstudioproject = .rstudioProjOrNA(),
-  fsetklass = "RmdFeatureSet", objrecords = findRecords(".", db = objtdb),
-  objtdb, figurefiles = NA_character_, resultURI = "", ...)
+  tags = character(),
+  user = unname(Sys.info()["user"]),
+  regdate = Sys.time(),
+  analysispkg = scrape_descr(),
+  analysisfile = .analysisFileOrNA(),
+  rstudioproject = .rstudioProjOrNA(),
+  fsetklass = "RmdFeatureSet",
+  objrecords = findRecords(".", db = objtdb),
+  objtdb,
+  figurefiles = NA_character_,
+  resultURI = "",
+  ...
+)
 }
 \arguments{
 \item{object}{object to extract metadata from}

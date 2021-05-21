@@ -4,7 +4,9 @@
 \name{trackropts}
 \alias{trackropts}
 \title{trackr options environment}
-\format{An object of class \code{environment} of length 3.}
+\format{
+An object of class \code{environment} of length 3.
+}
 \usage{
 trackropts
 }

@@ -6,8 +6,13 @@
 \alias{TrackrOptions}
 \title{Trackr configuration options}
 \usage{
-TrackrOptions(insert_delay = 0, img_dir = "./images", img_ext = "png",
-  backend_opts = list(...), ...)
+TrackrOptions(
+  insert_delay = 0,
+  img_dir = "./images",
+  img_ext = "png",
+  backend_opts = list(...),
+  ...
+)
 }
 \arguments{
 \item{insert_delay}{numeric. delay in seconds between insertions.}

@@ -5,7 +5,6 @@
 \alias{JSONBackend}
 \alias{jsonbackend}
 \alias{JSONBackend-class}
-\alias{JSONBackend}
 \title{JSON backend for trackr}
 \usage{
 JSONBackend(file = normalizePath("./trackr_db_data.json"), data = list())

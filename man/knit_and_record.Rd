@@ -4,9 +4,14 @@
 \alias{knit_and_record}
 \title{Knit and record an Rmd, Rnw, etc file}
 \usage{
-knit_and_record(input, ..., verbose = FALSE, tmptdb = TrackrDB(backend =
-  ListBackend(), img_dir = img_dir(defaultTDB())), recvars = NULL,
-  dryrun = FALSE)
+knit_and_record(
+  input,
+  ...,
+  verbose = FALSE,
+  tmptdb = TrackrDB(backend = ListBackend(), img_dir = img_dir(defaultTDB())),
+  recvars = NULL,
+  dryrun = FALSE
+)
 }
 \arguments{
 \item{input}{The input argument exactly as knitr's \code{knit}

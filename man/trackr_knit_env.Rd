@@ -4,7 +4,9 @@
 \name{trackr_knit_env}
 \alias{trackr_knit_env}
 \title{Internal details}
-\format{An object of class \code{environment} of length 0.}
+\format{
+An object of class \code{environment} of length 0.
+}
 \usage{
 trackr_knit_env
 }

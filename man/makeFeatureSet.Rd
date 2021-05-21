@@ -52,25 +52,25 @@ metadata extraction from the object. Metadata extraction can be customized
 at the package/R sesion level for specific classes of objects by
 defining methods for this generic.
 }
-\section{Methods (by class)}{
+\section{Functions}{
 \itemize{
-\item \code{ggplot}: Construct a ObjFeatureSet from an object of class ggplot.
+\item \code{makeFeatureSet,ggplot-method}: Construct a ObjFeatureSet from an object of class ggplot.
 
-\item \code{trellis}: Construct a ObjFeatureSet from an object of class trellis.
+\item \code{makeFeatureSet,trellis-method}: Construct a ObjFeatureSet from an object of class trellis.
 
-\item \code{gTree}: Construct a ObjFeatureSet from an object of class gTree.
+\item \code{makeFeatureSet,gTree-method}: Construct a ObjFeatureSet from an object of class gTree.
 
-\item \code{recordedplot}: Construct a ObjFeatureSet from an object of class recordedplot.
+\item \code{makeFeatureSet,recordedplot-method}: Construct a ObjFeatureSet from an object of class recordedplot.
 
-\item \code{expression}: Construct a ObjFeatureSet from an unevaluated expression.
+\item \code{makeFeatureSet,expression-method}: Construct a ObjFeatureSet from an unevaluated expression.
 
-\item \code{call}: Construct a ObjFeatureSet from a call.
+\item \code{makeFeatureSet,call-method}: Construct a ObjFeatureSet from a call.
 
-\item \code{FeatureSet}: No-op if we already have a ObjFeatureSet
+\item \code{makeFeatureSet,FeatureSet-method}: No-op if we already have a ObjFeatureSet
 
-\item \code{ANY}: Catch-all for attempted construction of a ObjFeatureSet from an object not of class ggplot or trellis.
+\item \code{makeFeatureSet,ANY-method}: Catch-all for attempted construction of a ObjFeatureSet from an object not of class ggplot or trellis.
 
-\item \code{data.frame}: Construct a DFFeatureSet from a data.frame
+\item \code{makeFeatureSet,data.frame-method}: Construct a DFFeatureSet from a data.frame
 }}
 
 \examples{
